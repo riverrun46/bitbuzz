@@ -1,19 +1,12 @@
-"use client";
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const BackButton = () => {
-	const router = useRouter();
+	const navigate = useNavigate();
 	return (
-		<button
-			className="btn"
-			onClick={() => {
-				router.back();
-			}}
-		>
+		<button className="btn btn-ghost p-0 pr-2 border-none" onClick={() => navigate("/")}>
 			<ChevronLeft />
-			Back
+			return
 		</button>
 	);
 };
