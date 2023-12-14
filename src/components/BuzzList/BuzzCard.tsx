@@ -7,11 +7,12 @@ import dayjs from "dayjs";
 
 type IProps = {
 	buzzItem: BuzzItem | undefined;
+	imgSeed: string;
 	onBuzzDetail?: (txid: string) => void;
 	innerRef?: React.Ref<HTMLDivElement>;
 };
 
-const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
+const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 	if (isNil(buzzItem)) {
 		return <div>can't fetch this buzz</div>;
 	}
@@ -20,7 +21,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 			<div className="flex items-center justify-between pt-4 px-4">
 				<div className="flex gap-2 items-center">
 					<img
-						src="https://picsum.photos/200"
+						src={`https://picsum.photos/seed/${imgSeed}/200`}
 						alt="user avatar"
 						className="rounded-full"
 						width={40}

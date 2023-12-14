@@ -25,18 +25,9 @@ const BuzzList = () => {
 
 	const buzzes = data?.pages.map((buzzItems: BuzzItem[]) =>
 		buzzItems.map((buzzItem, index) => {
-			if (buzzItems.length == index + 1) {
-				return (
-					<BuzzCard
-						// innerRef={ref}
-						key={buzzItem.txid}
-						buzzItem={buzzItem}
-						onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}
-					/>
-				);
-			}
 			return (
 				<BuzzCard
+					imgSeed={"seed" + index}
 					key={buzzItem.txid}
 					buzzItem={buzzItem}
 					onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}

@@ -30,7 +30,7 @@ const Navbar = () => {
 						/>
 						{connected ? (
 							<img
-								src="https://picsum.photos/200"
+								src="https://picsum.photos/seed/picsum/200"
 								alt="user avatar"
 								className="rounded-full self-start"
 								width={45}
