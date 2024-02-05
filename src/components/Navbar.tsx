@@ -1,15 +1,17 @@
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { connectedAtom } from "../store/user";
 import AddBuzz from "./AddBuzz";
 
-const Navbar = () => {
-	const [connected, setConnected] = useAtom(connectedAtom);
-	const onWalletConnectStart = () => {
-		setConnected(true);
-	};
+type IProps = {
+	onWalletConnectStart: () => Promise<void>;
+};
+
+const Navbar = ({ onWalletConnectStart }: IProps) => {
+	const connected = useAtomValue(connectedAtom);
+
 	const onBuzzStart = () => {
 		const doc_modal = document.getElementById("new_buzz_modal") as HTMLDialogElement;
 		doc_modal.showModal();
@@ -19,7 +21,7 @@ const Navbar = () => {
 			<div className="navbar p-3 bg-main absolute top-0">
 				<div className="container flex justify-between">
 					<Link to={"/"} className="text-[30px] font-normal	font-['Impact']">
-						ORBUZZ
+						BITBUZZ
 					</Link>
 
 					<div className="flex items-center gap-2">

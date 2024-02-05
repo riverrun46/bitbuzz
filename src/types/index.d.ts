@@ -7,7 +7,7 @@ export type BuzzItem = {
 	createTime: string;
 };
 
-export type BuzzNewForm = {
+type BuzzNewForm = {
 	content: string;
 	createTime: string;
 	// price:string

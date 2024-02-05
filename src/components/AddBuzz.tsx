@@ -28,7 +28,7 @@ const AddBuzz = () => {
 			createTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
 			user: "vae",
 			isFollowed: false,
-			txid: uuidv4(),
+			txid: id,
 		});
 	};
 

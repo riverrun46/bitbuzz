@@ -1,14 +1,14 @@
 import BuzzList from "../components/BuzzList";
 import RecommendUsers from "../components/RecommendUsers";
 import { connectedAtom } from "../store/user";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
+type IProps = {
+	onWalletConnectStart: () => Promise<void>;
+};
 
-const Home = () => {
-	const [connected, setConnected] = useAtom(connectedAtom);
+const Home = ({ onWalletConnectStart }: IProps) => {
+	const connected = useAtomValue(connectedAtom);
 
-	const onWalletConnectStart = () => {
-		setConnected(true);
-	};
 	if (connected) {
 		return (
 			<main className="">
@@ -27,7 +27,7 @@ const Home = () => {
 				className="absolute top-[10rem]"
 			/>
 			<div className="flex flex-col items-center mt-[12rem]">
-				<div className="text-main font-['impact'] text-[120px]">ORDID</div>
+				<div className="text-main font-['impact'] text-[120px]">BIT DID</div>
 				<div className="text-[white]">Claim your DID on bitcoin</div>
 				<div
 					className="btn btn-primary rounded-full mt-[8rem] text-[20px] font-medium	w-[220px]"

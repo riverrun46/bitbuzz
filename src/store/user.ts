@@ -1,6 +1,9 @@
+import { type BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 import { atom } from "jotai";
 
 export const connectedAtom = atom(false);
+export const btcConnectorAtom = atom<BtcConnector | null>(null);
+
 /**
  * unisat account stuff
  */

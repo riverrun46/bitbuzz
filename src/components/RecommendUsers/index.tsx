@@ -19,8 +19,6 @@ const RecommendUsers = () => {
 			<div className="grid items-center justify-center md:grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
 				<UserCard imgSeed="a" />
 				<UserCard imgSeed="d" isFollowed />
-				<UserCard imgSeed="b" />
-				<UserCard imgSeed="c" />
 			</div>
 		</div>
 	);
