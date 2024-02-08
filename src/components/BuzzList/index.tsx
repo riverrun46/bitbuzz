@@ -133,22 +133,29 @@ const BuzzList = () => {
   const buzzEntity = useAtomValue(buzzEntityAtom);
 
   const [showNewBuzz, setShowNewBuzz] = useState(true);
-  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery({
-      queryKey: ['buzzes'],
-      enabled: !isNil(buzzEntity),
+  const {
+    data,
+    isLoading,
+    // isFetching,
+    fetchNextPage,
 
-      queryFn: ({ pageParam }) =>
-        fetchBuzzs({ page: pageParam, limit: 5, buzzEntity: buzzEntity! }),
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = lastPage.length ? allPages.length + 1 : undefined;
-        return nextPage;
-      },
-    });
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['buzzes'],
+    enabled: !isNil(buzzEntity),
+
+    queryFn: ({ pageParam }) =>
+      fetchBuzzs({ page: pageParam, limit: 5, buzzEntity: buzzEntity! }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = lastPage?.length ? allPages.length + 1 : undefined;
+      return nextPage;
+    },
+  });
   console.log('data', data);
-  const buzzes = data?.pages.map((pins: Pin[]) =>
-    pins.map((pin, index) => {
+  const buzzes = data?.pages.map((pins: Pin[] | null) =>
+    (pins ?? []).map((pin, index) => {
       return (
         <BuzzCard
           imgSeed={'seed' + index}
@@ -212,7 +219,7 @@ const BuzzList = () => {
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
           >
-            {isFetchingNextPage ? (
+            {hasNextPage && isFetchingNextPage ? (
               <div className='flex items-center gap-1'>
                 <div>Loading more</div>
                 <span className='loading loading-dots loading-md grid text-white'></span>

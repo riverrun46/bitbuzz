@@ -16,7 +16,7 @@ export async function fetchBuzzs({
   buzzEntity: BtcEntity;
   page: number;
   limit: number;
-}): Promise<Pin[]> {
+}): Promise<Pin[] | null> {
   console.log('fetcing');
   const response = await buzzEntity.getPins({ page, limit });
   return response;
