@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import wasm from 'vite-plugin-wasm';
-import { resolve } from 'path';
+// import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({

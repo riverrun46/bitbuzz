@@ -25,7 +25,14 @@ function App() {
 
     if (!_btcConnector.hasMetaid()) {
       toast.loading('We are creating a metaid for you...');
-      await _btcConnector.createMetaid();
+      try {
+        const res = await _btcConnector.createMetaid();
+        console.log('create metaid res', res);
+      } catch (error) {
+        console.log('create metaid error ', error);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        toast.error((error as any)?.message);
+      }
       toast.success('Successfulling created!');
       console.log('your metaid', _btcConnector.metaid);
     }
