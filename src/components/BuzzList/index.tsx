@@ -16,10 +16,6 @@ import { isNil } from 'ramda';
 // import { buzzPinsAtom } from '../../store/buzz';
 // import { isNil } from 'ramda';
 
-// export function sleep(time: number) {
-//   return new Promise((resolve) => setTimeout(resolve, time));
-// }
-
 export type Pin = {
   id: string;
   number: number;

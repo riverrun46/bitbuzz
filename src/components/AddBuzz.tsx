@@ -12,7 +12,9 @@ import { connectedAtom } from '../store/user';
 import { isNil } from 'ramda';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-
+function sleep(time: number) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
 const AddBuzz = () => {
   const buzzEntity = useAtomValue(buzzEntityAtom);
   const connected = useAtomValue(connectedAtom);
@@ -25,13 +27,25 @@ const AddBuzz = () => {
       return;
     }
     setIsAdding(true);
-    // await sleep(800);
-    const createRes = await buzzEntity?.create({ body: buzz.content });
-    if (!isNil(createRes?.revealTxIds[0])) {
-      queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-      toast.success('create buzz successfully');
-      setIsAdding(false);
+    try {
+      const createRes = await buzzEntity?.create({ body: buzz.content });
+      console.log('create res for inscribe', createRes);
+      if (!isNil(createRes?.revealTxIds[0])) {
+        await sleep(5000);
+        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+        toast.success('create buzz successfully');
+
+        const doc_modal = document.getElementById(
+          'new_buzz_modal'
+        ) as HTMLDialogElement;
+        doc_modal.close();
+      }
+    } catch (error) {
+      console.log('error', error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.warn((error as any)?.message ?? 'too-long-mempool-chain');
     }
+    setIsAdding(false);
   };
 
   return (

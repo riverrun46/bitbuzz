@@ -33,7 +33,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
             height={40}
           />
           <div className='text-gray'>
-            {'metaid-user-' + buzzItem.id.slice(0, 4)}
+            {'metaid-user-' + buzzItem.address.slice(-4, -1)}
           </div>
         </div>
         <FollowButton isFollowed={true} />
@@ -48,9 +48,11 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
         <div className='flex justify-between text-gray mt-2'>
           <div className='flex gap-2 items-center'>
             <LucideLink size={12} />
-            <div>{buzzItem.id.slice(0, 8) + '...'}</div>
+            <div>{buzzItem.rootTxId.slice(0, 8) + '...'}</div>
           </div>
-          <div>{dayjs(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}</div>
+          <div>
+            {dayjs.unix(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+          </div>
         </div>
       </div>
 
