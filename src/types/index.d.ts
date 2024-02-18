@@ -6,9 +6,3 @@ export type BuzzItem = {
 	id: string;
 	createTime: string;
 };
-
-type BuzzNewForm = {
-	content: string;
-	createTime: string;
-	// price:string
-};

@@ -3,7 +3,9 @@ import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { connectedAtom } from "../store/user";
-import AddBuzz from "./AddBuzz";
+import AddBuzz from "./BuzzFormWrap";
+
+import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 
 type IProps = {
 	onWalletConnectStart: () => Promise<void>;
@@ -12,7 +14,9 @@ type IProps = {
 const Navbar = ({ onWalletConnectStart }: IProps) => {
 	const connected = useAtomValue(connectedAtom);
 
-	const onBuzzStart = () => {
+	const onBuzzStart = async () => {
+		await checkMetaletInstalled();
+		await checkMetaletConnected(connected);
 		const doc_modal = document.getElementById("new_buzz_modal") as HTMLDialogElement;
 		doc_modal.showModal();
 	};
@@ -50,7 +54,7 @@ const Navbar = ({ onWalletConnectStart }: IProps) => {
 				</div>
 			</div>
 			<dialog id="new_buzz_modal" className="modal">
-				<div className="modal-box bg-[#191C20] py-5 w-[360px]">
+				<div className="modal-box bg-[#191C20] py-5 w-[50%]">
 					<form method="dialog">
 						{/* if there is a button in form, it will close the modal */}
 						<button className="border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5">

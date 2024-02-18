@@ -1,4 +1,4 @@
-import FollowButton from "../FollowButton";
+import FollowButton from "../Buttons/FollowButton";
 
 type Iprops = {
 	isFollowed?: boolean;
