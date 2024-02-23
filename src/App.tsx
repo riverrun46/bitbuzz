@@ -41,10 +41,22 @@ function App() {
 		console.log("your btc address: ", _btcConnector.address);
 	};
 
+	const handleTest = () => {
+		const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
+		doc_modal.showModal();
+	};
+
 	return (
 		<div className="relative">
 			<Navbar onWalletConnectStart={onWalletConnectStart} />
+
 			<div className="container pt-[100px] text-white h-screen overflow-auto">
+				<button
+					className="btn btn-active btn-accent text-[blue] absolute top-3 left-2"
+					onClick={handleTest}
+				>
+					Test Button
+				</button>
 				<Routes>
 					<Route
 						path="/"
@@ -67,7 +79,7 @@ function App() {
 				theme="light"
 			/>
 			<dialog id="create_metaid_modal" className="modal">
-				<div className="modal-box bg-[#191C20] py-5 w-[360px]">
+				<div className="modal-box bg-[#191C20] py-5 w-[480px]">
 					<form method="dialog">
 						{/* if there is a button in form, it will close the modal */}
 						<button className="border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5">
@@ -75,7 +87,7 @@ function App() {
 						</button>
 					</form>
 					<h3 className="font-medium text-white text-[16px] text-center">
-						Create MetaID
+						Set Up Profile
 					</h3>
 					<CreateMetaIDForm btcConnector={btcConnector!} />
 				</div>

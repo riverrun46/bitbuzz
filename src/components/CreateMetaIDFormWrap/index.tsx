@@ -1,14 +1,20 @@
 import LoadingOverlay from "react-loading-overlay-ts";
-import CreateForm, { UserInfo } from "./CreateForm";
+import CreateForm from "./CreateForm";
 import { useState } from "react";
 
 import { toast } from "react-toastify";
 import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 
+export type MetaidUserInfo = {
+	name: string;
+	bio?: string;
+	avatar?: string;
+};
+
 const CreateMetaIDForm = ({ btcConnector }: { btcConnector: BtcConnector }) => {
 	const [isCreating, setIsCreating] = useState(false);
 
-	const handleCreateMetaID = async (userInfo: UserInfo) => {
+	const handleCreateMetaID = async (userInfo: MetaidUserInfo) => {
 		console.log("userInfo", userInfo);
 
 		setIsCreating(true);

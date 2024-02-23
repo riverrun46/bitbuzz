@@ -1,12 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, SubmitHandler } from "react-hook-form";
 import cls from "classnames";
+import { Image } from "lucide-react";
+import useImagesPreview from "../../hooks/useImagesPreview";
+import { isEmpty, isNil } from "ramda";
+import { image2Attach } from "../../utils/file";
+import { MetaidUserInfo } from ".";
 
 export type UserInfo = {
 	name: string;
+	avatar: FileList;
+	bio?: string;
 };
 
 type IProps = {
-	onSubmit: (userInfo: UserInfo) => void;
+	onSubmit: (userInfo: MetaidUserInfo) => void;
 };
 
 const CreateForm = ({ onSubmit }: IProps) => {
@@ -14,10 +22,23 @@ const CreateForm = ({ onSubmit }: IProps) => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		setValue,
+		watch,
 	} = useForm<UserInfo>();
 
-	const onCreateSubmit: SubmitHandler<UserInfo> = (data) => {
-		onSubmit(data);
+	const avatar = watch("avatar");
+
+	const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
+	const onCreateSubmit: SubmitHandler<UserInfo> = async (data) => {
+		const submitAvatar =
+			!isNil(data?.avatar) && data.avatar.length !== 0 ? await image2Attach(data.avatar) : [];
+		const submitData = {
+			...data,
+			avatar: !isEmpty(submitAvatar) ? submitAvatar[0].data : undefined,
+			bio: isEmpty(data?.bio ?? "") ? undefined : data?.bio,
+		};
+		console.log("submit profile data", submitData);
+		onSubmit(submitData);
 	};
 
 	return (
@@ -26,35 +47,84 @@ const CreateForm = ({ onSubmit }: IProps) => {
 			onSubmit={handleSubmit(onCreateSubmit)}
 			className="mt-8 flex flex-col gap-6"
 		>
-			<div className="flex flex-col gap-2">
-				<label
-					className={cls(
-						"input input-bordered border-white text-white bg-[black] flex items-center gap-2 relative",
-						{
-							"input-error": errors.name,
-						}
-					)}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 16 16"
-						fill="currentColor"
-						className="w-4 h-4 opacity-70"
+			<div className="flex flex-col gap-8">
+				<div className="flex flex-col gap-2">
+					<div className="text-white">Your Name</div>
+					<label
+						className={cls(
+							"input input-bordered border-white text-white bg-[black] flex items-center gap-2 relative",
+							{
+								"input-error": errors.name,
+							}
+						)}
 					>
-						<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-					</svg>
-					<input
-						type="text"
-						className="grow bg-[black]"
-						placeholder="Enter Username here"
-						{...register("name", { required: true })}
-					/>
-					{errors.name && (
-						<span className="text-error absolute top-[50px] text-sm">
-							Username can't be empty.
-						</span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 16"
+							fill="currentColor"
+							className="w-4 h-4 opacity-70"
+						>
+							<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+						</svg>
+						<input
+							type="text"
+							className="grow bg-[black]"
+							{...register("name", { required: true })}
+						/>
+						{errors.name && (
+							<span className="text-error absolute top-[50px] text-sm">
+								Username can't be empty.
+							</span>
+						)}
+					</label>
+				</div>
+				<div className="flex flex-col gap-2">
+					<div className="flex justify-between">
+						<div className="text-white">Your PFP</div>
+						{!isEmpty(avatar) && (
+							<div
+								className="btn btn-xs btn-outline font-normal text-white"
+								onClick={() => {
+									setFilesPreview([]);
+									setValue("avatar", [] as any);
+								}}
+							>
+								clear current uploads
+							</div>
+						)}
+					</div>
+
+					<input type="file" id="addPFP" className="hidden" {...register("avatar")} />
+					{!isNil(avatar) && avatar.length !== 0 ? (
+						<img
+							className="image self-center"
+							height={"150px"}
+							width={"150px"}
+							src={filesPreview[0]}
+							alt=""
+						/>
+					) : (
+						<div
+							onClick={() => {
+								document.getElementById("addPFP")!.click();
+							}}
+							className="btn btn-outline font-normal text-white bg-[black]"
+						>
+							<Image size={16} />
+							Click To Upload
+						</div>
 					)}
-				</label>
+				</div>
+				<div className="flex flex-col gap-2">
+					<div className="text-white">Your Bio</div>
+
+					<textarea
+						className={cls(
+							"textarea textarea-bordered border-white text-white bg-[black] h-[200px] flex items-center gap-2 relative"
+						)}
+						{...register("bio")}
+					/>
+				</div>
 			</div>
 
 			<button

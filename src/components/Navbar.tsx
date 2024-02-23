@@ -3,9 +3,9 @@ import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { connectedAtom } from "../store/user";
-import AddBuzz from "./BuzzFormWrap";
 
 import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
+import BuzzFormWrap from "./BuzzFormWrap";
 
 type IProps = {
 	onWalletConnectStart: () => Promise<void>;
@@ -62,7 +62,7 @@ const Navbar = ({ onWalletConnectStart }: IProps) => {
 						</button>
 					</form>
 					<h3 className="font-medium text-white text-[16px] text-center">New Releases</h3>
-					<AddBuzz />
+					<BuzzFormWrap />
 				</div>
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
