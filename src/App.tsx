@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { MetaletWalletForBtc, btcConnect } from "@metaid/metaid";
 import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 import { useAtom, useSetAtom } from "jotai";
-import { btcConnectorAtom, connectedAtom } from "./store/user";
+import { btcConnectorAtom, connectedAtom, userInfoAtom } from "./store/user";
 import { buzzEntityAtom } from "./store/buzz";
 import { errors } from "./utils/errors";
 import { isNil } from "ramda";
@@ -20,6 +20,7 @@ function App() {
 	const setConnected = useSetAtom(connectedAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
 	const setBuzzEntity = useSetAtom(buzzEntityAtom);
+	const setUserInfo = useSetAtom(userInfoAtom);
 	const onWalletConnectStart = async () => {
 		await checkMetaletInstalled();
 
@@ -30,15 +31,18 @@ function App() {
 		}
 		const _btcConnector: BtcConnector = await btcConnect(_wallet);
 		console.log("btc connector", _wallet);
-		setConnected(true);
+
 		setBtcConnector(_btcConnector as BtcConnector);
 
 		if (!_btcConnector.hasMetaid()) {
 			const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
 			doc_modal.showModal();
+		} else {
+			setUserInfo(await _btcConnector.getUser());
+			setConnected(true);
+			setBuzzEntity(await _btcConnector.use("buzz"));
+			console.log("your btc address: ", _btcConnector.address);
 		}
-		setBuzzEntity(await _btcConnector.use("buzz"));
-		console.log("your btc address: ", _btcConnector.address);
 	};
 
 	const handleTest = () => {
@@ -50,7 +54,7 @@ function App() {
 		<div className="relative">
 			<Navbar onWalletConnectStart={onWalletConnectStart} />
 
-			<div className="container pt-[100px] text-white h-screen overflow-auto">
+			<div className="container pt-[100px] bg-[black] text-white h-screen overflow-auto">
 				<button
 					className="btn btn-active btn-accent text-[blue] absolute top-3 left-2"
 					onClick={handleTest}

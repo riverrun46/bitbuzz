@@ -1,6 +1,16 @@
 import { type BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 import { atom } from "jotai";
 
+export type UserInfo = {
+	number: number;
+	rootTxId: string;
+	name: string;
+	address: string;
+	avatar: string | null;
+	bio: string;
+	soulbondToken: string;
+};
+
 export const connectedAtom = atom(false);
 export const btcConnectorAtom = atom<BtcConnector | null>(null);
 
@@ -17,3 +27,5 @@ export const balanceAtom = atom({
 	total: 0,
 });
 export const networkAtom = atom<string>("livenet");
+
+export const userInfoAtom = atom<UserInfo | null>(null);

@@ -32,9 +32,10 @@ const CreateForm = ({ onSubmit }: IProps) => {
 	const onCreateSubmit: SubmitHandler<UserInfo> = async (data) => {
 		const submitAvatar =
 			!isNil(data?.avatar) && data.avatar.length !== 0 ? await image2Attach(data.avatar) : [];
+		const avatarBase64 = Buffer.from(submitAvatar[0].data, "hex").toString("base64");
 		const submitData = {
 			...data,
-			avatar: !isEmpty(submitAvatar) ? submitAvatar[0].data : undefined,
+			avatar: !isEmpty(submitAvatar) ? avatarBase64 : undefined,
 			bio: isEmpty(data?.bio ?? "") ? undefined : data?.bio,
 		};
 		console.log("submit profile data", submitData);

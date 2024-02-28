@@ -1,25 +1,32 @@
-// import { BuzzItem } from "../../types";
 import FollowButton from "../Buttons/FollowButton";
-import { Heart, MessageCircle, Send, Link as LucideLink } from "lucide-react";
+import { Heart, Link as LucideLink } from "lucide-react";
+// import { MessageCircle, Send, } from "lucide-react";
 import { flatten, isEmpty, isNil } from "ramda";
 import cls from "classnames";
 import dayjs from "dayjs";
 import { Pin } from ".";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPinDetailByPid } from "../../api/pin";
+import { btcConnectorAtom } from "../../store/user";
+import { useAtomValue } from "jotai";
+import CustomAvatar from "../CustomAvatar";
+import { sleep } from "../../utils/time";
+import { toast } from "react-toastify";
 
 type IProps = {
 	buzzItem: Pin | undefined;
-	imgSeed: string;
 	onBuzzDetail?: (txid: string) => void;
 	innerRef?: React.Ref<HTMLDivElement>;
 };
 
-const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
+const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
+	const btcConnector = useAtomValue(btcConnectorAtom);
+	const queryClient = useQueryClient();
+
 	let summary = buzzItem!.contentSummary;
 	const isSummaryJson = summary.startsWith("{") && summary.endsWith("}");
 	// console.log("isjson", isSummaryJson);
-	console.log("summary", summary);
+	// console.log("summary", summary);
 	const parseSummary = isSummaryJson ? JSON.parse(summary) : {};
 
 	summary = isSummaryJson ? parseSummary.content : summary;
@@ -29,8 +36,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 		: [];
 
 	// const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
-	console.log("ata", attachPids);
-
+	// console.log("ata", attachPids);
+	// console.log("current address", buzzItem!.address);
+	const currentUserInfoData = useQuery({
+		queryKey: ["userInfo", buzzItem!.address],
+		queryFn: () => btcConnector?.getUser(buzzItem!.address),
+	});
+	// console.log("currentUserInfoData", currentUserInfoData.data);
 	const attachData = useQueries({
 		queries: attachPids.map((id: string) => {
 			return { queryKey: ["post", id], queryFn: () => getPinDetailByPid({ pid: id }) };
@@ -42,20 +54,44 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 			};
 		},
 	});
-	console.log("comb", attachData);
+	// console.log("attachData", attachData);
 
-	const renderImages = (pinNumbers: number[]) => {
+	const handleLike = async (pinId: string) => {
+		const likeEntity = await btcConnector!.use("like");
+		try {
+			const likeRes = await likeEntity.create({
+				options: [
+					{
+						body: JSON.stringify({ isLike: "1", likeTo: pinId }),
+					},
+				],
+				noBroadcast: "yes",
+			});
+			console.log("likeRes", likeRes);
+			// if (!isNil(likeRes?.revealTxIds[0])) {
+			// 	await sleep(5000);
+			// 	queryClient.invalidateQueries({ queryKey: ["buzzes"] });
+			// 	toast.success("like buzz successfully");
+			// }
+		} catch (error) {
+			console.log("error", error);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			toast.warn((error as any)?.message ?? "too-long-mempool-chain");
+		}
+	};
+
+	const renderImages = (pinIds: string[]) => {
 		return (
 			<div className="grid grid-cols-3 gap-2 place-items-center">
-				{pinNumbers.map((number) => {
+				{pinIds.map((pinId) => {
 					return (
 						<img
 							className="image"
-							height={"50px"}
+							height={"48px"}
 							width={"auto"}
-							src={`https://man-test.metaid.io/content/${number}`}
+							src={`https://man-test.metaid.io/content/${pinId}`}
 							alt=""
-							key={number}
+							key={pinId}
 						/>
 					);
 				})}
@@ -65,20 +101,29 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 	if (isNil(buzzItem)) {
 		return <div>can't fetch this buzz</div>;
 	}
+
 	return (
 		<div className="w-full border border-white rounded-xl flex flex-col gap-4" ref={innerRef}>
 			<div className="flex items-center justify-between pt-4 px-4">
 				<div className="flex gap-2 items-center">
-					<img
+					{/* <img
 						src={`https://picsum.photos/seed/${imgSeed}/200`}
 						alt="user avatar"
 						className="rounded-full"
 						width={40}
 						height={40}
-					/>
-					<div className="text-gray">
-						{"metaid-user-" + buzzItem.address.slice(-4, -1)}
-					</div>
+					/> */}
+					{isNil(currentUserInfoData.data) ? (
+						<div className="avatar placeholder">
+							<div className="bg-[#2B3440] text-[#D7DDE4] rounded-full w-12">
+								<span>{buzzItem!.address.slice(-4, -2)}</span>
+							</div>
+						</div>
+					) : (
+						<CustomAvatar userInfo={currentUserInfoData.data} />
+					)}
+
+					<div className="text-gray">{"metaid-user-" + buzzItem.address.slice(-4)}</div>
 				</div>
 				<FollowButton isFollowed={true} />
 			</div>
@@ -92,8 +137,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 					<div>{summary} </div>
 					{!attachData.pending &&
 						!isEmpty((attachData?.data ?? []).filter((d) => !isNil(d))) &&
-						// summary.startsWith("really") &&
-						renderImages(flatten(attachData?.data ?? []).map((d) => d!.number))}
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						renderImages(attachPids)}
 				</div>
 				<div className="flex justify-between text-gray mt-2">
 					<div className="flex gap-2 items-center">
@@ -106,9 +151,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef, imgSeed }: IProps) => {
 
 			<div className="flex items-center justify-between pb-4 px-4">
 				<div className="flex gap-2">
-					<Heart />
-					<MessageCircle />
-					<Send />
+					<Heart onClick={() => handleLike(buzzItem!.id)} className="cursor-pointer" />
+					{/* <MessageCircle />
+					<Send /> */}
 				</div>
 				<div className="btn btn-sm rounded-full">Want To Buy</div>
 			</div>
