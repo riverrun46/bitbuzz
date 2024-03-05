@@ -26,7 +26,7 @@ const CreateMetaIDForm = ({ btcConnector }: { btcConnector: BtcConnector }) => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			toast.error((error as any)?.message);
 		}
-		toast.success("Successfulling created!Now you can connect your wallet again!");
+		toast.success("Successfully created!Now you can connect your wallet again!");
 		setIsCreating(false);
 		console.log("your metaid", btcConnector.metaid);
 		const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
@@ -34,7 +34,7 @@ const CreateMetaIDForm = ({ btcConnector }: { btcConnector: BtcConnector }) => {
 	};
 
 	return (
-		<LoadingOverlay active={isCreating} spinner text="MetaID is Creating...">
+		<LoadingOverlay active={isCreating} spinner text="MetaID is Being Creating...">
 			<CreateForm onSubmit={handleCreateMetaID} />
 		</LoadingOverlay>
 	);

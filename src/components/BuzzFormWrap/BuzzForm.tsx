@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Image } from "lucide-react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler, UseFormReturn } from "react-hook-form";
 import cls from "classnames";
-import useImagesPreview from "../../hooks/useImagesPreview";
-import { IsEncrypt, image2Attach } from "../../utils/file";
+import { IsEncrypt } from "../../utils/file";
 import { isNil } from "ramda";
 
 export interface AttachmentItem {
@@ -17,7 +16,11 @@ export interface AttachmentItem {
 }
 
 type IProps = {
-	onSubmit: (buzz: { content: string; images: AttachmentItem[] }) => void;
+	// onSubmit: (buzz: { content: string; images: AttachmentItem[] }) => void;
+	onCreateSubmit: SubmitHandler<BuzzData>;
+	buzzFormHandle: UseFormReturn<BuzzData, any, BuzzData>;
+	onClearImageUploads: () => void;
+	filesPreview: string[];
 };
 
 export type BuzzData = {
@@ -44,27 +47,30 @@ const renderImages = (data: string[]) => {
 	);
 };
 
-const BuzzForm = ({ onSubmit }: IProps) => {
+const BuzzForm = ({
+	onCreateSubmit,
+	buzzFormHandle,
+	onClearImageUploads,
+	filesPreview,
+}: IProps) => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 		watch,
-		setValue,
-	} = useForm<BuzzData>();
-
+	} = buzzFormHandle;
 	const files = watch("images");
-	const [filesPreview, setFilesPreview] = useImagesPreview(files);
+	// const [filesPreview, setFilesPreview] = useImagesPreview(files);
 
-	const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
-		const images = data.images.length !== 0 ? await image2Attach(data.images) : [];
+	// const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
+	// 	const images = data.images.length !== 0 ? await image2Attach(data.images) : [];
 
-		onSubmit({
-			content: data.content,
-			images,
-		});
-		console.log("attachments", images);
-	};
+	// 	onSubmit({
+	// 		content: data.content,
+	// 		images,
+	// 	});
+	// 	console.log("attachments", images);
+	// };
 
 	return (
 		<form onSubmit={handleSubmit(onCreateSubmit)} className="mt-8 flex flex-col gap-6">
@@ -89,10 +95,7 @@ const BuzzForm = ({ onSubmit }: IProps) => {
 					{!isNil(files) && files.length !== 0 && (
 						<div
 							className="btn btn-xs btn-outline font-normal text-white"
-							onClick={() => {
-								setFilesPreview([]);
-								setValue("images", [] as any);
-							}}
+							onClick={onClearImageUploads}
 						>
 							clear current uploads
 						</div>

@@ -56,7 +56,7 @@ function App() {
 
 			<div className="container pt-[100px] bg-[black] text-white h-screen overflow-auto">
 				<button
-					className="btn btn-active btn-accent text-[blue] absolute top-3 left-2"
+					className="btn btn-active btn-accent text-[blue] absolute top-18 left-2"
 					onClick={handleTest}
 				>
 					Test Button

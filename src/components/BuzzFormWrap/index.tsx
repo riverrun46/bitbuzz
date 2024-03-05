@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { useMutation, useQueryClient } from '@tanstack/react-query';
 // import { createBuzz } from '../api/buzz';
-import BuzzForm, { AttachmentItem } from "./BuzzForm";
+import BuzzForm, { AttachmentItem, BuzzData } from "./BuzzForm";
 // import { v4 as uuidv4 } from 'uuid';
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
@@ -13,12 +14,34 @@ import { useQueryClient } from "@tanstack/react-query";
 import { btcConnectorAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
 import { CreateOptions } from "@metaid/metaid/dist/core/entity/btc";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { image2Attach } from "../../utils/file";
+import useImagesPreview from "../../hooks/useImagesPreview";
 const BuzzFormWrap = () => {
 	const buzzEntity = useAtomValue(buzzEntityAtom);
 	const btcConnector = useAtomValue(btcConnectorAtom);
 
 	const [isAdding, setIsAdding] = useState(false);
 	const queryClient = useQueryClient();
+
+	const buzzFormHandle = useForm<BuzzData>();
+	const files = buzzFormHandle.watch("images");
+	const [filesPreview, setFilesPreview] = useImagesPreview(files);
+
+	const onClearImageUploads = () => {
+		setFilesPreview([]);
+		buzzFormHandle.setValue("images", [] as any);
+	};
+
+	const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
+		const images = data.images.length !== 0 ? await image2Attach(data.images) : [];
+
+		await handleAddBuzz({
+			content: data.content,
+			images,
+		});
+		console.log("attachments", images);
+	};
 
 	const handleAddBuzz = async (buzz: { content: string; images: AttachmentItem[] }) => {
 		setIsAdding(true);
@@ -60,6 +83,8 @@ const BuzzFormWrap = () => {
 				await sleep(5000);
 				queryClient.invalidateQueries({ queryKey: ["buzzes"] });
 				toast.success("create buzz successfully");
+				buzzFormHandle.reset();
+				onClearImageUploads();
 
 				const doc_modal = document.getElementById("new_buzz_modal") as HTMLDialogElement;
 				doc_modal.close();
@@ -73,8 +98,13 @@ const BuzzFormWrap = () => {
 	};
 
 	return (
-		<LoadingOverlay active={isAdding} spinner text="Buzz is Creating...">
-			<BuzzForm onSubmit={handleAddBuzz} />{" "}
+		<LoadingOverlay active={isAdding} spinner text="Buzz is Being Creating...">
+			<BuzzForm
+				onCreateSubmit={onCreateSubmit}
+				buzzFormHandle={buzzFormHandle}
+				onClearImageUploads={onClearImageUploads}
+				filesPreview={filesPreview}
+			/>
 		</LoadingOverlay>
 	);
 };
