@@ -53,24 +53,24 @@ function App() {
     }
   };
 
-  const handleTest = () => {
-    const doc_modal = document.getElementById(
-      'create_metaid_modal'
-    ) as HTMLDialogElement;
-    doc_modal.showModal();
-  };
+  // const handleTest = () => {
+  //   const doc_modal = document.getElementById(
+  //     'create_metaid_modal'
+  //   ) as HTMLDialogElement;
+  //   doc_modal.showModal();
+  // };
 
   return (
     <div className='relative'>
       <Navbar onWalletConnectStart={onWalletConnectStart} />
 
       <div className='container pt-[100px] bg-[black] text-white h-screen overflow-auto'>
-        <button
+        {/* <button
           className='btn btn-active btn-accent text-[blue] absolute top-18 left-2'
           onClick={handleTest}
         >
           Test Button
-        </button>
+        </button> */}
         <Routes>
           <Route
             path='/'

@@ -6,6 +6,7 @@ import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 import { useAtom } from 'jotai';
 import { userInfoAtom } from '../../store/user';
 import EditMetaIdInfoForm from './EditMetaIdInfoForm';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type MetaidUserInfo = {
   name: string;
@@ -20,7 +21,7 @@ type Iprops = {
 const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
+  const queryClient = useQueryClient();
   console.log('userInfo', userInfo);
   const handleEditMetaID = async (userInfo: MetaidUserInfo) => {
     setIsEditing(true);
@@ -30,6 +31,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
         console.log('after create', await btcConnector.getUser());
         setUserInfo(await btcConnector.getUser());
         setIsEditing(false);
+        queryClient.invalidateQueries({ queryKey: ['userInfo'] });
         toast.success('Updating Your Profile Successfully!');
       }
     } catch (error) {

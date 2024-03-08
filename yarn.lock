@@ -1303,8 +1303,10 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@file:../metaid":
-  version "0.4.8"
+"@metaid/metaid@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-0.5.0.tgz#35153496b952b6e0c16ae130fa8fa4a08690cd93"
+  integrity sha512-kdSieKd7Qa/YEe1BV5W/Nf2d3xWYLEhbtT6LuSpYnuWaXr6xxvhrbJDUrdVNSSm70ewb7E1FcD+GnqloWSbdPg==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"

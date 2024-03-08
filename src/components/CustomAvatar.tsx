@@ -12,8 +12,8 @@ const CustomAvatar = ({ userInfo }: { userInfo: UserInfo }) => {
       src={src}
       alt='user avatar'
       className='rounded-full self-start'
-      width={45}
-      height={45}
+      width={42}
+      height={42}
     />
   ) : (
     <div className='avatar placeholder'>

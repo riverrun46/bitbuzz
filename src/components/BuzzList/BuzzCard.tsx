@@ -11,7 +11,7 @@ import { getPinDetailByPid } from '../../api/pin';
 import { btcConnectorAtom } from '../../store/user';
 import { useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
-import { sleep } from '../../utils/time';
+// import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
 import { fetchCurrentBuzzLikes } from '../../api/buzz';
 
@@ -147,7 +147,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           )}
 
           <div className='text-gray'>
-            {'metaid-user-' + buzzItem.address.slice(-4)}
+            {isNil(currentUserInfoData?.data?.name) ||
+            isEmpty(currentUserInfoData?.data?.name)
+              ? 'metaid-user-' + buzzItem.address.slice(-4)
+              : currentUserInfoData?.data?.name}
           </div>
         </div>
         <FollowButton isFollowed={true} />
