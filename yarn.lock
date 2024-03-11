@@ -1303,10 +1303,10 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-0.5.0.tgz#35153496b952b6e0c16ae130fa8fa4a08690cd93"
-  integrity sha512-kdSieKd7Qa/YEe1BV5W/Nf2d3xWYLEhbtT6LuSpYnuWaXr6xxvhrbJDUrdVNSSm70ewb7E1FcD+GnqloWSbdPg==
+"@metaid/metaid@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-0.5.2.tgz#a462f0e81789f8dedf18b25bf59968f8d09b84fa"
+  integrity sha512-W6OsQ2wU+YeEEHayPBe9SKs2LcYkzs+Jh2qx9W41tBQu3DUVymeB7UAT5BuMbKpKUcB1WZsDG5tdFRSxuAlcTw==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"
