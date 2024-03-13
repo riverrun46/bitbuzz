@@ -39,6 +39,7 @@ function App() {
 		//   'create_metaid_modal'
 		// ) as HTMLDialogElement;
 		// doc_modal.showModal();
+		console.log("sdfa", await _btcConnector.getUser());
 		if (!_btcConnector.hasMetaid()) {
 			const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
 			doc_modal.showModal();

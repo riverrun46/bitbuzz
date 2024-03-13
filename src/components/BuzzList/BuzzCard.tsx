@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import FollowButton from "../Buttons/FollowButton";
+// import FollowButton from "../Buttons/FollowButton";
 import { Heart, Link as LucideLink } from "lucide-react";
 // import { MessageCircle, Send, } from "lucide-react";
 import { isEmpty, isNil } from "ramda";
@@ -34,12 +34,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	summary = isSummaryJson ? parseSummary.content : summary;
 
 	const attachPids = isSummaryJson
-		? parseSummary.attachments.map((d: string) => d.split("metafile://")[1])
+		? (parseSummary?.attachments ?? []).map((d: string) => d.split("metafile://")[1])
 		: [];
 
 	// const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
 	// console.log("ata", attachPids);
-	// console.log("current address", buzzItem!.address);
+	// console.log("current address", buzzIte,m!.address);
 
 	const { data: currentLikeData } = useQuery({
 		queryKey: ["payLike", buzzItem!.id],
@@ -151,13 +151,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 							: currentUserInfoData?.data?.name}
 					</div>
 				</div>
-				<FollowButton isFollowed={true} />
+				{/* <FollowButton isFollowed={true} /> */}
 			</div>
 			<div
 				className={cls("border-y border-white p-4", {
 					"cursor-pointer": !isNil(onBuzzDetail),
 				})}
-				onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
+				// onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
 			>
 				<div className="flex flex-col gap-2">
 					<div>{summary} </div>
@@ -167,7 +167,15 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 						renderImages(attachPids)}
 				</div>
 				<div className="flex justify-between text-gray mt-2">
-					<div className="flex gap-2 items-center">
+					<div
+						className="flex gap-2 items-center"
+						onClick={() => {
+							window.open(
+								`https://mempool.space/zh/testnet/tx/${buzzItem.rootTxId}`,
+								"_blank"
+							);
+						}}
+					>
 						<LucideLink size={12} />
 						<div>{buzzItem.rootTxId.slice(0, 8) + "..."}</div>
 					</div>
@@ -187,7 +195,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 					{/* <MessageCircle />
 					<Send /> */}
 				</div>
-				<div className="btn btn-sm rounded-full">Want To Buy</div>
+				{/* <div className="btn btn-sm rounded-full">Want To Buy</div> */}
 			</div>
 		</div>
 	);
