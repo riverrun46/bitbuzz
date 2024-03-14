@@ -8,12 +8,13 @@ import dayjs from "dayjs";
 import { Pin } from ".";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPinDetailByPid } from "../../api/pin";
-import { btcConnectorAtom } from "../../store/user";
+import { btcConnectorAtom, userInfoAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
 import CustomAvatar from "../CustomAvatar";
 // import { sleep } from '../../utils/time';
 import { toast } from "react-toastify";
 import { fetchCurrentBuzzLikes } from "../../api/buzz";
+import { checkMetaidInit } from "../../utils/wallet";
 
 type IProps = {
 	buzzItem: Pin | undefined;
@@ -23,6 +24,7 @@ type IProps = {
 
 const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const btcConnector = useAtomValue(btcConnectorAtom);
+	const userInfo = useAtomValue(userInfoAtom);
 	const queryClient = useQueryClient();
 
 	let summary = buzzItem!.contentSummary;
@@ -54,7 +56,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		queryFn: () => btcConnector?.getUser(buzzItem!.address),
 	});
 	// console.log("address", buzzItem!.address);
-	// console.log("currentUserInfoData", currentUserInfoData.data?.avatar);
+	// console.log("currentUserInfoData", currentUserInfoData.data);
 	const attachData = useQueries({
 		queries: attachPids.map((id: string) => {
 			return {
@@ -72,6 +74,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	// console.log("attachData", attachData);
 
 	const handleLike = async (pinId: string) => {
+		await checkMetaidInit(userInfo!);
 		if (isLikeByCurrentUser) {
 			toast.warn("You have already liked that buzz...");
 			return;

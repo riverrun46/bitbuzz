@@ -49,7 +49,7 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 		console.log("submit profile data", submitData);
 		onSubmit(submitData);
 	};
-	console.log("avatar", avatar, !isEmpty(avatar));
+	// console.log("avatar", avatar, !isEmpty(avatar));
 	return (
 		<form
 			autoComplete="off"

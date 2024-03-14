@@ -9,6 +9,7 @@ export type UserInfo = {
 	avatar: string | null;
 	bio: string;
 	soulbondToken: string;
+	unconfirmed: string;
 };
 
 export const connectedAtom = atom(false);

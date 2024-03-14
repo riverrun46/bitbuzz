@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { errors } from "./errors";
+import { UserInfo } from "../store/user";
 
 export const checkMetaletInstalled = async () => {
 	const metalet = window?.metaidwallet;
@@ -16,5 +17,12 @@ export const checkMetaletConnected = async (connected: boolean) => {
 	if (!connected) {
 		toast.warn(errors.NO_WALLET_CONNECTED);
 		throw new Error(errors.NO_WALLET_CONNECTED);
+	}
+};
+
+export const checkMetaidInit = async (userInfo: UserInfo) => {
+	if (userInfo.number === -1 && userInfo.unconfirmed === "number") {
+		toast.warn(errors.INIT_STILL_MEMPOOL);
+		throw new Error(errors.INIT_STILL_MEMPOOL);
 	}
 };
