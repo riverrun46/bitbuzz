@@ -21,7 +21,7 @@ export const checkMetaletConnected = async (connected: boolean) => {
 };
 
 export const checkMetaidInit = async (userInfo: UserInfo) => {
-	if (userInfo.number === -1 && userInfo.unconfirmed === "number") {
+	if (userInfo.unconfirmed.split(",").includes("number")) {
 		toast.warn(errors.INIT_STILL_MEMPOOL);
 		throw new Error(errors.INIT_STILL_MEMPOOL);
 	}
