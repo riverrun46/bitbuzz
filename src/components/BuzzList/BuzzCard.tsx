@@ -26,7 +26,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const btcConnector = useAtomValue(btcConnectorAtom);
 	const userInfo = useAtomValue(userInfoAtom);
 	const queryClient = useQueryClient();
-
+	console.log("buzzitem", buzzItem);
 	let summary = buzzItem!.contentSummary;
 	const isSummaryJson = summary.startsWith("{") && summary.endsWith("}");
 	// console.log("isjson", isSummaryJson);
@@ -40,8 +40,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		: [];
 
 	// const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
-	// console.log("ata", attachPids);
-	// console.log("current address", buzzIte,m!.address);
+	console.log("ata", attachPids, parseSummary);
+	// console.log("current address", buzzItem!.address);
 
 	const { data: currentLikeData } = useQuery({
 		queryKey: ["payLike", buzzItem!.id],

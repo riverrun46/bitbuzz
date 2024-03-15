@@ -26,8 +26,8 @@ const BuzzFormWrap = () => {
 
 	const buzzFormHandle = useForm<BuzzData>();
 	const files = buzzFormHandle.watch("images");
+	console.log(buzzFormHandle.getValues("images"));
 	const [filesPreview, setFilesPreview] = useImagesPreview(files);
-
 	const onClearImageUploads = () => {
 		setFilesPreview([]);
 		buzzFormHandle.setValue("images", [] as any);
@@ -40,7 +40,7 @@ const BuzzFormWrap = () => {
 			content: data.content,
 			images,
 		});
-		console.log("attachments", images);
+		console.log("data images", data.images, filesPreview);
 	};
 
 	const handleAddBuzz = async (buzz: { content: string; images: AttachmentItem[] }) => {
