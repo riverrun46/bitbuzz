@@ -14,7 +14,7 @@ import CustomAvatar from './CustomAvatar';
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>;
-  onLogout: () => Promise<void>;
+  onLogout: () => void;
 };
 
 const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {

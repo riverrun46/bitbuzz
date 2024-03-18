@@ -8,7 +8,8 @@ import './globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { MetaletWalletForBtc, btcConnect } from '@metaid/metaid';
 import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+
+import { useAtom, useSetAtom } from 'jotai';
 import { btcConnectorAtom, connectedAtom, userInfoAtom } from './store/user';
 import { buzzEntityAtom } from './store/buzz';
 import { errors } from './utils/errors';
@@ -16,9 +17,6 @@ import { isNil } from 'ramda';
 import { checkMetaletInstalled, conirmMetaletTestnet } from './utils/wallet';
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
-import { useQueryClient } from '@tanstack/react-query';
-import { fetchBuzzs } from './api/buzz';
-import { connected } from 'process';
 
 function App() {
   const setConnected = useSetAtom(connectedAtom);
@@ -26,23 +24,48 @@ function App() {
   const setBuzzEntity = useSetAtom(buzzEntityAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
 
-  const onLogout = async () => {
+  const onLogout = () => {
     setConnected(false);
     setBtcConnector(null);
     setBuzzEntity(null);
     setUserInfo(null);
+    window.metaidwallet.removeListener('accountsChanged');
+    window.metaidwallet.removeListener('networkChanged');
   };
 
   const onWalletConnectStart = async () => {
     await checkMetaletInstalled();
     const _wallet = await MetaletWalletForBtc.create();
+
     await conirmMetaletTestnet();
     if (isNil(_wallet?.address)) {
       toast.warn(errors.NO_METALET_LOGIN);
       throw new Error(errors.NO_METALET_LOGIN);
     }
+
+    // add event listenr
+    window.metaidwallet.on('accountsChanged', () => {
+      onLogout();
+      toast.warn(
+        'Wallet Account Changed ---- You have been automatically logged out of your current BitBuzz account. Please login again...'
+      );
+    });
+    window.metaidwallet.on('networkChanged', (network: string) => {
+      console.log('network', network);
+      if (network !== 'testnet') {
+        onLogout();
+        toast.warn(
+          'Wallet Network Changed ---- You have been automatically logged out of your current BitBuzz account. Please Switch to Testnet login again...'
+        );
+      }
+    });
+    window.addEventListener('beforeunload', (e) => {
+      const confirmMessage = 'oos';
+      e.returnValue = confirmMessage;
+      return confirmMessage;
+    });
+    //////////////////////////
     const _btcConnector: BtcConnector = await btcConnect(_wallet);
-    console.log('btc connector', _wallet);
 
     setBtcConnector(_btcConnector as BtcConnector);
 
@@ -65,29 +88,26 @@ function App() {
       console.log('your btc address: ', _btcConnector.address);
     }
   };
-  const queryClient = useQueryClient();
-  const userInfo = useAtomValue(userInfoAtom);
-  const connected = useAtomValue(connectedAtom);
-  const buzzEntity = useAtomValue(buzzEntityAtom);
-  const handleTest = async () => {
-    console.log('connected', connected);
-    console.log('userinfo', userInfo);
-    console.log('buzzEntity', buzzEntity);
-    console.log('btcConnector', btcConnector);
-    console.log('buzzentity res', await btcConnector!.use('buzz'));
-  };
+
+  // const handleTest = async () => {
+  //   console.log('connected', connected);
+  //   console.log('userinfo', userInfo);
+  //   console.log('buzzEntity', buzzEntity);
+  //   console.log('btcConnector', btcConnector);
+  //   console.log('buzzentity res', await btcConnector!.use('buzz'));
+  // };
 
   return (
     <div className='relative'>
       <Navbar onWalletConnectStart={onWalletConnectStart} onLogout={onLogout} />
 
       <div className='container pt-[100px] bg-[black] text-white h-screen overflow-auto'>
-        <button
+        {/* <button
           className='btn btn-active btn-accent text-[blue] absolute top-18 left-2'
           onClick={handleTest}
         >
           Test Button
-        </button>
+        </button> */}
         <Routes>
           <Route
             path='/'

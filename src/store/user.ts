@@ -1,6 +1,5 @@
 import { type BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
 
 export type UserInfo = {
   number: number;
@@ -13,12 +12,9 @@ export type UserInfo = {
   unconfirmed: string;
 };
 
-export const connectedAtom = atomWithStorage('connected', false);
-export const btcConnectorAtom = atomWithStorage<BtcConnector | null>(
-  'btcConnector',
-  null
-);
-export const userInfoAtom = atomWithStorage<UserInfo | null>('userInfo', null);
+export const connectedAtom = atom(false);
+export const btcConnectorAtom = atom<BtcConnector | null>(null);
+export const userInfoAtom = atom<UserInfo | null>(null);
 // export const userInfoAtom = atom<UserInfo | null>(null);
 /**
  * unisat account stuff

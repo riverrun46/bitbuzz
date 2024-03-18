@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface Window {
+  removeEventListener: any;
   metaidwallet: {
+    on: any;
+    removeListener: any;
     getXPublicKey: () => Promise<string>;
     connect: () => Promise<{ address: string }>;
     disconnect: () => Promise<void>;

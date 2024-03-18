@@ -54,7 +54,11 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
     >
       <EditMetaIdInfoForm
         onSubmit={handleEditMetaID}
-        initialValues={{ name: userInfo?.name, bio: userInfo?.bio }}
+        initialValues={{
+          name: userInfo?.name,
+          bio: userInfo?.bio,
+          avatar: userInfo?.avatar ?? undefined,
+        }}
       />
     </LoadingOverlay>
   );

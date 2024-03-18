@@ -154,7 +154,6 @@ const BuzzList = () => {
       return nextPage;
     },
   });
-  console.log('buzz data', data);
   const buzzes = data?.pages.map((pins: Pin[] | null) =>
     (pins ?? []).map((pin) => {
       return (
