@@ -178,13 +178,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             className='flex gap-2 items-center'
             onClick={() => {
               window.open(
-                `https://mempool.space/zh/testnet/tx/${buzzItem.rootTxId}`,
+                `https://mempool.space/zh/testnet/tx/${buzzItem.genesisTransaction}`,
                 '_blank'
               );
             }}
           >
             <LucideLink size={12} />
-            <div>{buzzItem.rootTxId.slice(0, 8) + '...'}</div>
+            <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
           </div>
           <div>
             {dayjs.unix(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}

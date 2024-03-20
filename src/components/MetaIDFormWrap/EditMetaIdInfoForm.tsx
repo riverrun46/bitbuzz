@@ -8,7 +8,7 @@ import { image2Attach } from '../../utils/file';
 import { MetaidUserInfo } from './CreateMetaIDFormWrap';
 import { useEffect } from 'react';
 
-export type UserInfo = {
+export type FormUserInfo = {
   name: string;
   avatar: FileList;
   bio?: string;
@@ -16,11 +16,7 @@ export type UserInfo = {
 
 type IProps = {
   onSubmit: (userInfo: MetaidUserInfo) => void;
-  initialValues?: {
-    name?: string;
-    bio?: string | undefined;
-    avatar?: string | undefined;
-  };
+  initialValues?: MetaidUserInfo;
 };
 
 const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
@@ -30,7 +26,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
     formState: { errors },
     setValue,
     watch,
-  } = useForm<UserInfo>({
+  } = useForm<FormUserInfo>({
     defaultValues: {
       name: initialValues?.name ?? '',
       bio: initialValues?.bio ?? '',
@@ -47,7 +43,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
   const avatar = watch('avatar');
 
   const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
-  const onCreateSubmit: SubmitHandler<UserInfo> = async (data) => {
+  const onCreateSubmit: SubmitHandler<FormUserInfo> = async (data) => {
     const submitAvatar =
       !isNil(data?.avatar) && data.avatar.length !== 0
         ? await image2Attach(data.avatar)

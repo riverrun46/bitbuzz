@@ -10,7 +10,12 @@ import { MetaletWalletForBtc, btcConnect } from '@metaid/metaid';
 import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 
 import { useAtom, useSetAtom } from 'jotai';
-import { btcConnectorAtom, connectedAtom, userInfoAtom } from './store/user';
+import {
+  btcConnectorAtom,
+  connectedAtom,
+  userInfoAtom,
+  walletAtom,
+} from './store/user';
 import { buzzEntityAtom } from './store/buzz';
 import { errors } from './utils/errors';
 import { isNil } from 'ramda';
@@ -20,6 +25,7 @@ import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 
 function App() {
   const setConnected = useSetAtom(connectedAtom);
+  const setWallet = useSetAtom(walletAtom);
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
   const setBuzzEntity = useSetAtom(buzzEntityAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
@@ -36,7 +42,7 @@ function App() {
   const onWalletConnectStart = async () => {
     await checkMetaletInstalled();
     const _wallet = await MetaletWalletForBtc.create();
-
+    setWallet(_wallet);
     await conirmMetaletTestnet();
     if (isNil(_wallet?.address)) {
       toast.warn(errors.NO_METALET_LOGIN);
