@@ -11,7 +11,7 @@
 		"data": "npx json-server --watch db.json --port 3000 --delay 1500"
 	},
 	"dependencies": {
-		"@metaid/metaid": "^0.6.2",
+		"@metaid/metaid": "^0.6.6",
 		"@tanstack/react-query": "^5.13.4",
 		"@tanstack/react-query-devtools": "^5.13.5",
 		"axios": "^1.6.7",
