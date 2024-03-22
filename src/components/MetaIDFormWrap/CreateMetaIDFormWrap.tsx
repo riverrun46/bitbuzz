@@ -59,7 +59,7 @@ const CreateMetaIDFormWrap = ({
 	};
 
 	return (
-		<LoadingOverlay active={isCreating} spinner text="MetaID is Being Created...">
+		<LoadingOverlay active={isCreating} spinner text="Creating MetaID...">
 			<CreateMetaIdInfoForm onSubmit={handleCreateMetaID} />
 		</LoadingOverlay>
 	);

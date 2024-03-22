@@ -70,7 +70,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 	};
 
 	return (
-		<LoadingOverlay active={isEditing} spinner text="Your Profile is Being Updated...">
+		<LoadingOverlay active={isEditing} spinner text="Updating profile...">
 			<EditMetaIdInfoForm onSubmit={handleEditMetaID} initialValues={userInfoStartValues} />
 		</LoadingOverlay>
 	);
