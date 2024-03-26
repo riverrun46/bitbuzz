@@ -25,7 +25,7 @@ const CreateMetaIDFormWrap = ({
 	const [isCreating, setIsCreating] = useState(false);
 	const wallet = useAtomValue(walletAtom);
 	const handleCreateMetaID = async (userInfo: MetaidUserInfo) => {
-		console.log("userInfo", userInfo);
+		// console.log("userInfo", userInfo);
 		console.log(
 			"wallet balance",
 

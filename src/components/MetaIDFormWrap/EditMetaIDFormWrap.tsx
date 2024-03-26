@@ -39,7 +39,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 	}, [userInfo]);
 
 	const queryClient = useQueryClient();
-	console.log("userInfo", userInfo);
+	// console.log("userInfo", userInfo);
 	const handleEditMetaID = async (userInfo: MetaidUserInfo) => {
 		setIsEditing(true);
 

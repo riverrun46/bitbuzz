@@ -107,9 +107,9 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 
 					{!isNil(avatar) && avatar.length !== 0 ? (
 						<img
-							className="image self-center"
-							height={"150px"}
-							width={"150px"}
+							className="image self-center rounded-full"
+							height={"100px"}
+							width={"100px"}
 							src={filesPreview[0]}
 							alt=""
 						/>
