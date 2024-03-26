@@ -32,7 +32,7 @@ export async function getPinDetailByPid({
 	pid: string;
 	network?: "livenet" | "testnet";
 }): Promise<Pin[] | null> {
-	const url = `${BASE_METAID_TEST_URL}/api/btc/pin/${pid}`;
+	const url = `${BASE_METAID_TEST_URL}/api/pin/${pid}`;
 
 	try {
 		const data = await axios.get(url).then((res) => res.data);

@@ -50,7 +50,7 @@ export async function fetchCurrentBuzzLikes(pinId: string): Promise<LikeRes[] | 
 		sort: [],
 	};
 
-	// const response = await fetch(`https://man-test.metaid.io/api/btc/generalQuery`, {
+	// const response = await fetch(`https://man-test.metaid.io/api/generalQuery`, {
 	// 	method: "POST",
 	// 	headers: {
 	// 		"Content-Type": "application/json",
@@ -61,7 +61,7 @@ export async function fetchCurrentBuzzLikes(pinId: string): Promise<LikeRes[] | 
 
 	try {
 		const data = await axios
-			.post(`https://man-test.metaid.io/api/btc/generalQuery`, body)
+			.post(`https://man-test.metaid.io/api/generalQuery`, body)
 			.then((res) => res.data);
 		return data.data;
 	} catch (error) {
