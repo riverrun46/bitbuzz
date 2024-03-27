@@ -38,7 +38,7 @@ const CreateMetaIDFormWrap = ({
 			console.log("create metaid error ", "message", TypeError(error).message);
 			const errorMessage = TypeError(error).message;
 
-			const toastMessage = errorMessage.includes("Cannot read properties of undefined")
+			const toastMessage = errorMessage?.includes("Cannot read properties of undefined")
 				? "User Canceled"
 				: errorMessage;
 			toast.error(toastMessage);

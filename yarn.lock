@@ -1303,10 +1303,10 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@^0.6.8":
-  version "0.6.8"
-  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-0.6.8.tgz#e0fc5c3deb59c070dd1e17f043affe28388eb1e5"
-  integrity sha512-11+ged7ZF3bk0zPl+wFHeQICRc3aefI5lheP+BD3EK6AZpKUpNmJ6UILuz6dZ2qvQOqgJh5EMnV5JR7dC9feTQ==
+"@metaid/metaid@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-0.7.2.tgz#f74124a4f94389fcea98da5400bff04f62f39bbf"
+  integrity sha512-QAhAY5ZSz90oTque9DmgmIAbK9a5PmC6z8R6RoKlTZATewiF89HSgLpymiVF6S3tmUHohckOKGPtwi4Dxnw0Iw==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"
@@ -1320,7 +1320,6 @@
     dayjs "^1.11.9"
     meta-contract "^0.3.35"
     ramda "^0.29.1"
-    tiny-secp256k1 "^2.2.3"
     uuid "^9.0.1"
 
 "@noble/ed25519@^1.7.3":
@@ -6039,13 +6038,6 @@ timers-browserify@^2.0.4:
   integrity sha512-9phl76Cqm6FhSX9Xe1ZUAMLtm1BLkKj2Qd5ApyWkXzsMRaA7dgr81kf4wJmQf/hAvg8EEyJxDo3du/0KlhPiKQ==
   dependencies:
     setimmediate "^1.0.4"
-
-tiny-secp256k1@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.npmjs.org/tiny-secp256k1/-/tiny-secp256k1-2.2.3.tgz#fe1dde11a64fcee2091157d4b78bcb300feb9b65"
-  integrity sha512-SGcL07SxcPN2nGKHTCvRMkQLYPSoeFcvArUSCYtjVARiFAWU44cCIqYS0mYAU6nY7XfvwURuTIGo2Omt3ZQr0Q==
-  dependencies:
-    uint8array-tools "0.0.7"
 
 tmp@^0.0.33:
   version "0.0.33"

@@ -75,7 +75,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const handleLike = async (pinId: string) => {
 		await checkMetaidInit(userInfo!);
 		if (isLikeByCurrentUser) {
-			toast.warn("You have already liked that buzz...");
+			toast.error("You have already liked that buzz...", {
+				className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
+			});
 			return;
 		}
 
@@ -99,11 +101,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		} catch (error) {
 			console.log("error", error);
 			const errorMessage = (error as any)?.message;
-			const toastMessage = errorMessage.includes("Cannot read properties of undefined")
+			const toastMessage = errorMessage?.includes("Cannot read properties of undefined")
 				? "User Canceled"
 				: errorMessage;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			toast.warn(toastMessage);
+			toast.error(toastMessage, {
+				className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
+			});
 		}
 	};
 

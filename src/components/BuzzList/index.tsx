@@ -128,7 +128,7 @@ const BuzzList = () => {
 	const { ref, inView } = useInView();
 
 	const buzzEntity = useAtomValue(buzzEntityAtom);
-	console.log("buzzEntity", !isNil(buzzEntity), buzzEntity);
+	// console.log("buzzEntity", !isNil(buzzEntity), buzzEntity);
 	// const [showNewBuzz, setShowNewBuzz] = useState(true);
 
 	const {
@@ -167,7 +167,7 @@ const BuzzList = () => {
 
 	useEffect(() => {
 		if (inView && hasNextPage) {
-			console.log("Fire!");
+			// console.log("Fire!");
 			fetchNextPage();
 		}
 	}, [inView, hasNextPage, fetchNextPage]);

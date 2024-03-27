@@ -46,10 +46,12 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 		const res = await btcConnector.updatUserInfo({ ...userInfo }).catch((error) => {
 			console.log("error", error);
 			const errorMessage = (error as any)?.message;
-			const toastMessage = errorMessage.includes("Cannot read properties of undefined")
+			const toastMessage = errorMessage?.includes("Cannot read properties of undefined")
 				? "User Canceled"
 				: errorMessage;
-			toast.warn(toastMessage);
+			toast.error(toastMessage, {
+				className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
+			});
 			setIsEditing(false);
 			setUserInfoStartValues(userInfoStartValues);
 			//   console.log('error get user', await btcConnector.getUser());
