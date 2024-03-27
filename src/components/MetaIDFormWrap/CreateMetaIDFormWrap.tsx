@@ -48,7 +48,11 @@ const CreateMetaIDFormWrap = ({
 		if (isNil(res?.metaid)) {
 			toast.error("Create Failed");
 		} else {
-			toast.success("Successfully created!Now you can connect your wallet again!");
+			// toast.success("Successfully created!Now you can connect your wallet again!");
+			const success_modal = document.getElementById(
+				"create_metaid_success_modal"
+			) as HTMLDialogElement;
+			success_modal.showModal();
 		}
 
 		setIsCreating(false);

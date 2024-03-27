@@ -104,7 +104,11 @@ function App() {
 	// 	// console.log('buzzEntity', buzzEntity);
 	// 	// console.log('btcConnector', btcConnector);
 	// 	// console.log('buzzentity res', await btcConnector!.use('buzz'));
-	// 	toast.success("create buzz successfully");
+	// 	// toast.success("create buzz successfully");
+	// 	const success_modal = document.getElementById(
+	// 		"create_metaid_success_modal"
+	// 	) as HTMLDialogElement;
+	// 	success_modal.showModal();
 	// };
 
 	return (

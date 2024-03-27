@@ -26,7 +26,7 @@ const Home = ({ onWalletConnectStart }: IProps) => {
 				alt="Picture of the home"
 				className="absolute top-[10rem]"
 			/>
-			<div className="flex flex-col items-center mt-[12rem]">
+			<div className="flex flex-col items-center mt-[2rem]">
 				<div className="text-main font-['impact'] text-[120px]">BIT DID</div>
 				<div className="text-[white]">Claim your DID on bitcoin</div>
 				<div
