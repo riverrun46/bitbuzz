@@ -145,10 +145,7 @@ function App() {
 					Test Button
 				</button> */}
         <Routes>
-          <Route
-            path='/'
-            element={<Home onWalletConnectStart={onWalletConnectStart} />}
-          />
+          <Route path='/' element={<Home />} />
           <Route path='/buzz/:id' element={<Buzz />} />
           <Route path='/buzz/:id/edit' element={<EditBuzz />} />
         </Routes>
