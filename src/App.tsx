@@ -23,6 +23,7 @@ import { isNil } from 'ramda';
 import { checkMetaletInstalled, conirmMetaletTestnet } from './utils/wallet';
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
+import { useEffect } from 'react';
 
 function App() {
   const setConnected = useSetAtom(connectedAtom);
@@ -64,7 +65,7 @@ function App() {
         }
       );
     });
-    window.metaidwallet.on('networkChanged', (network: string) => {
+    window.metaidwallet.on('networkChanged', async (network: string) => {
       console.log('network', network);
       if (network !== 'testnet') {
         onLogout();
@@ -75,6 +76,7 @@ function App() {
               '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
           }
         );
+        await window.metaidwallet.switchNetwork('testnet');
       }
     });
     window.addEventListener('beforeunload', (e) => {
@@ -82,6 +84,7 @@ function App() {
       e.returnValue = confirmMessage;
       return confirmMessage;
     });
+
     //////////////////////////
     const _btcConnector: BtcConnector = await btcConnect(_wallet);
 
@@ -106,6 +109,16 @@ function App() {
       console.log('your btc address: ', _btcConnector.address);
     }
   };
+
+  const getBuzzEntity = async () => {
+    const _btcConnector: BtcConnector = await btcConnect();
+    setBtcConnector(_btcConnector);
+    setBuzzEntity(await _btcConnector.use('buzz'));
+  };
+
+  useEffect(() => {
+    getBuzzEntity();
+  }, []);
 
   // const handleTest = async () => {
   // 	// console.log('connected', connected);

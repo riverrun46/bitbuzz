@@ -8,6 +8,7 @@ interface Window {
     connect: () => Promise<{ address: string }>;
     disconnect: () => Promise<void>;
     getNetwork: () => Promise<{ network: string }>;
+    switchNetwork: (network: string) => Promise<void>;
     btc: {
       signPsbt: ({ psbtHex: string, options: any }) => Promise<string>;
       signMessage: (msg: string) => Promise<string>;

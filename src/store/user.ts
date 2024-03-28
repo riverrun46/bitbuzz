@@ -6,6 +6,9 @@ export type UserInfo = {
   number: number;
   rootTxId: string;
   name: string;
+  nameId: string;
+  avatarId: string;
+  bioId: string;
   address: string;
   avatar: string | null;
   bio: string;

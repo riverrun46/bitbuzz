@@ -3,8 +3,9 @@
 import { Image } from 'lucide-react';
 import { SubmitHandler, UseFormReturn } from 'react-hook-form';
 import cls from 'classnames';
-import { IsEncrypt } from '../../utils/file';
-import { isNil } from 'ramda';
+import { IsEncrypt, image2Attach } from '../../utils/file';
+import { isEmpty, isNil, sum } from 'ramda';
+import { useEffect, useState } from 'react';
 
 export interface AttachmentItem {
   fileName: string;
@@ -61,7 +62,21 @@ const BuzzForm = ({
     watch,
   } = buzzFormHandle;
   const files = watch('images');
+  const content = watch('content');
+  const [gas, setGas] = useState<null | number>(null);
 
+  const getGas = async () => {
+    const fileArr =
+      !isNil(files) && files.length !== 0 ? await image2Attach(files) : [];
+    const fileGas = isEmpty(fileArr) ? 0 : sum(fileArr.map((d) => d.size)) * 2;
+    const contentGas = content.length * 2;
+    setGas(fileGas + contentGas);
+  };
+
+  useEffect(() => {
+    getGas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files, content]);
   // const [filesPreview, setFilesPreview] = useImagesPreview(files);
 
   // const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
@@ -139,6 +154,12 @@ const BuzzForm = ({
 					</select>
 				</div>
 			</div> */}
+      <div className='flex items-center gap-2'>
+        <div className='text-white'>Realtime Gas Fee Estimated : </div>
+        <div className='text-main'>
+          {isNil(gas) ? 'data is empty' : gas + ' sats'}
+        </div>
+      </div>
       <button
         className='btn btn-primary btn-sm rounded-full font-medium w-[80px] flex self-center'
         type='submit'
