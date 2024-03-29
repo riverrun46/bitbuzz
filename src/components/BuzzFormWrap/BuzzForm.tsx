@@ -67,9 +67,9 @@ const BuzzForm = ({
 
   const getGas = async () => {
     const fileArr =
-      !isNil(files) && files.length !== 0 ? await image2Attach(files) : [];
+      !isNil(files) && files?.length !== 0 ? await image2Attach(files) : [];
     const fileGas = isEmpty(fileArr) ? 0 : sum(fileArr.map((d) => d.size)) * 2;
-    const contentGas = content.length * 2;
+    const contentGas = (content?.length ?? 0) * 2;
     setGas(fileGas + contentGas);
   };
 

@@ -47,9 +47,9 @@ const CreateMetaIdInfoForm = ({
 
   const getGas = async () => {
     const ava =
-      !isNil(avatar) && avatar.length !== 0 ? await image2Attach(avatar) : [];
+      !isNil(avatar) && avatar?.length !== 0 ? await image2Attach(avatar) : [];
     const avaGas = isEmpty(ava) ? 0 : ava[0].size * 2;
-    const nameGas = name.length * 2;
+    const nameGas = (name?.length ?? 0) * 2;
     setGas(avaGas + nameGas);
   };
 
