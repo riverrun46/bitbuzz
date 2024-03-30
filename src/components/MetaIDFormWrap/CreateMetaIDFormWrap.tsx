@@ -39,11 +39,7 @@ const CreateMetaIDFormWrap = ({
       .createMetaid({ ...userInfo })
       .catch((error: any) => {
         setIsCreating(false);
-        console.log(
-          'create metaid error ',
-          'message',
-          TypeError(error).message
-        );
+
         const errorMessage = TypeError(error).message;
 
         const toastMessage = errorMessage?.includes(
