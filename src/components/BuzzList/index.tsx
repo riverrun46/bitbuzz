@@ -1,4 +1,4 @@
-import { Sparkle } from "lucide-react";
+import { RotateCw, Sparkle } from "lucide-react";
 import { useEffect, useState } from "react";
 // import { useState } from "react";
 // import cls from "classnames";
@@ -53,17 +53,21 @@ const BuzzList = () => {
 	// const [showNewBuzz, setShowNewBuzz] = useState(true);
 
 	const getTotal = async (buzzEntity: BtcEntity) => {
-		setTotal(await buzzEntity.calcPins());
+		setTotal(await buzzEntity?.calcPins());
 	};
 
 	useEffect(() => {
-		getTotal(buzzEntity!);
+		if (!isNil(buzzEntity)) {
+			getTotal(buzzEntity!);
+		}
 	}, [buzzEntity]);
 
 	const {
 		data,
 		isLoading,
 		// isFetching,
+		isRefetching,
+		refetch,
 		fetchNextPage,
 		isFetchingNextPage,
 		hasNextPage,
@@ -103,9 +107,19 @@ const BuzzList = () => {
 
 	return (
 		<div>
-			<div className="flex gap-2 items-center place-content-center mt-0">
+			<div className="flex gap-2 items-center place-content-center mt-0  ">
 				<Sparkle className="text-main" />
+
 				<div className="text-white text-[36px] font-['Impact']">{"What's New Today"}</div>
+				{!isRefetching ? (
+					<RotateCw
+						className="text-gray absolute right-0 cursor-pointer"
+						onClick={() => refetch()}
+					/>
+				) : (
+					<div className="loading loading-dots absolute right-0 text-gray text-sm "></div>
+				)}
+
 				<Sparkle className="text-main" />
 			</div>
 

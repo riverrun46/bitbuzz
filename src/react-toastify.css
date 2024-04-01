@@ -58,7 +58,7 @@
 	left: 50%;
 	transform: translateX(-50%);
 }
-.Toastify__toast-container--top-right {
+.Toastify__toast-container--top-left {
 	top: 1em;
 	right: 1em;
 }
@@ -85,7 +85,7 @@
 	}
 	.Toastify__toast-container--top-left,
 	.Toastify__toast-container--top-center,
-	.Toastify__toast-container--top-right {
+	.Toastify__toast-container--top-left {
 		top: 0;
 		transform: translateX(0);
 	}
@@ -444,7 +444,7 @@
 .Toastify__bounce-enter--bottom-left {
 	animation-name: Toastify__bounceInLeft;
 }
-.Toastify__bounce-enter--top-right,
+.Toastify__bounce-enter--top-left,
 .Toastify__bounce-enter--bottom-right {
 	animation-name: Toastify__bounceInRight;
 }
@@ -459,7 +459,7 @@
 .Toastify__bounce-exit--bottom-left {
 	animation-name: Toastify__bounceOutLeft;
 }
-.Toastify__bounce-exit--top-right,
+.Toastify__bounce-exit--top-left,
 .Toastify__bounce-exit--bottom-right {
 	animation-name: Toastify__bounceOutRight;
 }
@@ -617,7 +617,7 @@
 .Toastify__slide-enter--bottom-left {
 	animation-name: Toastify__slideInLeft;
 }
-.Toastify__slide-enter--top-right,
+.Toastify__slide-enter--top-left,
 .Toastify__slide-enter--bottom-right {
 	animation-name: Toastify__slideInRight;
 }
@@ -632,7 +632,7 @@
 .Toastify__slide-exit--bottom-left {
 	animation-name: Toastify__slideOutLeft;
 }
-.Toastify__slide-exit--top-right,
+.Toastify__slide-exit--top-left,
 .Toastify__slide-exit--bottom-right {
 	animation-name: Toastify__slideOutRight;
 }

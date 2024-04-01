@@ -10,13 +10,14 @@ import { buzzEntityAtom } from "../../store/buzz";
 import { useAtomValue } from "jotai";
 import { isEmpty, isNil } from "ramda";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { btcConnectorAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
 import { CreateOptions } from "@metaid/metaid/dist/core/entity/btc";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { image2Attach } from "../../utils/file";
 import useImagesPreview from "../../hooks/useImagesPreview";
+import { fetchFeeRate } from "../../api/buzz";
 const BuzzFormWrap = () => {
 	const buzzEntity = useAtomValue(buzzEntityAtom);
 	const btcConnector = useAtomValue(btcConnectorAtom);
@@ -26,8 +27,25 @@ const BuzzFormWrap = () => {
 
 	const buzzFormHandle = useForm<BuzzData>();
 	const files = buzzFormHandle.watch("images");
-	console.log(buzzFormHandle.getValues("images"));
 	const [filesPreview, setFilesPreview] = useImagesPreview(files);
+
+	const { data: feeRateData } = useQuery({
+		queryKey: ["feeRate"],
+		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
+	});
+
+	const [customFee, setCustomFee] = useState<string>("1");
+	const feeRateOptions = [
+		{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
+		{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
+		{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
+		{ name: "Custom", number: Number(customFee) },
+	];
+	const [selectFeeRate, setSelectFeeRate] = useState<{ name: string; number: number }>({
+		name: "Slow",
+		number: feeRateData?.hourFee ?? 1,
+	});
+
 	const onClearImageUploads = () => {
 		setFilesPreview([]);
 		buzzFormHandle.setValue("images", [] as any);
@@ -64,6 +82,7 @@ const BuzzFormWrap = () => {
 				const imageRes = await fileEntity.create({
 					options: fileOptions,
 					noBroadcast: "no",
+					feeRate: selectFeeRate?.number,
 				});
 
 				console.log("imageRes", imageRes);
@@ -78,6 +97,7 @@ const BuzzFormWrap = () => {
 			const createRes = await buzzEntity!.create({
 				options: [{ body: JSON.stringify(finalBody) }],
 				noBroadcast: "no",
+				feeRate: selectFeeRate?.number,
 			});
 			console.log("create res for inscribe", createRes);
 			if (!isNil(createRes?.revealTxIds[0])) {
@@ -112,6 +132,11 @@ const BuzzFormWrap = () => {
 				buzzFormHandle={buzzFormHandle}
 				onClearImageUploads={onClearImageUploads}
 				filesPreview={filesPreview}
+				customFee={customFee}
+				setSelectFeeRate={setSelectFeeRate}
+				selectFeeRate={selectFeeRate}
+				handleCustomFeeChange={setCustomFee}
+				feeRateOptions={feeRateOptions}
 			/>
 		</LoadingOverlay>
 	);

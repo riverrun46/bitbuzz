@@ -1,14 +1,14 @@
 import { useAtomValue } from "jotai";
 import BuzzList from "../components/BuzzList";
-import { userInfoAtom } from "../store/user";
-import { checkMetaidInitStillPool } from "../utils/wallet";
-import { isNil } from "ramda";
+import { initStillPoolAtom, userInfoAtom } from "../store/user";
+
 // import RecommendUsers from "../components/RecommendUsers";
 
 const Home = () => {
 	const userInfo = useAtomValue(userInfoAtom);
 
-	const stillPool = isNil(userInfo) ? false : checkMetaidInitStillPool(userInfo);
+	const stillPool = useAtomValue(initStillPoolAtom); //isNil(userInfo) ? false : checkMetaidInitStillPool(userInfo);
+
 	return (
 		<main className="relative">
 			{/* <RecommendUsers /> */}

@@ -126,10 +126,10 @@ function App() {
 	// };
 
 	return (
-		<div className="relative">
+		<div className="relative overflow-auto">
 			<Navbar onWalletConnectStart={onWalletConnectStart} onLogout={onLogout} />
 
-			<div className="container pt-[100px] bg-[black] text-white h-screen overflow-auto">
+			<div className="container pt-[100px] bg-[black] text-white h-screen">
 				{/* <button
 					className="btn btn-active btn-accent text-[blue] absolute top-18 left-2"
 					onClick={handleTest}
@@ -143,11 +143,11 @@ function App() {
 				</Routes>
 			</div>
 			<ToastContainer
-				position="top-right"
+				position="top-left"
 				toastStyle={{
 					position: "absolute",
 					top: "80px",
-					right: "40px",
+					left: "120px",
 					width: "380px",
 				}}
 				autoClose={5000}
