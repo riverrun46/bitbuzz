@@ -38,7 +38,7 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
 			</dialog>
 
 			<dialog id="create_metaid_success_modal" className="modal">
-				<div className="modal-box bg-[#191C20] py-5 w-[480px] h-[360px]">
+				<div className="modal-box bg-[#191C20] py-5  w-[50%]">
 					<form method="dialog">
 						{/* if there is a button in form, it will close the modal */}
 						{/* <button

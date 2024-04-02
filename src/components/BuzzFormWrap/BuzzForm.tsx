@@ -5,6 +5,7 @@ import { SubmitHandler, UseFormReturn } from "react-hook-form";
 import cls from "classnames";
 import { IsEncrypt } from "../../utils/file";
 import { isNil } from "ramda";
+import CustomFeerate from "../CustomFeerate";
 
 export interface AttachmentItem {
 	fileName: string;
@@ -161,55 +162,14 @@ const BuzzForm = ({
 				</div>
 			</div> */}
 
-			<div className="grid grid-cols-2 gap-6">
-				{feeRateOptions.map((d) => {
-					return (
-						<div
-							onClick={() => setSelectFeeRate(d)}
-							key={d.name}
-							className={cls(
-								"shadow shadow-gray w-[220px] h-[80px] rounded-md p-2 cursor-pointer  bg-[#191C20]  hover:bg-gray/40  hover:border-main",
-								{
-									"bg-gray/40 border  border-main": d.name === selectFeeRate.name,
-								}
-							)}
-						>
-							<div className="flex flex-col items-center gap-2">
-								<div className="text-white">{d.name}</div>
-								<div className="flex items-center gap-2">
-									{d.name === "Custom" ? (
-										<input
-											inputMode="numeric"
-											type="number"
-											min={0}
-											max={"100"}
-											style={{
-												appearance: "textfield",
-											}}
-											aria-hidden
-											className="w-[60px] input input-sm  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none"
-											step={1}
-											value={customFee}
-											onChange={(e) => {
-												const v = e.currentTarget.value;
-												handleCustomFeeChange(v);
-											}}
-										/>
-									) : (
-										<div className="text-[16px] text-main">{d.number}</div>
-									)}
-									<div className="text-gray">sats/vB</div>
-								</div>
-							</div>
-						</div>
-					);
-				})}
-			</div>
+			<CustomFeerate
+				customFee={customFee}
+				setSelectFeeRate={setSelectFeeRate}
+				selectFeeRate={selectFeeRate}
+				handleCustomFeeChange={handleCustomFeeChange}
+				feeRateOptions={feeRateOptions}
+			/>
 
-			{/* <div className="flex items-center gap-2">
-				<div className="text-white">Realtime Gas Fee Estimated : </div>
-				<div className="text-main">{isNil(gas) ? "data is empty" : gas + " sats"}</div>
-			</div> */}
 			<button
 				className="btn btn-primary btn-sm rounded-full font-medium w-[80px] flex self-center"
 				type="submit"

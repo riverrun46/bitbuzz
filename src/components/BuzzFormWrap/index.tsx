@@ -9,7 +9,7 @@ import LoadingOverlay from "react-loading-overlay-ts";
 import { buzzEntityAtom } from "../../store/buzz";
 import { useAtomValue } from "jotai";
 import { isEmpty, isNil } from "ramda";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { btcConnectorAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
@@ -35,12 +35,15 @@ const BuzzFormWrap = () => {
 	});
 
 	const [customFee, setCustomFee] = useState<string>("1");
-	const feeRateOptions = [
-		{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
-		{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
-		{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
-		{ name: "Custom", number: Number(customFee) },
-	];
+
+	const feeRateOptions = useMemo(() => {
+		return [
+			{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
+			{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
+			{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
+			{ name: "Custom", number: Number(customFee) },
+		];
+	}, [feeRateData, customFee]);
 	const [selectFeeRate, setSelectFeeRate] = useState<{ name: string; number: number }>({
 		name: "Slow",
 		number: feeRateData?.hourFee ?? 1,
@@ -93,6 +96,7 @@ const BuzzFormWrap = () => {
 			await sleep(5000);
 
 			console.log("finalBody", finalBody);
+			console.log("selectFeeRate", selectFeeRate);
 
 			const createRes = await buzzEntity!.create({
 				options: [{ body: JSON.stringify(finalBody) }],

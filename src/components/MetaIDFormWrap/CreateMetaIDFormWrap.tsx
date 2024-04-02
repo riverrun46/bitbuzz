@@ -13,6 +13,7 @@ export type MetaidUserInfo = {
 	name: string;
 	bio?: string;
 	avatar?: string;
+	feeRate?: number;
 };
 
 const CreateMetaIDFormWrap = ({

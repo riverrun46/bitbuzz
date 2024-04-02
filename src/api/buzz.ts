@@ -28,7 +28,7 @@ export async function fetchBuzzs({
 	limit: number;
 }): Promise<Pin[] | null> {
 	const response = await buzzEntity.getPins({ page, limit });
-	console.log("response", response);
+
 	return response;
 }
 
