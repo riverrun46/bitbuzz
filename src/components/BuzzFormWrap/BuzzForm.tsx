@@ -161,14 +161,14 @@ const BuzzForm = ({
 				</div>
 			</div> */}
 
-			<div className="flex items-center justify-between">
+			<div className="grid grid-cols-2 gap-6">
 				{feeRateOptions.map((d) => {
 					return (
 						<div
 							onClick={() => setSelectFeeRate(d)}
 							key={d.name}
 							className={cls(
-								"shadow shadow-gray w-[100px] rounded-md p-2 cursor-pointer  bg-[#191C20]  hover:bg-gray/40  hover:border-main",
+								"shadow shadow-gray w-[220px] h-[80px] rounded-md p-2 cursor-pointer  bg-[#191C20]  hover:bg-gray/40  hover:border-main",
 								{
 									"bg-gray/40 border  border-main": d.name === selectFeeRate.name,
 								}
@@ -177,7 +177,27 @@ const BuzzForm = ({
 							<div className="flex flex-col items-center gap-2">
 								<div className="text-white">{d.name}</div>
 								<div className="flex items-center gap-2">
-									<div className="text-[16px] text-main">{d.number}</div>
+									{d.name === "Custom" ? (
+										<input
+											inputMode="numeric"
+											type="number"
+											min={0}
+											max={"100"}
+											style={{
+												appearance: "textfield",
+											}}
+											aria-hidden
+											className="w-[60px] input input-sm  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none"
+											step={1}
+											value={customFee}
+											onChange={(e) => {
+												const v = e.currentTarget.value;
+												handleCustomFeeChange(v);
+											}}
+										/>
+									) : (
+										<div className="text-[16px] text-main">{d.number}</div>
+									)}
 									<div className="text-gray">sats/vB</div>
 								</div>
 							</div>
@@ -185,25 +205,6 @@ const BuzzForm = ({
 					);
 				})}
 			</div>
-			{selectFeeRate.name === "Custom" && (
-				<div className="flex items-center gap-2">
-					<input
-						type="range"
-						min={0}
-						max="100"
-						value={customFee}
-						onChange={(e) => handleCustomFeeChange(e.currentTarget.value)}
-						className="w-[95%] range range-md [--range-shdw:#DAF773] bg-gray/20"
-					/>
-					<input
-						type="number"
-						className="w-[80px] input input-sm bg-gray/50 !pr-0 text-white focus:border-main focus:outline-none"
-						step={1}
-						value={customFee}
-						onChange={(e) => handleCustomFeeChange(e.currentTarget.value)}
-					/>
-				</div>
-			)}
 
 			{/* <div className="flex items-center gap-2">
 				<div className="text-white">Realtime Gas Fee Estimated : </div>

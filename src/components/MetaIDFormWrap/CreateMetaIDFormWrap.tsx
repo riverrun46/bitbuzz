@@ -1,84 +1,90 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import LoadingOverlay from 'react-loading-overlay-ts';
-import { useState } from 'react';
+import LoadingOverlay from "react-loading-overlay-ts";
+import { useEffect, useState } from "react";
 
-import { toast } from 'react-toastify';
-import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
-import CreateMetaIdInfoForm from './CreateMetaIdInfoForm';
-import { useAtomValue } from 'jotai';
-import { walletAtom } from '../../store/user';
-import { isNil } from 'ramda';
+import { toast } from "react-toastify";
+import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
+import CreateMetaIdInfoForm from "./CreateMetaIdInfoForm";
+import { useAtomValue } from "jotai";
+import { walletAtom } from "../../store/user";
+import { isNil } from "ramda";
 
 export type MetaidUserInfo = {
-  name: string;
-  bio?: string;
-  avatar?: string;
+	name: string;
+	bio?: string;
+	avatar?: string;
 };
 
 const CreateMetaIDFormWrap = ({
-  btcConnector,
-  onWalletConnectStart,
+	btcConnector,
+	onWalletConnectStart,
 }: {
-  btcConnector: BtcConnector;
-  onWalletConnectStart: () => void;
+	btcConnector: BtcConnector;
+	onWalletConnectStart: () => void;
 }) => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [balance, setBalance] = useState('0');
-  const wallet = useAtomValue(walletAtom);
-  const handleCreateMetaID = async (userInfo: MetaidUserInfo) => {
-    // console.log("userInfo", userInfo);
-    console.log(
-      'wallet balance',
+	const [isCreating, setIsCreating] = useState(false);
+	const [balance, setBalance] = useState("0");
+	const wallet = useAtomValue(walletAtom);
 
-      await wallet?.getBalance()
-    );
-    setBalance(((await wallet?.getBalance())?.confirmed ?? 0).toString());
-    setIsCreating(true);
+	const getBtcBalance = async () => {
+		if (!isNil(wallet)) {
+			setBalance(((await wallet?.getBalance())?.confirmed ?? 0).toString());
+		}
+	};
 
-    const res = await btcConnector
-      .createMetaid({ ...userInfo })
-      .catch((error: any) => {
-        setIsCreating(false);
+	useEffect(() => {
+		getBtcBalance();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [wallet]);
 
-        const errorMessage = TypeError(error).message;
+	const handleCreateMetaID = async (userInfo: MetaidUserInfo) => {
+		// console.log("userInfo", userInfo);
+		console.log(
+			"wallet balance",
 
-        const toastMessage = errorMessage?.includes(
-          'Cannot read properties of undefined'
-        )
-          ? 'User Canceled'
-          : errorMessage;
-        toast.error(toastMessage);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      });
+			await wallet?.getBalance()
+		);
+		setBalance(((await window.metaidwallet?.btc.getBalance())?.confirmed ?? 0).toString());
+		setIsCreating(true);
 
-    if (isNil(res?.metaid)) {
-      toast.error('Create Failed');
-    } else {
-      // toast.success("Successfully created!Now you can connect your wallet again!");
-      const success_modal = document.getElementById(
-        'create_metaid_success_modal'
-      ) as HTMLDialogElement;
-      success_modal.showModal();
-    }
+		const res = await btcConnector.createMetaid({ ...userInfo }).catch((error: any) => {
+			setIsCreating(false);
 
-    setIsCreating(false);
-    console.log('your metaid', btcConnector.metaid);
-    const doc_modal = document.getElementById(
-      'create_metaid_modal'
-    ) as HTMLDialogElement;
-    doc_modal.close();
-    await onWalletConnectStart();
-  };
+			const errorMessage = TypeError(error).message;
 
-  return (
-    <LoadingOverlay active={isCreating} spinner text='Creating MetaID...'>
-      <CreateMetaIdInfoForm
-        onSubmit={handleCreateMetaID}
-        address={wallet?.address ?? ''}
-        balance={balance}
-      />
-    </LoadingOverlay>
-  );
+			const toastMessage = errorMessage?.includes("Cannot read properties of undefined")
+				? "User Canceled"
+				: errorMessage;
+			toast.error(toastMessage);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		});
+
+		if (isNil(res?.metaid)) {
+			toast.error("Create Failed");
+		} else {
+			// toast.success("Successfully created!Now you can connect your wallet again!");
+			const success_modal = document.getElementById(
+				"create_metaid_success_modal"
+			) as HTMLDialogElement;
+			success_modal.showModal();
+		}
+
+		setIsCreating(false);
+		console.log("your metaid", btcConnector.metaid);
+		const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
+		doc_modal.close();
+		await onWalletConnectStart();
+	};
+
+	return (
+		<LoadingOverlay active={isCreating} spinner text="Creating MetaID...">
+			<CreateMetaIdInfoForm
+				onSubmit={handleCreateMetaID}
+				address={wallet?.address ?? ""}
+				balance={balance}
+			/>
+		</LoadingOverlay>
+	);
 };
 
 export default CreateMetaIDFormWrap;

@@ -7,10 +7,13 @@ import { fetchBuzzs } from "../../api/buzz";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { buzzEntityAtom } from "../../store/buzz";
 import { isNil } from "ramda";
 import { BtcEntity } from "@metaid/metaid/dist/core/entity/btc";
+import { userInfoAtom, walletAtom } from "../../store/user";
+import { btcConnect } from "@metaid/metaid";
+import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 // import { useCallback } from 'react';
 // // import { BuzzItem } from '../../types';
 // import { useAtom } from 'jotai';
@@ -44,7 +47,8 @@ export type Pin = {
 
 const BuzzList = () => {
 	const [total, setTotal] = useState<null | number>(null);
-
+	const setUserInfo = useSetAtom(userInfoAtom);
+	const _wallet = useAtomValue(walletAtom);
 	const navigate = useNavigate();
 	const { ref, inView } = useInView();
 
@@ -105,6 +109,15 @@ const BuzzList = () => {
 		}
 	}, [inView, hasNextPage, fetchNextPage]);
 
+	const handleRefresh = async () => {
+		refetch();
+		// const _wallet = await MetaletWalletForBtc.create();
+		const _btcConnector: BtcConnector = await btcConnect(_wallet ?? undefined);
+		const _user = await _btcConnector.getUser();
+
+		setUserInfo(_user);
+	};
+
 	return (
 		<div>
 			<div className="flex gap-2 items-center place-content-center mt-0  ">
@@ -114,7 +127,7 @@ const BuzzList = () => {
 				{!isRefetching ? (
 					<RotateCw
 						className="text-gray absolute right-0 cursor-pointer"
-						onClick={() => refetch()}
+						onClick={handleRefresh}
 					/>
 				) : (
 					<div className="loading loading-dots absolute right-0 text-gray text-sm "></div>
