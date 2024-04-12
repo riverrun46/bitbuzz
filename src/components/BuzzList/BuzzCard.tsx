@@ -8,17 +8,13 @@ import dayjs from "dayjs";
 import { Pin } from ".";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPinDetailByPid } from "../../api/pin";
-import { btcConnectorAtom, connectedAtom, userInfoAtom } from "../../store/user";
+import { btcConnectorAtom, connectedAtom, initStillPoolAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
 import CustomAvatar from "../CustomAvatar";
 // import { sleep } from '../../utils/time';
 import { toast } from "react-toastify";
 import { fetchCurrentBuzzLikes } from "../../api/buzz";
-import {
-	checkMetaidInitStillPool,
-	checkMetaletConnected,
-	checkMetaletInstalled,
-} from "../../utils/wallet";
+import { checkMetaletConnected, checkMetaletInstalled } from "../../utils/wallet";
 
 type IProps = {
 	buzzItem: Pin | undefined;
@@ -29,7 +25,8 @@ type IProps = {
 const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const connected = useAtomValue(connectedAtom);
 	const btcConnector = useAtomValue(btcConnectorAtom);
-	const userInfo = useAtomValue(userInfoAtom);
+	const stillPool = useAtomValue(initStillPoolAtom);
+
 	const queryClient = useQueryClient();
 	// console.log("buzzitem", buzzItem);
 	let summary = buzzItem!.contentSummary;
@@ -80,7 +77,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const handleLike = async (pinId: string) => {
 		await checkMetaletInstalled();
 		await checkMetaletConnected(connected);
-		const stillPool = await checkMetaidInitStillPool(userInfo!);
+		// const stillPool = await checkMetaidInitStillPool(userInfo!);
 		if (stillPool) {
 			return;
 		}

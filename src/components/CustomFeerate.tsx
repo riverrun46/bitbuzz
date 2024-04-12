@@ -37,7 +37,7 @@ const CustomFeerate = ({
 						onClick={() => setSelectFeeRate(d)}
 						key={d.name}
 						className={cls(
-							"shadow shadow-gray w-[220px] h-[80px] rounded-md p-2 cursor-pointer  bg-[#191C20]  hover:bg-gray/40  hover:border-main",
+							"shadow shadow-gray rounded-md p-2 cursor-pointer  bg-[#191C20]  hover:bg-gray/40  hover:border-main",
 							{
 								"bg-gray/40 border  border-main": d.name === selectFeeRate.name,
 							}

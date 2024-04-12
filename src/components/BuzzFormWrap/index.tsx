@@ -29,26 +29,6 @@ const BuzzFormWrap = () => {
 	const files = buzzFormHandle.watch("images");
 	const [filesPreview, setFilesPreview] = useImagesPreview(files);
 
-	const { data: feeRateData } = useQuery({
-		queryKey: ["feeRate"],
-		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
-	});
-
-	const [customFee, setCustomFee] = useState<string>("1");
-
-	const feeRateOptions = useMemo(() => {
-		return [
-			{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
-			{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
-			{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
-			{ name: "Custom", number: Number(customFee) },
-		];
-	}, [feeRateData, customFee]);
-	const [selectFeeRate, setSelectFeeRate] = useState<{ name: string; number: number }>({
-		name: "Slow",
-		number: feeRateData?.hourFee ?? 1,
-	});
-
 	const onClearImageUploads = () => {
 		setFilesPreview([]);
 		buzzFormHandle.setValue("images", [] as any);
@@ -128,7 +108,25 @@ const BuzzFormWrap = () => {
 		}
 		setIsAdding(false);
 	};
+	const { data: feeRateData } = useQuery({
+		queryKey: ["feeRate"],
+		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
+	});
 
+	const [customFee, setCustomFee] = useState<string>("1");
+
+	const feeRateOptions = useMemo(() => {
+		return [
+			{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
+			{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
+			{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
+			{ name: "Custom", number: Number(customFee) },
+		];
+	}, [feeRateData, customFee]);
+	const [selectFeeRate, setSelectFeeRate] = useState<{ name: string; number: number }>({
+		name: "Slow",
+		number: feeRateData?.hourFee ?? 1,
+	});
 	return (
 		<LoadingOverlay active={isAdding} spinner text="Creating Buzz...">
 			<BuzzForm

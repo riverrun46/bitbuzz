@@ -2,13 +2,9 @@ import { useAtomValue } from "jotai";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { connectedAtom, userInfoAtom } from "../store/user";
+import { connectedAtom, initStillPoolAtom, userInfoAtom } from "../store/user";
 
-import {
-	checkMetaidInitStillPool,
-	checkMetaletConnected,
-	checkMetaletInstalled,
-} from "../utils/wallet";
+import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 import BuzzFormWrap from "./BuzzFormWrap";
 import CustomAvatar from "./CustomAvatar";
 
@@ -20,10 +16,11 @@ type IProps = {
 const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
 	const connected = useAtomValue(connectedAtom);
 	const userInfo = useAtomValue(userInfoAtom);
+	const stillPool = useAtomValue(initStillPoolAtom);
 	const onBuzzStart = async () => {
 		await checkMetaletInstalled();
 		await checkMetaletConnected(connected);
-		const stillPool = await checkMetaidInitStillPool(userInfo!);
+		// const stillPool = await checkMetaidInitStillPool(userInfo!);
 		if (stillPool) {
 			return;
 		}
