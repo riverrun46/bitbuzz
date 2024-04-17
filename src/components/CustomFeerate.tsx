@@ -30,7 +30,7 @@ const CustomFeerate = ({
 	customFee,
 }: IProps) => {
 	return (
-		<div className="grid grid-cols-2 gap-6">
+		<div className="grid grid-cols-4 gap-2">
 			{feeRateOptions.map((d) => {
 				return (
 					<div
@@ -45,7 +45,7 @@ const CustomFeerate = ({
 					>
 						<div className="flex flex-col items-center gap-2">
 							<div className="text-white">{d.name}</div>
-							<div className="flex items-center gap-2">
+							<div className="flex items-center gap-1">
 								{d.name === "Custom" ? (
 									<input
 										inputMode="numeric"
@@ -56,7 +56,7 @@ const CustomFeerate = ({
 											appearance: "textfield",
 										}}
 										aria-hidden
-										className="w-[60px] input input-sm  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none"
+										className="w-[50px] input input-xs  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none"
 										step={1}
 										value={customFee}
 										onChange={(e) => {
@@ -66,9 +66,9 @@ const CustomFeerate = ({
 										}}
 									/>
 								) : (
-									<div className="text-[16px] text-main">{d.number}</div>
+									<div className="text-sm text-main">{d.number}</div>
 								)}
-								<div className="text-gray">sats/vB</div>
+								<div className="text-gray text-xs">sats/vB</div>
 							</div>
 						</div>
 					</div>
