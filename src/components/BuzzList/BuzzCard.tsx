@@ -160,7 +160,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 					) : (
 						<CustomAvatar userInfo={currentUserInfoData.data} />
 					)}
-
 					<div className="text-gray">
 						{isNil(currentUserInfoData?.data?.name) ||
 						isEmpty(currentUserInfoData?.data?.name)
