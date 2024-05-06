@@ -43,7 +43,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 	const handleEditMetaID = async (userInfo: MetaidUserInfo) => {
 		setIsEditing(true);
 
-		const res = await btcConnector.updatUserInfo({ ...userInfo }).catch((error) => {
+		const res = await btcConnector.updateUserInfo({ ...userInfo }).catch((error) => {
 			console.log("error", error);
 			const errorMessage = (error as any)?.message;
 			const toastMessage = errorMessage?.includes("Cannot read properties of undefined")
