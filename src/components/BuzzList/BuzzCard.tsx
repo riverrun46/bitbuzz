@@ -17,7 +17,7 @@ import { useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
-import { fetchCurrentBuzzLikes } from '../../api/buzz';
+import { fetchCurrentBuzzLikes, fetchFeeRate } from '../../api/buzz';
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
@@ -57,6 +57,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     queryKey: ['payLike', buzzItem!.id],
     queryFn: () => fetchCurrentBuzzLikes(buzzItem!.id),
   });
+
+  const { data: feeRateData } = useQuery({
+    queryKey: ['feeRate'],
+    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
+  });
+
   const isLikeByCurrentUser = (currentLikeData ?? [])?.find(
     (d) => d?.pinAddress === btcConnector?.address
   );
@@ -107,6 +113,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           },
         ],
         noBroadcast: 'no',
+        feeRate: feeRateData?.fastestFee ?? 47,
       });
       console.log('likeRes', likeRes);
       if (!isNil(likeRes?.revealTxIds[0])) {

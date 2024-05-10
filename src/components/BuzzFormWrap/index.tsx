@@ -19,15 +19,19 @@ import useImagesPreview from '../../hooks/useImagesPreview';
 import { fetchFeeRate } from '../../api/buzz';
 import { CreateOptions } from '@metaid/metaid';
 const BuzzFormWrap = () => {
+  const [isAdding, setIsAdding] = useState(false);
   const buzzEntity = useAtomValue(buzzEntityAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
 
-  const [isAdding, setIsAdding] = useState(false);
   const queryClient = useQueryClient();
 
   const buzzFormHandle = useForm<BuzzData>();
   const files = buzzFormHandle.watch('images');
   const [filesPreview, setFilesPreview] = useImagesPreview(files);
+  const { data: feeRateData } = useQuery({
+    queryKey: ['feeRate'],
+    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
+  });
 
   const onClearImageUploads = () => {
     setFilesPreview([]);
@@ -117,18 +121,14 @@ const BuzzFormWrap = () => {
     }
     setIsAdding(false);
   };
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate'],
-    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-  });
 
-  const [customFee, setCustomFee] = useState<string>('1');
+  const [customFee, setCustomFee] = useState<string>('47');
 
   const feeRateOptions = useMemo(() => {
     return [
-      { name: 'Slow', number: feeRateData?.hourFee ?? 1 },
-      { name: 'Avg', number: feeRateData?.halfHourFee ?? 1 },
-      { name: 'Fast', number: feeRateData?.fastestFee ?? 1 },
+      { name: 'Slow', number: feeRateData?.hourFee ?? 47 },
+      { name: 'Avg', number: feeRateData?.halfHourFee ?? 47 },
+      { name: 'Fast', number: feeRateData?.fastestFee ?? 47 },
       { name: 'Custom', number: Number(customFee) },
     ];
   }, [feeRateData, customFee]);

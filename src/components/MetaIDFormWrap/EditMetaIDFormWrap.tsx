@@ -8,7 +8,8 @@ import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 import { useAtom } from 'jotai';
 import { userInfoAtom } from '../../store/user';
 import EditMetaIdInfoForm from './EditMetaIdInfoForm';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { fetchFeeRate } from '../../api/buzz';
 
 export type MetaidUserInfo = {
   name: string;
@@ -31,6 +32,11 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
       avatar: userInfo?.avatar ?? undefined,
     });
 
+  const { data: feeRateData } = useQuery({
+    queryKey: ['feeRate'],
+    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
+  });
+
   useEffect(() => {
     setUserInfoStartValues({
       name: userInfo?.name ?? '',
@@ -45,7 +51,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
     setIsEditing(true);
 
     const res = await btcConnector
-      .updateUserInfo({ ...userInfo })
+      .updateUserInfo({ ...userInfo, feeRate: feeRateData?.fastestFee ?? 47 })
       .catch((error: any) => {
         console.log('error', error);
         const errorMessage = (error as any)?.message ?? error;
