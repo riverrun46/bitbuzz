@@ -1308,15 +1308,16 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@^0.9.6":
-  version "0.9.6"
-  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-0.9.6.tgz#6e4713ad36ba9aa10d5bae6dac2f56942c4fa620"
-  integrity sha512-XMEe3LyfGavq7bc6ua3ktNkBhMva6gscj02Sz+TUBYY+GfGDy66U5JIObYZTiYRxJ3K+noG3kPXyBVcYfEai/w==
+"@metaid/metaid@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.0.2.tgz#bdb18440783dba43e462e5b323e9ef9ae140bc8c"
+  integrity sha512-J4S9koCKJ9gzbZzLHMuPR1/fF/RaT5s0r5YpDcY6oPJ2581SagquR+1yvdEnqxODCylSzG60QJrKiEheu/p6Ag==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"
     "@okxweb3/crypto-lib" "^1.0.1"
     "@scure/bip39" "^1.2.2"
+    "@types/ramda" "^0.29.12"
     axios "^1.5.0"
     bip32 "^4.0.0"
     bip39 "^3.1.0"
