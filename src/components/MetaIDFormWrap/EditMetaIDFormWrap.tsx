@@ -48,7 +48,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
       .updateUserInfo({ ...userInfo })
       .catch((error: any) => {
         console.log('error', error);
-        const errorMessage = (error as any)?.message;
+        const errorMessage = (error as any)?.message ?? error;
         const toastMessage = errorMessage?.includes(
           'Cannot read properties of undefined'
         )
