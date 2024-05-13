@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const BASE_METAID_TEST_URL = `https://man-test.metaid.io`;
-const BASE_METAID_TEST_URL = `http://man.somecode.link`;
+const BASE_METAID_TEST_URL = `https://man.somecode.link`;
 
 export type Pin = {
   id: string;

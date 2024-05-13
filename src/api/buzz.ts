@@ -3,7 +3,7 @@ import axios from 'axios';
 import { type BtcEntity } from '@metaid/metaid/dist/core/entity/btc';
 import { Pin } from '../components/BuzzList';
 
-const BASE_METAID_TEST_URL = `http://man.somecode.link`;
+const BASE_METAID_TEST_URL = `https://man.somecode.link`;
 // const BASE_METAID_TEST_URL = `https://man-test.metaid.io`;
 
 // export async function fetchBuzzs(page: number): Promise<BuzzItem[]> {
