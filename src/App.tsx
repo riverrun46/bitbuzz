@@ -68,7 +68,7 @@ function App() {
     });
     window.metaidwallet.on('networkChanged', async (network: string) => {
       console.log('network', network);
-      if (network !== 'testnet') {
+      if (network !== 'regtest') {
         onLogout();
         toast.error(
           'Wallet Network Changed ---- You have been automatically logged out of your current BitBuzz account. Please Switch to Testnet login again...',
@@ -77,7 +77,7 @@ function App() {
               '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
           }
         );
-        await window.metaidwallet.switchNetwork('testnet');
+        await window.metaidwallet.switchNetwork('regtest');
       }
     });
     window.addEventListener('beforeunload', (e) => {

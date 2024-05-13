@@ -122,13 +122,13 @@ const BuzzFormWrap = () => {
     setIsAdding(false);
   };
 
-  const [customFee, setCustomFee] = useState<string>('47');
+  const [customFee, setCustomFee] = useState<string>('1');
 
   const feeRateOptions = useMemo(() => {
     return [
-      { name: 'Slow', number: feeRateData?.hourFee ?? 47 },
-      { name: 'Avg', number: feeRateData?.halfHourFee ?? 47 },
-      { name: 'Fast', number: feeRateData?.fastestFee ?? 47 },
+      { name: 'Slow', number: feeRateData?.hourFee ?? 1 },
+      { name: 'Avg', number: feeRateData?.halfHourFee ?? 1 },
+      { name: 'Fast', number: feeRateData?.fastestFee ?? 1 },
       { name: 'Custom', number: Number(customFee) },
     ];
   }, [feeRateData, customFee]);

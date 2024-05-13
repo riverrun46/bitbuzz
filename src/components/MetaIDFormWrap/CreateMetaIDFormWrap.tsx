@@ -58,7 +58,7 @@ const CreateMetaIDFormWrap = ({
     setIsCreating(true);
 
     const res = await btcConnector
-      .createMetaid({ ...userInfo, feeRate: feeRateData?.fastestFee ?? 47 })
+      .createMetaid({ ...userInfo, feeRate: feeRateData?.fastestFee ?? 1 })
       .catch((error: any) => {
         setIsCreating(false);
 

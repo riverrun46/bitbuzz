@@ -113,7 +113,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           },
         ],
         noBroadcast: 'no',
-        feeRate: feeRateData?.fastestFee ?? 47,
+        feeRate: feeRateData?.fastestFee ?? 1,
       });
       console.log('likeRes', likeRes);
       if (!isNil(likeRes?.revealTxIds[0])) {
