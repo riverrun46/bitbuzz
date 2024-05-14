@@ -12,6 +12,7 @@ import {
   btcConnectorAtom,
   connectedAtom,
   initStillPoolAtom,
+  networkAtom,
 } from '../../store/user';
 import { useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
@@ -33,7 +34,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
   const stillPool = useAtomValue(initStillPoolAtom);
-
+  const network = useAtomValue(networkAtom);
   const queryClient = useQueryClient();
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
@@ -72,8 +73,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   );
 
   const currentUserInfoData = useQuery({
-    queryKey: ['userInfo', buzzItem!.address],
-    queryFn: () => btcConnector?.getUser(buzzItem!.address),
+    queryKey: ['userInfo', buzzItem!.address, network],
+    queryFn: () =>
+      btcConnector?.getUser({ network, currentAddress: buzzItem!.address }),
   });
   // console.log("address", buzzItem!.address);
   // console.log("currentUserInfoData", currentUserInfoData.data);

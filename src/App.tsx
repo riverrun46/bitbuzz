@@ -14,21 +14,25 @@ import { useAtom, useSetAtom } from 'jotai';
 import {
   btcConnectorAtom,
   connectedAtom,
+  networkAtom,
   userInfoAtom,
   walletAtom,
 } from './store/user';
 import { buzzEntityAtom } from './store/buzz';
 import { errors } from './utils/errors';
 import { isNil } from 'ramda';
-import { checkMetaletInstalled, conirmMetaletTestnet } from './utils/wallet';
+import { checkMetaletInstalled } from './utils/wallet';
+import { conirmMetaletTestnet } from './utils/wallet';
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 import { useEffect } from 'react';
+import { BtcNetwork } from './api/request';
 
 function App() {
   const setConnected = useSetAtom(connectedAtom);
   const setWallet = useSetAtom(walletAtom);
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
+  const [network, setNetwork] = useAtom(networkAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
 
   const setBuzzEntity = useSetAtom(buzzEntityAtom);
@@ -66,20 +70,21 @@ function App() {
         }
       );
     });
-    window.metaidwallet.on('networkChanged', async (network: string) => {
-      console.log('network', network);
-      if (network !== 'regtest') {
-        onLogout();
-        toast.error(
-          'Wallet Network Changed ---- You have been automatically logged out of your current BitBuzz account. Please Switch to Testnet login again...',
-          {
-            className:
-              '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-          }
-        );
-        await window.metaidwallet.switchNetwork('regtest');
-      }
-    });
+    // window.metaidwallet.on('networkChanged', async (network: string) => {
+    //   console.log('network', network);
+
+    //   onLogout();
+    //   toast.error(
+    //     'Wallet Network Changed ---- You have been automatically logged out of your current BitBuzz account. Please Switch to Testnet login again...',
+    //     {
+    //       className:
+    //         '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+    //     }
+    //   );
+    //   await window.metaidwallet.switchNetwork(
+    //     network === ' testnet' ? 'regtest' : 'testnet'
+    //   );
+    // });
     window.addEventListener('beforeunload', (e) => {
       const confirmMessage = 'oos';
       e.returnValue = confirmMessage;
@@ -87,7 +92,10 @@ function App() {
     });
 
     //////////////////////////
-    const _btcConnector: BtcConnector = await btcConnect(_wallet);
+    const _btcConnector: BtcConnector = await btcConnect({
+      network,
+      wallet: _wallet,
+    });
 
     setBtcConnector(_btcConnector as BtcConnector);
 
@@ -102,7 +110,7 @@ function App() {
       ) as HTMLDialogElement;
       doc_modal.showModal();
     } else {
-      const resUser = await _btcConnector.getUser();
+      const resUser = await _btcConnector.getUser({ network });
       console.log('user now', resUser);
       setUserInfo(resUser);
       setConnected(true);
@@ -112,15 +120,34 @@ function App() {
   };
 
   const getBuzzEntity = async () => {
-    const _btcConnector: BtcConnector = await btcConnect();
+    const _btcConnector: BtcConnector = await btcConnect({ network });
     setBtcConnector(_btcConnector);
     const _buzzEntity = await _btcConnector.use('buzz');
     setBuzzEntity(_buzzEntity);
+
+    setNetwork((await window.metaidwallet.getNetwork()).network);
   };
 
   useEffect(() => {
     getBuzzEntity();
   }, []);
+
+  useEffect(() => {
+    if (!isNil(window?.metaidwallet)) {
+      window.metaidwallet.on('networkChanged', async (network: BtcNetwork) => {
+        console.log('network', network);
+
+        toast.error('Wallet Network Changed!', {
+          className:
+            '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+        });
+        setNetwork(network);
+        // await window.metaidwallet.switchNetwork(
+        //   network === ' testnet' ? 'regtest' : 'testnet'
+        // );
+      });
+    }
+  }, [window?.metaidwallet]);
 
   // const handleTest = async () => {
   // 	// console.log('connected', connected);

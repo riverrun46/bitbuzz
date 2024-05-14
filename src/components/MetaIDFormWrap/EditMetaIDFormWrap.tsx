@@ -5,8 +5,8 @@ import { useEffect } from 'react';
 
 import { toast } from 'react-toastify';
 import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
-import { useAtom } from 'jotai';
-import { userInfoAtom } from '../../store/user';
+import { useAtom, useAtomValue } from 'jotai';
+import { networkAtom, userInfoAtom } from '../../store/user';
 import EditMetaIdInfoForm from './EditMetaIdInfoForm';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchFeeRate } from '../../api/buzz';
@@ -24,7 +24,7 @@ type Iprops = {
 const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
-
+  const network = useAtomValue(networkAtom);
   const [userInfoStartValues, setUserInfoStartValues] =
     useState<MetaidUserInfo>({
       name: userInfo?.name ?? '',
@@ -71,8 +71,8 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
       });
     console.log('update res', res);
     if (res) {
-      console.log('after create', await btcConnector.getUser());
-      setUserInfo(await btcConnector.getUser());
+      console.log('after create', await btcConnector.getUser({ network }));
+      setUserInfo(await btcConnector.getUser({ network }));
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
       toast.success('Updating Your Profile Successfully!');

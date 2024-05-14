@@ -17,12 +17,14 @@ export async function fetchBuzzs({
   buzzEntity,
   page,
   limit,
+  network,
 }: {
   buzzEntity: BtcEntity;
   page: number;
   limit: number;
+  network?: BtcNetwork;
 }): Promise<Pin[] | null> {
-  const response = await buzzEntity.getPins({ page, limit });
+  const response = await buzzEntity.list({ page, limit, network });
 
   return response;
 }
