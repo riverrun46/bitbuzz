@@ -135,8 +135,6 @@ function App() {
   useEffect(() => {
     if (!isNil(window?.metaidwallet)) {
       window.metaidwallet.on('networkChanged', async (network: BtcNetwork) => {
-        console.log('network', network);
-
         toast.error('Wallet Network Changed!', {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
