@@ -55,7 +55,11 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 
   const { data: currentLikeData } = useQuery({
     queryKey: ['payLike', buzzItem!.id],
-    queryFn: () => fetchCurrentBuzzLikes(buzzItem!.id),
+    queryFn: () =>
+      fetchCurrentBuzzLikes({
+        pinId: buzzItem!.id,
+        network: btcConnector!.network,
+      }),
   });
 
   const { data: feeRateData } = useQuery({
@@ -77,7 +81,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     queries: attachPids.map((id: string) => {
       return {
         queryKey: ['post', id],
-        queryFn: () => getPinDetailByPid({ pid: id }),
+        queryFn: () =>
+          getPinDetailByPid({ pid: id, network: btcConnector!.network }),
       };
     }),
     combine: (results: any) => {

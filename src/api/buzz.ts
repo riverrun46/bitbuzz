@@ -2,16 +2,7 @@
 import axios from 'axios';
 import { type BtcEntity } from '@metaid/metaid/dist/core/entity/btc';
 import { Pin } from '../components/BuzzList';
-
-const BASE_METAID_TEST_URL = `https://man.somecode.link`;
-// const BASE_METAID_TEST_URL = `https://man-test.metaid.io`;
-
-// export async function fetchBuzzs(page: number): Promise<BuzzItem[]> {
-// 	const response = await axios.get(
-// 		`http://localhost:3000/buzzes?_page=${page}&_limit=5&_sort=createTime&_order=desc`
-// 	);
-// 	return response.data;
-// }
+import { BtcNetwork, MAN_BASE_URL_MAPPING } from './request';
 
 export type LikeRes = {
   _id: string;
@@ -36,9 +27,13 @@ export async function fetchBuzzs({
   return response;
 }
 
-export async function fetchCurrentBuzzLikes(
-  pinId: string
-): Promise<LikeRes[] | null> {
+export async function fetchCurrentBuzzLikes({
+  pinId,
+  network,
+}: {
+  pinId: string;
+  network: BtcNetwork;
+}): Promise<LikeRes[] | null> {
   const body = {
     collection: 'paylike',
     action: 'get',
@@ -67,7 +62,7 @@ export async function fetchCurrentBuzzLikes(
 
   try {
     const data = await axios
-      .post(`${BASE_METAID_TEST_URL}/api/generalQuery`, body)
+      .post(`${MAN_BASE_URL_MAPPING[network]}/api/generalQuery`, body)
       .then((res) => res.data);
     return data.data;
   } catch (error) {
