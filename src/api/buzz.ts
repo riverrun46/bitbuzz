@@ -53,7 +53,7 @@ export async function fetchCurrentBuzzLikes({
     sort: [],
   };
 
-  // const response = await fetch(`https://man-test.metaid.io/api/generalQuery`, {
+  // const response = await fetch(`${MAN_BASE_URL_MAPPING[network]}/api/generalQuery`, {
   // 	method: "POST",
   // 	headers: {
   // 		"Content-Type": "application/json",

@@ -23,6 +23,7 @@ import {
   checkMetaletConnected,
   checkMetaletInstalled,
 } from '../../utils/wallet';
+import { MAN_BASE_URL_MAPPING } from '../../api/request';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -154,7 +155,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               className='image'
               height={'48px'}
               width={'auto'}
-              src={`https://man-test.metaid.io/content/${pinId}`}
+              src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinId}`}
               alt=''
               key={pinId}
             />
