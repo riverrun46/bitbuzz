@@ -11,6 +11,7 @@ import { getPinDetailByPid } from '../../api/pin';
 import {
   btcConnectorAtom,
   connectedAtom,
+  globalFeeRateAtom,
   initStillPoolAtom,
   networkAtom,
 } from '../../store/user';
@@ -18,12 +19,13 @@ import { useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
-import { fetchCurrentBuzzLikes, fetchFeeRate } from '../../api/buzz';
+import { fetchCurrentBuzzLikes } from '../../api/buzz';
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
 } from '../../utils/wallet';
 import { MAN_BASE_URL_MAPPING } from '../../api/request';
+import { errors } from '../../utils/errors';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -36,6 +38,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const btcConnector = useAtomValue(btcConnectorAtom);
   const stillPool = useAtomValue(initStillPoolAtom);
   const network = useAtomValue(networkAtom);
+  const globalFeeRate = useAtomValue(globalFeeRateAtom);
+
   const queryClient = useQueryClient();
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
@@ -64,10 +68,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       }),
   });
 
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate'],
-    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-  });
+  // const { data: feeRateData } = useQuery({
+  //   queryKey: ['feeRate'],
+  //   queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
+  // });
 
   const isLikeByCurrentUser = (currentLikeData ?? [])?.find(
     (d) => d?.pinAddress === btcConnector?.address
@@ -84,8 +88,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     queries: attachPids.map((id: string) => {
       return {
         queryKey: ['post', id],
-        queryFn: () =>
-          getPinDetailByPid({ pid: id, network: btcConnector!.network }),
+        queryFn: () => getPinDetailByPid({ pid: id, network }),
       };
     }),
     combine: (results: any) => {
@@ -102,6 +105,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     await checkMetaletConnected(connected);
     // const stillPool = await checkMetaidInitStillPool(userInfo!);
     if (stillPool) {
+      toast.error(errors.STILL_MEMPOOL_ALERT);
       return;
     }
     if (isLikeByCurrentUser) {
@@ -121,7 +125,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           },
         ],
         noBroadcast: 'no',
-        feeRate: feeRateData?.fastestFee ?? 1,
+        feeRate: Number(globalFeeRate),
       });
       console.log('likeRes', likeRes);
       if (!isNil(likeRes?.revealTxIds[0])) {

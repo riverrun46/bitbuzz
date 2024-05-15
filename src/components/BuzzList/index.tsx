@@ -56,7 +56,7 @@ const BuzzList = () => {
   const buzzEntity = useAtomValue(buzzEntityAtom);
   // console.log("buzzEntity", !isNil(buzzEntity), buzzEntity);
   // const [showNewBuzz, setShowNewBuzz] = useState(true);
-  console.log('network', network);
+  // console.log('network', network);
   const getTotal = async (buzzEntity: BtcEntity) => {
     setTotal(await buzzEntity?.total({ network }));
   };
@@ -100,7 +100,7 @@ const BuzzList = () => {
     (pins ?? []).map((pin) => {
       return (
         <BuzzCard
-          key={pin?.timestamp ?? pin.id}
+          key={pin.id}
           buzzItem={pin}
           onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}
         />

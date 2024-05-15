@@ -6,10 +6,8 @@ import { toast } from 'react-toastify';
 import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 import CreateMetaIdInfoForm from './CreateMetaIdInfoForm';
 import { useAtomValue } from 'jotai';
-import { walletAtom } from '../../store/user';
+import { globalFeeRateAtom, walletAtom } from '../../store/user';
 import { isNil } from 'ramda';
-import { useQuery } from '@tanstack/react-query';
-import { fetchFeeRate } from '../../api/buzz';
 
 export type MetaidUserInfo = {
   name: string;
@@ -29,10 +27,7 @@ const CreateMetaIDFormWrap = ({
   const [balance, setBalance] = useState('0');
   const wallet = useAtomValue(walletAtom);
 
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate'],
-    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-  });
+  const globalFeeRate = useAtomValue(globalFeeRateAtom);
 
   const getBtcBalance = async () => {
     if (!isNil(wallet)) {
@@ -58,7 +53,7 @@ const CreateMetaIDFormWrap = ({
     setIsCreating(true);
 
     const res = await btcConnector
-      .createMetaid({ ...userInfo, feeRate: feeRateData?.fastestFee ?? 1 })
+      .createMetaid({ ...userInfo, feeRate: Number(globalFeeRate) })
       .catch((error: any) => {
         setIsCreating(false);
 

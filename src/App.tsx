@@ -140,7 +140,7 @@ function App() {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
         });
-        setNetwork(network ?? 'regtest');
+        setNetwork(network ?? 'testnet');
         // await window.metaidwallet.switchNetwork(
         //   network === ' testnet' ? 'regtest' : 'testnet'
         // );

@@ -44,4 +44,5 @@ export const balanceAtom = atom({
   unconfirmed: 0,
   total: 0,
 });
-export const networkAtom = atom<BtcNetwork>('regtest');
+export const networkAtom = atom<BtcNetwork>('testnet');
+export const globalFeeRateAtom = atom<string>('1200');

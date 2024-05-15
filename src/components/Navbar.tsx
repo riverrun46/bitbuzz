@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import {
   connectedAtom,
+  globalFeeRateAtom,
   initStillPoolAtom,
   networkAtom,
   userInfoAtom,
@@ -14,6 +15,7 @@ import BuzzFormWrap from './BuzzFormWrap';
 import CustomAvatar from './CustomAvatar';
 import { BtcNetwork } from '../api/request';
 import { toast } from 'react-toastify';
+import { errors } from '../utils/errors';
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>;
@@ -22,7 +24,7 @@ type IProps = {
 
 const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
   const networks = ['Mainnet', 'Testnet', 'Regtest'];
-
+  const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom);
   const [network, setNetwork] = useAtom(networkAtom);
 
   const connected = useAtomValue(connectedAtom);
@@ -33,6 +35,7 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
     await checkMetaletConnected(connected);
     // const stillPool = await checkMetaidInitStillPool(userInfo!);
     if (stillPool) {
+      toast.error(errors.STILL_MEMPOOL_ALERT);
       return;
     }
     const doc_modal = document.getElementById(
@@ -42,6 +45,11 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
   };
 
   const onEditProfileStart = async () => {
+    if (stillPool) {
+      toast.error(errors.STILL_MEMPOOL_ALERT);
+      return;
+    }
+
     const doc_modal = document.getElementById(
       'edit_metaid_modal'
     ) as HTMLDialogElement;
@@ -121,6 +129,25 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
           </div>
 
           <div className='flex items-center gap-2'>
+            <div className='text-gray'>Global Fee:</div>
+            <input
+              inputMode='numeric'
+              type='number'
+              min={0}
+              max={'100000'}
+              style={{
+                appearance: 'textfield',
+              }}
+              aria-hidden
+              className='w-[80px] input input-xs  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none'
+              step={1}
+              value={globalFeeRate}
+              onChange={(e) => {
+                const v = e.currentTarget.value;
+                setGlobalFeeRate(v);
+              }}
+            />
+
             <PencilLine
               className='border rounded-full text-main bg-[black] p-2 cursor-pointer'
               size={45}

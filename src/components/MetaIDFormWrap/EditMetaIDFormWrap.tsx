@@ -6,10 +6,10 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { BtcConnector } from '@metaid/metaid/dist/core/connector/btc';
 import { useAtom, useAtomValue } from 'jotai';
-import { networkAtom, userInfoAtom } from '../../store/user';
+import { globalFeeRateAtom, networkAtom, userInfoAtom } from '../../store/user';
 import EditMetaIdInfoForm from './EditMetaIdInfoForm';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchFeeRate } from '../../api/buzz';
+import { useQueryClient } from '@tanstack/react-query';
+// import { fetchFeeRate } from '../../api/buzz';
 
 export type MetaidUserInfo = {
   name: string;
@@ -24,6 +24,7 @@ type Iprops = {
 const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+  const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const network = useAtomValue(networkAtom);
   const [userInfoStartValues, setUserInfoStartValues] =
     useState<MetaidUserInfo>({
@@ -32,10 +33,10 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
       avatar: userInfo?.avatar ?? undefined,
     });
 
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate'],
-    queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-  });
+  // const { data: feeRateData } = useQuery({
+  //   queryKey: ['feeRate'],
+  //   queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
+  // });
 
   useEffect(() => {
     setUserInfoStartValues({
@@ -51,7 +52,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
     setIsEditing(true);
 
     const res = await btcConnector
-      .updateUserInfo({ ...userInfo, feeRate: feeRateData?.fastestFee ?? 1 })
+      .updateUserInfo({ ...userInfo, feeRate: Number(globalFeeRate) })
       .catch((error: any) => {
         console.log('error', error);
         const errorMessage = (error as any)?.message ?? error;
