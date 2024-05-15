@@ -1308,10 +1308,10 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.1.2.tgz#0da0a8900ddbb613532b39796c18a4ebe4a85e26"
-  integrity sha512-z+Sug1cYVXpNyQfZ/Gjn7FuFDc07QlZkPTKz7EaQBZMTRjqQzPPOxebFcutnQvuggKX+PyFrndzFBXT0WZae3w==
+"@metaid/metaid@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.1.3.tgz#44a6bd3ac911f20866302b0fc7d052c9162dbc03"
+  integrity sha512-JyPA26BKRzRzwObn4RTBOAA3tQH3bMumzyoPuzYqbvHNPIHwQFR/3j8yNsGw73LqQ/qgwIEMPDCjG34GBTsKcw==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"

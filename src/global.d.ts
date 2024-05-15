@@ -12,7 +12,11 @@ declare global {
       connect: () => Promise<{ address: string; status?: string }>;
       disconnect: () => Promise<void>;
       getNetwork: () => Promise<{ network: BtcNetwork }>;
-      switchNetwork: (network: string) => Promise<void>;
+      switchNetwork: ({
+        network,
+      }: {
+        network: BtcNetwork;
+      }) => Promise<{ status: string; network: BtcNetwork; address: string }>;
       btc: {
         signPsbt: ({ psbtHex: string, options: any }) => Promise<string>;
         signMessage: (msg: string) => Promise<string>;

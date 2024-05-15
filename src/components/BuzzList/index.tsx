@@ -100,7 +100,7 @@ const BuzzList = () => {
     (pins ?? []).map((pin) => {
       return (
         <BuzzCard
-          key={pin.id}
+          key={pin?.timestamp ?? pin.id}
           buzzItem={pin}
           onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}
         />

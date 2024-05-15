@@ -50,6 +50,7 @@ function App() {
     await checkMetaletInstalled();
     const _wallet = await MetaletWalletForBtc.create();
     setWallet(_wallet);
+    setNetwork((await window.metaidwallet.getNetwork()).network);
     await conirmMetaletTestnet();
     if (isNil(_wallet?.address)) {
       toast.error(errors.NO_METALET_LOGIN, {
@@ -139,7 +140,7 @@ function App() {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
         });
-        setNetwork(network);
+        setNetwork(network ?? 'regtest');
         // await window.metaidwallet.switchNetwork(
         //   network === ' testnet' ? 'regtest' : 'testnet'
         // );

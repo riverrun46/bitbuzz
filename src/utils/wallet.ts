@@ -17,7 +17,7 @@ export const checkMetaletInstalled = async () => {
 export const conirmMetaletTestnet = async () => {
   const metalet = window?.metaidwallet;
   const network = await metalet?.getNetwork();
-  if (network?.network === 'livenet') {
+  if (network?.network === 'mainnet') {
     toast.error(errors.SWITCH_TESTNET_ALERT, {
       className:
         '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',

@@ -84,7 +84,6 @@ const BuzzFormWrap = () => {
       await sleep(5000);
 
       console.log('finalBody', finalBody);
-      console.log('selectFeeRate', selectFeeRate);
 
       const createRes = await buzzEntity!.create({
         options: [{ body: JSON.stringify(finalBody) }],
@@ -136,9 +135,12 @@ const BuzzFormWrap = () => {
     name: string;
     number: number;
   }>({
-    name: 'Slow',
-    number: feeRateData?.hourFee ?? 1,
+    name: 'Custom',
+    number: 1,
   });
+
+  // console.log('select feerate', selectFeeRate);
+  // console.log('feerate data', feeRateData);
   return (
     <LoadingOverlay active={isAdding} spinner text='Creating Buzz...'>
       <BuzzForm
