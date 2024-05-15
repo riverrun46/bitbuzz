@@ -22,7 +22,7 @@ export const conirmMetaletTestnet = async () => {
       className:
         '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
     });
-    await window.metaidwallet.switchNetwork('regtest');
+    await window.metaidwallet.switchNetwork({ network: 'regtest' });
 
     throw new Error(errors.SWITCH_TESTNET_ALERT);
   }
