@@ -11,9 +11,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { buzzEntityAtom } from "../../store/buzz";
 import { isNil } from "ramda";
 import { BtcEntity } from "@metaid/metaid/dist/core/entity/btc";
-import { networkAtom, userInfoAtom, walletAtom } from "../../store/user";
-import { btcConnect } from "@metaid/metaid";
-import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
+import { btcConnectorAtom, networkAtom, userInfoAtom } from "../../store/user";
+// import { btcConnect } from "@metaid/metaid";
 // import { useCallback } from 'react';
 // // import { BuzzItem } from '../../types';
 // import { useAtom } from 'jotai';
@@ -47,8 +46,9 @@ export type Pin = {
 
 const BuzzList = () => {
 	const [total, setTotal] = useState<null | number>(null);
+	const btcConnector = useAtomValue(btcConnectorAtom);
 	const setUserInfo = useSetAtom(userInfoAtom);
-	const _wallet = useAtomValue(walletAtom);
+	// const _wallet = useAtomValue(walletAtom);
 	const network = useAtomValue(networkAtom);
 	console.log("network", network);
 
@@ -119,11 +119,11 @@ const BuzzList = () => {
 	const handleRefresh = async () => {
 		refetch();
 		// const _wallet = await MetaletWalletForBtc.create();
-		const _btcConnector: BtcConnector = await btcConnect({
-			network,
-			wallet: _wallet ?? undefined,
-		});
-		const _user = await _btcConnector.getUser({ network });
+		// const _btcConnector: BtcConnector = await btcConnect({
+		// 	network,
+		// 	wallet: _wallet ?? undefined,
+		// });
+		const _user = await btcConnector!.getUser({ network });
 
 		setUserInfo(_user);
 	};
