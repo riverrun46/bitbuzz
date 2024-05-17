@@ -37,10 +37,9 @@ export const checkMetaletConnected = async (connected: boolean) => {
 
 export const checkMetaidInitStillPool = (userInfo: UserInfo) => {
 	if (userInfo.unconfirmed.split(",").includes("number")) {
-		toast.error(errors.INIT_STILL_MEMPOOL, {
+		toast.error(errors.STILL_MEMPOOL_ALERT, {
 			className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
 		});
-		// throw new Error(errors.INIT_STILL_MEMPOOL);
 	}
 	return userInfo.unconfirmed.split(",").includes("number"); // true still mempool
 };
