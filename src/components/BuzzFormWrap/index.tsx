@@ -127,7 +127,7 @@ const BuzzFormWrap = () => {
 		number: number;
 	}>({
 		name: "Custom",
-		number: 1,
+		number: Number(customFee),
 	});
 
 	// console.log('select feerate', selectFeeRate);

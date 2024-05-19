@@ -20,7 +20,7 @@ export type UserInfo = {
 	metaid: string;
 };
 
-export const connectedAtom = atom(false);
+export const connectedAtom = atomWithStorage<boolean>("connectedAtom", false);
 export const btcConnectorAtom = atom<IBtcConnector | null>(null);
 export const userInfoAtom = atom<UserInfo | null>(null);
 

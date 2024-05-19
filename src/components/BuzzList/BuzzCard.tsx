@@ -190,7 +190,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 					{onBuzzDetail ? (
 						<>
 							{summary.length < 500 ? (
-								<div>summary</div>
+								<div>{summary}</div>
 							) : (
 								<div>
 									{summary.slice(0, 500)}

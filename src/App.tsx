@@ -29,6 +29,7 @@ import { useCallback, useEffect } from "react";
 import { BtcNetwork } from "./api/request";
 
 function App() {
+	const internal = window?.metaidwallet;
 	const [connected, setConnected] = useAtom(connectedAtom);
 	const setWallet = useSetAtom(walletAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
@@ -156,16 +157,16 @@ function App() {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connected, window?.metaidwallet]);
-
+	console.log("windowcs/////////////////////////", window?.metaidwallet);
 	useEffect(() => {
 		console.log(
-			"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}t",
-			window!.metaidwallet
+			"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}internal}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}t",
+			internal
 		);
 		if (!isNil(window?.metaidwallet)) {
 			window.metaidwallet.on("networkChanged", handleNetworkChanged);
 		}
-	}, [window?.metaidwallet]);
+	}, [internal]);
 
 	// const handleTest = async () => {
 	// 	// console.log('connected', connected);
