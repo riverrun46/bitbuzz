@@ -10,8 +10,8 @@ import { useInView } from "react-intersection-observer";
 import { useAtomValue, useSetAtom } from "jotai";
 import { buzzEntityAtom } from "../../store/buzz";
 import { isNil } from "ramda";
-import { BtcEntity } from "@metaid/metaid/dist/core/entity/btc";
 import { btcConnectorAtom, networkAtom, userInfoAtom } from "../../store/user";
+import { IBtcEntity } from "@metaid/metaid";
 // import { btcConnect } from "@metaid/metaid";
 // import { useCallback } from 'react';
 // // import { BuzzItem } from '../../types';
@@ -58,7 +58,7 @@ const BuzzList = () => {
 	const buzzEntity = useAtomValue(buzzEntityAtom);
 	// console.log("buzzEntity", !isNil(buzzEntity), buzzEntity);
 	// const [showNewBuzz, setShowNewBuzz] = useState(true);
-	const getTotal = async (buzzEntity: BtcEntity) => {
+	const getTotal = async (buzzEntity: IBtcEntity) => {
 		setTotal(await buzzEntity?.total({ network }));
 	};
 

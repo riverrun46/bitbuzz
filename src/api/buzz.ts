@@ -1,8 +1,8 @@
 // import { BuzzItem } from '../types';
 import axios from "axios";
-import { type BtcEntity } from "@metaid/metaid/dist/core/entity/btc";
 import { Pin } from "../components/BuzzList";
 import { BtcNetwork, MAN_BASE_URL_MAPPING } from "./request";
+import { IBtcEntity } from "@metaid/metaid";
 
 export type LikeRes = {
 	_id: string;
@@ -19,7 +19,7 @@ export async function fetchBuzzs({
 	limit,
 	network,
 }: {
-	buzzEntity: BtcEntity;
+	buzzEntity: IBtcEntity;
 	page: number;
 	limit: number;
 	network: BtcNetwork;
