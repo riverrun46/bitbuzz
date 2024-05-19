@@ -1,8 +1,8 @@
-import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
+import { IBtcConnector } from "@metaid/metaid";
 import CreateMetaIDFormWrap from "./CreateMetaIDFormWrap";
 
 type Iprops = {
-	btcConnector: BtcConnector;
+	btcConnector: IBtcConnector;
 	onWalletConnectStart: () => void;
 };
 

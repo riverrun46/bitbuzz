@@ -8,13 +8,7 @@ import dayjs from "dayjs";
 import { Pin } from ".";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getPinDetailByPid } from "../../api/pin";
-import {
-	btcConnectorAtom,
-	connectedAtom,
-	globalFeeRateAtom,
-	initStillPoolAtom,
-	networkAtom,
-} from "../../store/user";
+import { btcConnectorAtom, connectedAtom, globalFeeRateAtom, networkAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
 import CustomAvatar from "../CustomAvatar";
 // import { sleep } from '../../utils/time';
@@ -22,7 +16,6 @@ import { toast } from "react-toastify";
 import { fetchCurrentBuzzLikes } from "../../api/buzz";
 import { checkMetaletConnected, checkMetaletInstalled } from "../../utils/wallet";
 import { MAN_BASE_URL_MAPPING } from "../../api/request";
-import { errors } from "../../utils/errors";
 
 type IProps = {
 	buzzItem: Pin | undefined;
@@ -33,7 +26,6 @@ type IProps = {
 const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	const connected = useAtomValue(connectedAtom);
 	const btcConnector = useAtomValue(btcConnectorAtom);
-	const stillPool = useAtomValue(initStillPoolAtom);
 	const network = useAtomValue(networkAtom);
 	const globalFeeRate = useAtomValue(globalFeeRateAtom);
 
@@ -98,10 +90,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		await checkMetaletInstalled();
 		await checkMetaletConnected(connected);
 		// const stillPool = await checkMetaidInitStillPool(userInfo!);
-		if (stillPool) {
-			toast.error(errors.STILL_MEMPOOL_ALERT);
-			return;
-		}
+
 		if (isLikeByCurrentUser) {
 			toast.error("You have already liked that buzz...", {
 				className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
@@ -195,10 +184,23 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 				className={cls("border-y border-white p-4", {
 					"cursor-pointer": !isNil(onBuzzDetail),
 				})}
-				// onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
+				onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
 			>
 				<div className="flex flex-col gap-2">
-					<div>{summary} </div>
+					{onBuzzDetail ? (
+						<>
+							{summary.length < 500 ? (
+								<div>summary</div>
+							) : (
+								<div>
+									{summary.slice(0, 500)}
+									<span className="text-main">{" more >>"}</span>
+								</div>
+							)}
+						</>
+					) : (
+						<div>{summary}</div>
+					)}
 					{!attachData.pending &&
 						!isEmpty((attachData?.data ?? []).filter((d: any) => !isNil(d))) &&
 						// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -206,7 +208,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 				</div>
 				<div className="flex justify-between text-gray mt-2">
 					<div
-						className="flex gap-2 items-center"
+						className="flex gap-2 items-center hover:text-slate-300"
 						onClick={() => {
 							window.open(
 								`https://mempool.space/zh/testnet/tx/${buzzItem.genesisTransaction}`,

@@ -2,20 +2,13 @@ import { useAtom, useAtomValue } from "jotai";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import {
-	connectedAtom,
-	globalFeeRateAtom,
-	initStillPoolAtom,
-	networkAtom,
-	userInfoAtom,
-} from "../store/user";
+import { connectedAtom, globalFeeRateAtom, networkAtom, userInfoAtom } from "../store/user";
 
 import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 import BuzzFormWrap from "./BuzzFormWrap";
 import CustomAvatar from "./CustomAvatar";
 import { BtcNetwork } from "../api/request";
 import { toast } from "react-toastify";
-import { errors } from "../utils/errors";
 
 type IProps = {
 	onWalletConnectStart: () => Promise<void>;
@@ -29,25 +22,16 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
 
 	const connected = useAtomValue(connectedAtom);
 	const userInfo = useAtomValue(userInfoAtom);
-	const stillPool = useAtomValue(initStillPoolAtom);
 	const onBuzzStart = async () => {
 		await checkMetaletInstalled();
 		await checkMetaletConnected(connected);
 		// const stillPool = await checkMetaidInitStillPool(userInfo!);
-		if (stillPool) {
-			toast.error(errors.STILL_MEMPOOL_ALERT);
-			return;
-		}
+
 		const doc_modal = document.getElementById("new_buzz_modal") as HTMLDialogElement;
 		doc_modal.showModal();
 	};
 
 	const onEditProfileStart = async () => {
-		if (stillPool) {
-			toast.error(errors.STILL_MEMPOOL_ALERT);
-			return;
-		}
-
 		const doc_modal = document.getElementById("edit_metaid_modal") as HTMLDialogElement;
 		doc_modal.showModal();
 	};
@@ -95,7 +79,7 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
 							>
 								{networks.map((network, index) => {
 									return (
-										<>
+										<div key={network}>
 											<li
 												className="hover:bg-[rgba(219, 243, 136, 0.5)] rounded-box relative"
 												key={network}
@@ -115,7 +99,7 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
 											{index !== 2 && (
 												<div className="border border-[#1D2F2F]/50 w-[80%] mx-auto"></div>
 											)}
-										</>
+										</div>
 									);
 								})}
 							</ul>

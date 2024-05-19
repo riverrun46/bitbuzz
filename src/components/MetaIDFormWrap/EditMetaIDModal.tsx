@@ -1,8 +1,8 @@
-import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
+import { IBtcConnector } from "@metaid/metaid";
 import EditMetaIDFormWrap from "./EditMetaIDFormWrap";
 
 type Iprops = {
-	btcConnector: BtcConnector;
+	btcConnector: IBtcConnector;
 };
 
 const EditMetaIDModal = ({ btcConnector }: Iprops) => {

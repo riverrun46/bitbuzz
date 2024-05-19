@@ -8,7 +8,6 @@ import "./globals.css";
 import "./react-toastify.css";
 // import "react-toastify/dist/ReactToastify.css";
 import { MetaletWalletForBtc, btcConnect } from "@metaid/metaid";
-import { BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
 
 import { useAtom, useSetAtom } from "jotai";
 import {
@@ -17,6 +16,7 @@ import {
 	networkAtom,
 	userInfoAtom,
 	walletAtom,
+	walletRestoreParamsAtom,
 } from "./store/user";
 import { buzzEntityAtom } from "./store/buzz";
 import { errors } from "./utils/errors";
@@ -25,15 +25,16 @@ import { checkMetaletInstalled } from "./utils/wallet";
 import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from "./components/MetaIDFormWrap/CreateMetaIDModal";
 import EditMetaIDModal from "./components/MetaIDFormWrap/EditMetaIDModal";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { BtcNetwork } from "./api/request";
 
 function App() {
-	const setConnected = useSetAtom(connectedAtom);
+	const [connected, setConnected] = useAtom(connectedAtom);
 	const setWallet = useSetAtom(walletAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
 	const [network, setNetwork] = useAtom(networkAtom);
 	const setUserInfo = useSetAtom(userInfoAtom);
+	const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom);
 
 	const setBuzzEntity = useSetAtom(buzzEntityAtom);
 
@@ -42,14 +43,23 @@ function App() {
 		setBtcConnector(null);
 		setBuzzEntity(null);
 		setUserInfo(null);
+		setWalletParams(undefined);
 		window.metaidwallet.removeListener("accountsChanged");
 		window.metaidwallet.removeListener("networkChanged");
 	};
 
 	const onWalletConnectStart = async () => {
+		console.log("onWalletConnectStart", window.metaidwallet);
 		await checkMetaletInstalled();
 		const _wallet = await MetaletWalletForBtc.create();
+		const _network = (await window.metaidwallet.getNetwork()).network;
+		setNetwork(_network);
+		console.log("onWalletConnectStart", _wallet);
 		setWallet(_wallet);
+		setWalletParams({
+			address: _wallet.address,
+			pub: _wallet.pub,
+		});
 		await conirmMetaletTestnet();
 		if (isNil(_wallet?.address)) {
 			toast.error(errors.NO_METALET_LOGIN, {
@@ -58,56 +68,25 @@ function App() {
 			throw new Error(errors.NO_METALET_LOGIN);
 		}
 
-		// add event listenr for accountsChanged networkChanged
-		window.metaidwallet.on("accountsChanged", () => {
-			onLogout();
-			toast.error(
-				"Wallet Account Changed ---- You have been automatically logged out of your current BitBuzz account. Please login again...",
-				{
-					className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
-				}
-			);
-		});
-		// window.metaidwallet.on('networkChanged', async (network: string) => {
-		//   console.log('network', network);
-
-		//   onLogout();
-		//   toast.error(
-		//     'Wallet Network Changed ---- You have been automatically logged out of your current BitBuzz account. Please Switch to Testnet login again...',
-		//     {
-		//       className:
-		//         '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-		//     }
-		//   );
-		//   await window.metaidwallet.switchNetwork(
-		//     network === ' testnet' ? 'regtest' : 'testnet'
-		//   );
-		// });
-		window.addEventListener("beforeunload", (e) => {
-			const confirmMessage = "oos";
-			e.returnValue = confirmMessage;
-			return confirmMessage;
-		});
-
 		//////////////////////////
-		const _btcConnector: BtcConnector = await btcConnect({
+		const _btcConnector = await btcConnect({
 			network,
 			wallet: _wallet,
 		});
 
-		setBtcConnector(_btcConnector as BtcConnector);
+		setBtcConnector(_btcConnector);
 
 		// const doc_modal = document.getElementById(
 		//   'create_metaid_modal'
 		// ) as HTMLDialogElement;
 		// doc_modal.showModal();
 		// console.log("getUser", await _btcConnector.getUser());
-		if (!_btcConnector.hasMetaid()) {
+		const resUser = await _btcConnector.getUser({ network });
+		console.log("user now", resUser);
+		if (!resUser?.name) {
 			const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
 			doc_modal.showModal();
 		} else {
-			const resUser = await _btcConnector.getUser({ network });
-			console.log("user now", resUser);
 			setUserInfo(resUser);
 			setConnected(true);
 			setBuzzEntity(await _btcConnector.use("buzz"));
@@ -116,7 +95,7 @@ function App() {
 	};
 
 	const getBuzzEntity = async () => {
-		const _btcConnector: BtcConnector = await btcConnect({ network });
+		const _btcConnector = await btcConnect({ network });
 		setBtcConnector(_btcConnector);
 		const _buzzEntity = await _btcConnector.use("buzz");
 		setBuzzEntity(_buzzEntity);
@@ -126,19 +105,68 @@ function App() {
 		getBuzzEntity();
 	}, []);
 
-	useEffect(() => {
-		if (!isNil(window?.metaidwallet)) {
-			window.metaidwallet.on("networkChanged", async (network: BtcNetwork) => {
-				toast.error("Wallet Network Changed!", {
-					className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
-				});
-				setNetwork(network ?? "testnet");
-				// await window.metaidwallet.switchNetwork(
-				//   network === ' testnet' ? 'regtest' : 'testnet'
-				// );
+	const handleBeforeUnload = async () => {
+		console.log(
+			"refresh ....................................................",
+			walletParams,
+			!isNil(window.metaidwallet)
+		);
+		if (!isNil(walletParams)) {
+			const _wallet = MetaletWalletForBtc.restore({
+				...walletParams,
 			});
+			console.log("refeshing wallet", _wallet);
+			setWallet(_wallet);
+			const _btcConnector = await btcConnect({ wallet: _wallet, network: network });
+			setUserInfo(_btcConnector.user);
+			// setConnected(true);
+			console.log("refetch user", _btcConnector.user);
+		}
+	};
+
+	const wrapHandleBeforeUnload = useCallback(handleBeforeUnload, [walletParams, setUserInfo]);
+
+	useEffect(() => {
+		wrapHandleBeforeUnload();
+	}, [wrapHandleBeforeUnload]);
+
+	const handleAcccountsChanged = () => {
+		onLogout();
+		toast.error(
+			"Wallet Account Changed ---- You have been automatically logged out of your current MetaID account. Please login again..."
+		);
+	};
+
+	const handleNetworkChanged = async (network: BtcNetwork) => {
+		console.log("network", network);
+		if (connected) {
+			onLogout();
+		}
+		toast.error("Wallet Network Changed  ");
+		setNetwork(network ?? "testnet");
+	};
+
+	useEffect(() => {
+		if (connected) {
+			console.log("here");
+
+			if (!isNil(window?.metaidwallet)) {
+				window.metaidwallet.on("accountsChanged", handleAcccountsChanged);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [connected, window?.metaidwallet]);
+
+	useEffect(() => {
+		console.log(
+			"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}t",
+			window!.metaidwallet
+		);
+		if (!isNil(window?.metaidwallet)) {
+			window.metaidwallet.on("networkChanged", handleNetworkChanged);
 		}
 	}, [window?.metaidwallet]);
+
 	// const handleTest = async () => {
 	// 	// console.log('connected', connected);
 	// 	// console.log('userinfo', userInfo);

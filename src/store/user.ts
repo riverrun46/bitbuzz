@@ -1,8 +1,9 @@
-import { type BtcConnector } from "@metaid/metaid/dist/core/connector/btc";
-import { MetaIDWalletForBtc } from "@metaid/metaid/dist/wallets/metalet/btcWallet";
+/* eslint-disable no-mixed-spaces-and-tabs */
+import { IBtcConnector, IMetaletWalletForBtc } from "@metaid/metaid";
+
 import { atom } from "jotai";
-import { isNil } from "ramda";
 import { BtcNetwork } from "../api/request";
+import { atomWithStorage } from "jotai/utils";
 
 export type UserInfo = {
 	number: number;
@@ -20,15 +21,10 @@ export type UserInfo = {
 };
 
 export const connectedAtom = atom(false);
-export const btcConnectorAtom = atom<BtcConnector | null>(null);
+export const btcConnectorAtom = atom<IBtcConnector | null>(null);
 export const userInfoAtom = atom<UserInfo | null>(null);
 
-export const initStillPoolAtom = atom<boolean>((get) => {
-	const userInfo = get(userInfoAtom);
-	return isNil(userInfo) ? false : userInfo.unconfirmed.split(",").includes("number");
-});
-
-export const walletAtom = atom<MetaIDWalletForBtc | null>(null);
+export const walletAtom = atom<IMetaletWalletForBtc | undefined>(undefined);
 
 // export const userInfoAtom = atom<UserInfo | null>(null);
 /**
@@ -45,3 +41,11 @@ export const balanceAtom = atom({
 });
 export const networkAtom = atom<BtcNetwork>("testnet");
 export const globalFeeRateAtom = atom<string>("60");
+
+export const walletRestoreParamsAtom = atomWithStorage<
+	| {
+			address: string;
+			pub: string;
+	  }
+	| undefined
+>("walletRestoreParamsAtom", undefined);

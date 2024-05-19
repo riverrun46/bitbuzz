@@ -11,6 +11,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchFeeRate } from "../../api/buzz";
 import { useMemo, useState } from "react";
 import CustomFeerate from "../CustomFeerate";
+import { globalFeeRateAtom } from "../../store/user";
+import { useAtomValue } from "jotai";
 // import { useEffect, useState } from 'react';
 
 export type UserInfo = {
@@ -27,6 +29,7 @@ type IProps = {
 };
 
 const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IProps) => {
+	const globalFeeRate = useAtomValue(globalFeeRateAtom);
 	const {
 		register,
 		handleSubmit,
@@ -44,22 +47,22 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
 	});
 
-	const [customFee, setCustomFee] = useState<string>("1");
+	const [customFee, setCustomFee] = useState<string>(globalFeeRate);
 
 	const feeRateOptions = useMemo(() => {
 		return [
-			{ name: "Slow", number: feeRateData?.hourFee ?? 1 },
-			{ name: "Avg", number: feeRateData?.halfHourFee ?? 1 },
-			{ name: "Fast", number: feeRateData?.fastestFee ?? 1 },
+			{ name: "Slow", number: feeRateData?.hourFee ?? Number(globalFeeRate) },
+			{ name: "Avg", number: feeRateData?.halfHourFee ?? Number(globalFeeRate) },
+			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeeRate) },
 			{ name: "Custom", number: Number(customFee) },
 		];
-	}, [feeRateData, customFee]);
+	}, [feeRateData, customFee, globalFeeRate]);
 	const [selectFeeRate, setSelectFeeRate] = useState<{
 		name: string;
 		number: number;
 	}>({
-		name: "Slow",
-		number: feeRateData?.hourFee ?? 1,
+		name: "Custom",
+		number: Number(customFee),
 	});
 
 	const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
@@ -108,9 +111,9 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 							<div>sats</div>
 						</div>
 					</div>
-					<div className="text-sm text-gray">
+					{/* <div className="text-sm text-gray">
 						This address haven't created MetaID.Please create one first.
-					</div>
+					</div> */}
 				</div>
 
 				<div className="flex flex-col gap-2">
@@ -145,7 +148,7 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 				</div>
 				<div className="flex flex-col gap-2">
 					<div className="flex justify-between">
-						<div className="text-white">Your PFP</div>
+						<div className="text-white">Your PFP(Optional)</div>
 						{!isNil(avatar) && avatar.length !== 0 && (
 							<div
 								className="btn btn-xs btn-outline font-normal text-white"
@@ -164,9 +167,10 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 					{!isNil(avatar) && avatar.length !== 0 ? (
 						<div className="bg-inheirt border border-dashed border-main rounded-full w-[100px] h-[100px] grid place-items-center mx-auto">
 							<img
-								className="image self-center rounded-full"
-								height={"100px"}
-								width={"100px"}
+								className="image self-center rounded-full h-[100px] w-[100px] "
+								style={{
+									objectFit: "cover",
+								}}
 								src={filesPreview[0]}
 								alt=""
 							/>
