@@ -28,7 +28,7 @@ import EditMetaIDModal from "./components/MetaIDFormWrap/EditMetaIDModal";
 import { useCallback, useEffect } from "react";
 import { BtcNetwork } from "./api/request";
 
-function App() {
+function App22() {
 	const [connected, setConnected] = useAtom(connectedAtom);
 	const setWallet = useSetAtom(walletAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
@@ -104,20 +104,16 @@ function App() {
 	useEffect(() => {
 		getBuzzEntity();
 	}, []);
-
 	const handleBeforeUnload = async () => {
-		console.log(
-			"refresh ....................................................",
-			walletParams,
-			!isNil(window.metaidwallet)
-		);
 		if (!isNil(walletParams)) {
 			const _wallet = MetaletWalletForBtc.restore({
 				...walletParams,
+				internal: window.metaidwallet,
 			});
 			console.log("refeshing wallet", _wallet);
 			setWallet(_wallet);
 			const _btcConnector = await btcConnect({ wallet: _wallet, network: network });
+			setBtcConnector(_btcConnector);
 			setUserInfo(_btcConnector.user);
 			// setConnected(true);
 			console.log("refetch user", _btcConnector.user);
@@ -127,7 +123,9 @@ function App() {
 	const wrapHandleBeforeUnload = useCallback(handleBeforeUnload, [walletParams, setUserInfo]);
 
 	useEffect(() => {
-		wrapHandleBeforeUnload();
+		setTimeout(() => {
+			wrapHandleBeforeUnload();
+		}, 1000);
 	}, [wrapHandleBeforeUnload]);
 
 	const handleAcccountsChanged = () => {
@@ -147,21 +145,17 @@ function App() {
 	};
 
 	useEffect(() => {
-		if (connected) {
-			console.log("here");
-
+		setTimeout(() => {
 			if (!isNil(window?.metaidwallet)) {
-				window.metaidwallet.on("accountsChanged", handleAcccountsChanged);
+				if (connected) {
+					window.metaidwallet.on("accountsChanged", handleAcccountsChanged);
+				}
+
+				window.metaidwallet.on("networkChanged", handleNetworkChanged);
 			}
-		}
+		}, 1000);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connected, window?.metaidwallet]);
-
-	useEffect(() => {
-		if (!isNil(window?.metaidwallet)) {
-			window.metaidwallet.on("networkChanged", handleNetworkChanged);
-		}
-	}, [window?.metaidwallet]);
 
 	return (
 		<div className="relative overflow-auto">
@@ -203,4 +197,4 @@ function App() {
 	);
 }
 
-export default App;
+export default App22;
