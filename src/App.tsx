@@ -29,7 +29,6 @@ import { useCallback, useEffect } from "react";
 import { BtcNetwork } from "./api/request";
 
 function App() {
-	const internal = window?.metaidwallet;
 	const [connected, setConnected] = useAtom(connectedAtom);
 	const setWallet = useSetAtom(walletAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
@@ -157,41 +156,18 @@ function App() {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connected, window?.metaidwallet]);
-	console.log("windowcs/////////////////////////", window?.metaidwallet);
+
 	useEffect(() => {
-		console.log(
-			"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}internal}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}t",
-			internal
-		);
 		if (!isNil(window?.metaidwallet)) {
 			window.metaidwallet.on("networkChanged", handleNetworkChanged);
 		}
-	}, [internal]);
-
-	// const handleTest = async () => {
-	// 	// console.log('connected', connected);
-	// 	// console.log('userinfo', userInfo);
-	// 	// console.log('buzzEntity', buzzEntity);
-	// 	// console.log('btcConnector', btcConnector);
-	// 	// console.log('buzzentity res', await btcConnector!.use('buzz'));
-	// 	// toast.success("create buzz successfully");
-	// 	const success_modal = document.getElementById(
-	// 		"create_metaid_success_modal"
-	// 	) as HTMLDialogElement;
-	// 	success_modal.showModal();
-	// };
+	}, [window?.metaidwallet]);
 
 	return (
 		<div className="relative overflow-auto">
 			<Navbar onWalletConnectStart={onWalletConnectStart} onLogout={onLogout} />
 
 			<div className="container pt-[100px] bg-[black] text-white h-screen">
-				{/* <button
-					className="btn btn-active btn-accent text-[blue] absolute top-18 left-2"
-					onClick={handleTest}
-				>
-					Test Button
-				</button> */}
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/buzz/:id" element={<Buzz />} />

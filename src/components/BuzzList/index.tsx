@@ -50,14 +50,12 @@ const BuzzList = () => {
 	const setUserInfo = useSetAtom(userInfoAtom);
 	// const _wallet = useAtomValue(walletAtom);
 	const network = useAtomValue(networkAtom);
-	console.log("network", network);
 
 	const navigate = useNavigate();
 	const { ref, inView } = useInView();
 
 	const buzzEntity = useAtomValue(buzzEntityAtom);
-	// console.log("buzzEntity", !isNil(buzzEntity), buzzEntity);
-	// const [showNewBuzz, setShowNewBuzz] = useState(true);
+
 	const getTotal = async (buzzEntity: IBtcEntity) => {
 		setTotal(await buzzEntity?.total({ network }));
 	};
@@ -111,7 +109,6 @@ const BuzzList = () => {
 
 	useEffect(() => {
 		if (inView && hasNextPage) {
-			// console.log("Fire!");
 			fetchNextPage();
 		}
 	}, [inView, hasNextPage, fetchNextPage]);
