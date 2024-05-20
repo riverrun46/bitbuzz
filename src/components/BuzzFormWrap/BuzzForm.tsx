@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { FileEdit } from "lucide-react";
 import { Image } from "lucide-react";
-import { SubmitHandler, UseFormReturn } from "react-hook-form";
+import { Controller, SubmitHandler, UseFormReturn } from "react-hook-form";
 import cls from "classnames";
-import { IsEncrypt } from "../../utils/file";
+import { IsEncrypt, mergeFileLists } from "../../utils/file";
 import { isNil } from "ramda";
 import CustomFeerate from "../CustomFeerate";
 
@@ -82,9 +82,8 @@ const BuzzForm = ({
 		register,
 		handleSubmit,
 		formState: { errors },
-		watch,
+		getValues,
 	} = buzzFormHandle;
-	const files = watch("images");
 	// const content = watch("content");
 	// const [gas, setGas] = useState<null | number>(null);
 
@@ -120,7 +119,7 @@ const BuzzForm = ({
 					)}
 				</div>
 				<div className="flex items-center self-end gap-2">
-					{!isNil(files) && files.length !== 0 && (
+					{!isNil(filesPreview) && filesPreview.length !== 0 && (
 						<div
 							className="btn btn-xs btn-outline font-normal text-white"
 							onClick={onClearImageUploads}
@@ -138,14 +137,49 @@ const BuzzForm = ({
 						Select Image(s)
 					</div>
 				</div>
-
-				<input
+				<Controller
+					control={buzzFormHandle.control}
+					name="images"
+					render={({ field: { onChange } }) => (
+						<input
+							type="file"
+							multiple
+							id="addImage"
+							className="hidden"
+							{...register("images")}
+							onChange={(e) => {
+								if (!isNil(e.target.files) && e.target.files.length > 0) {
+									if (getValues("images").length > 0) {
+										const mergeRes = mergeFileLists(
+											getValues("images"),
+											e.target.files
+										);
+										// console.log("current get files", getValues("images"));
+										// console.log("current change files", e.target.files);
+										// console.log("mergeFileLists", mergeRes);
+										onChange(mergeRes);
+									} else {
+										onChange(e.target.files);
+									}
+								}
+							}}
+						/>
+					)}
+				/>
+				{/* <input
 					type="file"
 					multiple
 					id="addImage"
 					className="hidden"
 					{...register("images")}
-				/>
+					onChange={(e) => {
+						console.log("current change files", e.target.files);
+						console.log("current get files", getValues("images"));
+						if (!isNil(e.target.files)) {
+							onImageChange(e.target.files);
+						}
+					}}
+				/> */}
 				{filesPreview && renderImages(filesPreview)}
 			</div>
 			{/* set price */}

@@ -1,4 +1,3 @@
-import { dropRepeats } from "ramda";
 import { useEffect, useState } from "react";
 
 const useImagesPreview = (
@@ -9,8 +8,8 @@ const useImagesPreview = (
 	useEffect(() => {
 		if (files) {
 			const imageArray: string[] = Array.from(files).map((file) => URL.createObjectURL(file));
-
-			setImgSrcs((prevImages) => dropRepeats(prevImages.concat(imageArray)));
+			console.log("imageArray", imageArray);
+			setImgSrcs(imageArray);
 		}
 	}, [files]);
 

@@ -3,6 +3,7 @@
 import Compressor from "compressorjs";
 import CryptoJs from "crypto-js";
 import encHex from "crypto-js/enc-hex";
+import { dropRepeats } from "ramda";
 
 export enum IsEncrypt {
 	Yes = 1,
@@ -174,4 +175,18 @@ export const image2Attach = async (images: FileList) => {
 		}
 	}
 	return attachments;
+};
+
+export const mergeFileLists = (fileListA: FileList, fileListB: FileList): FileList => {
+	const dataTransfer = new DataTransfer();
+
+	for (let i = 0; i < fileListA.length; i++) {
+		dataTransfer.items.add(fileListA[i]);
+	}
+
+	for (let i = 0; i < fileListB.length; i++) {
+		dataTransfer.items.add(fileListB[i]);
+	}
+
+	return dataTransfer.files;
 };

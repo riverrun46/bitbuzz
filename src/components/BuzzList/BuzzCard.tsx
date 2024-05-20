@@ -155,13 +155,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		<div className="w-full border border-white rounded-xl flex flex-col gap-4" ref={innerRef}>
 			<div className="flex items-center justify-between pt-4 px-4">
 				<div className="flex gap-2 items-center">
-					{/* <img
-						src={`https://picsum.photos/seed/${imgSeed}/200`}
-						alt="user avatar"
-						className="rounded-full"
-						width={40}
-						height={40}
-					/> */}
 					{isNil(currentUserInfoData.data) ? (
 						<div className="avatar placeholder">
 							<div className="bg-[#2B3440] text-[#D7DDE4] rounded-full w-12">

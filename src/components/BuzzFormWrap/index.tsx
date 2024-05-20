@@ -30,7 +30,10 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 
 	const buzzFormHandle = useForm<BuzzData>();
 	const files = buzzFormHandle.watch("images");
+
 	const [filesPreview, setFilesPreview] = useImagesPreview(files);
+	console.log("files:", files);
+	console.log("filesPreview:", filesPreview);
 	const { data: feeRateData } = useQuery({
 		queryKey: ["feeRate"],
 		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
@@ -42,6 +45,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 	};
 
 	const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
+		console.log("submit image", data.images);
 		const images = data.images.length !== 0 ? await image2Attach(data.images) : [];
 
 		await handleAddBuzz({
@@ -125,7 +129,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeeRate) },
 			{ name: "Custom", number: Number(customFee) },
 		];
-	}, [feeRateData, customFee]);
+	}, [feeRateData, customFee, globalFeeRate]);
 	const [selectFeeRate, setSelectFeeRate] = useState<{
 		name: string;
 		number: number;
@@ -136,6 +140,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 
 	// console.log('select feerate', selectFeeRate);
 	// console.log('feerate data', feeRateData);
+
 	return (
 		<LoadingOverlay active={isAdding} spinner text="Creating Buzz...">
 			<BuzzForm
