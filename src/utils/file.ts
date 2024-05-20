@@ -3,7 +3,6 @@
 import Compressor from "compressorjs";
 import CryptoJs from "crypto-js";
 import encHex from "crypto-js/enc-hex";
-import { dropRepeats } from "ramda";
 
 export enum IsEncrypt {
 	Yes = 1,
