@@ -13,7 +13,6 @@ import { fetchFeeRate } from "../../api/buzz";
 import { MAN_BASE_URL_MAPPING } from "../../api/request";
 import { useAtomValue } from "jotai";
 import { globalFeeRateAtom, networkAtom } from "../../store/user";
-import { toast } from "react-toastify";
 
 export type FormUserInfo = {
 	name: string;
@@ -168,7 +167,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 									const maxFileSize = 200 * 1024; // max file size 200kb
 									const files = e.target.files;
 									if (!isNil(files) && files[0].size > maxFileSize) {
-										toast.error("File size cannot be greater than 200kb");
+										alert("File size cannot be greater than 200kb");
 
 										setValue("avatar", [] as any); // clear file input value
 										e.target.value = ""; // clear file input value

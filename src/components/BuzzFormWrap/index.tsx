@@ -13,7 +13,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { globalFeeRateAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { image2Attach } from "../../utils/file";
+import { image2Attach, removeFileFromList } from "../../utils/file";
 import useImagesPreview from "../../hooks/useImagesPreview";
 import { fetchFeeRate } from "../../api/buzz";
 import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
@@ -140,11 +140,20 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 
 	// console.log('select feerate', selectFeeRate);
 	// console.log('feerate data', feeRateData);
+	const handleRemoveImage = (index: number) => {
+		setFilesPreview(filesPreview.filter((_, i) => i !== index));
+		buzzFormHandle.setValue(
+			"images",
+			removeFileFromList(buzzFormHandle.watch("images"), index)
+		);
+		// remove item from  files object with index
+	};
 
 	return (
 		<LoadingOverlay active={isAdding} spinner text="Creating Buzz...">
 			<BuzzForm
 				onCreateSubmit={onCreateSubmit}
+				handleRemoveImage={handleRemoveImage}
 				buzzFormHandle={buzzFormHandle}
 				onClearImageUploads={onClearImageUploads}
 				filesPreview={filesPreview}

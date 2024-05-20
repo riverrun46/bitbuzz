@@ -8,7 +8,7 @@ import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 import BuzzFormWrap from "./BuzzFormWrap";
 import CustomAvatar from "./CustomAvatar";
 import { BtcNetwork } from "../api/request";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { IBtcConnector } from "@metaid/metaid";
 
 type IProps = {
@@ -194,8 +194,8 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 					</div>
 				</div>
 			</div>
-			<dialog id="new_buzz_modal" className="modal">
-				<div className="modal-box bg-[#191C20] py-5 w-[50%]">
+			<dialog id="new_buzz_modal" className="modal  !z-20">
+				<div className="modal-box bg-[#191C20] !z-20 py-5 w-[50%]">
 					<form method="dialog">
 						{/* if there is a button in form, it will close the modal */}
 						<button className="border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5">
@@ -208,26 +208,6 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
 				</form>
-				<ToastContainer
-					position="top-left"
-					toastStyle={{
-						position: "absolute",
-						top: "80px",
-						left: "120px",
-						width: "380px",
-						zIndex: 9999,
-					}}
-					autoClose={5000}
-					hideProgressBar={false}
-					newestOnTop={false}
-					closeOnClick
-					rtl={false}
-					pauseOnFocusLoss
-					draggable
-					pauseOnHover
-					theme="dark"
-					closeButton={false}
-				/>
 			</dialog>
 		</>
 	);

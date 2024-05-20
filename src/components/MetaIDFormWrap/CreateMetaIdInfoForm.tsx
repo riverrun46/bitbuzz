@@ -13,7 +13,6 @@ import { useMemo, useState } from "react";
 import CustomFeerate from "../CustomFeerate";
 import { globalFeeRateAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
-import { toast } from "react-toastify";
 // import { useEffect, useState } from 'react';
 
 export type UserInfo = {
@@ -177,7 +176,7 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 									const maxFileSize = 200 * 1024; // max file size 200 kb
 									const files = e.target.files;
 									if (!isNil(files) && files[0].size > maxFileSize) {
-										toast.error("File size cannot be greater than 200kb");
+										alert("File size cannot be greater than 200kb");
 
 										setValue("avatar", [] as any); // clear file input value
 										e.target.value = ""; // clear file input value

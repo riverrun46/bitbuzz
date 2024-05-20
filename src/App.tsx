@@ -20,7 +20,7 @@ import {
 } from "./store/user";
 import { buzzEntityAtom } from "./store/buzz";
 import { errors } from "./utils/errors";
-import { isNil } from "ramda";
+import { isEmpty, isNil } from "ramda";
 import { checkMetaletInstalled } from "./utils/wallet";
 // import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from "./components/MetaIDFormWrap/CreateMetaIDModal";
@@ -83,7 +83,7 @@ function App() {
 		// console.log("getUser", await _btcConnector.getUser());
 		const resUser = await _btcConnector.getUser({ network });
 		console.log("user now", resUser);
-		if (!resUser?.name) {
+		if (isNil(resUser?.name || isEmpty(resUser?.name))) {
 			const doc_modal = document.getElementById("create_metaid_modal") as HTMLDialogElement;
 			doc_modal.showModal();
 		} else {
@@ -130,9 +130,7 @@ function App() {
 
 	const handleAcccountsChanged = () => {
 		onLogout();
-		toast.error(
-			"Wallet Account Changed ---- You have been automatically logged out of your current MetaID account. Please login again..."
-		);
+		toast.error("Wallet Account Changed ----Please login again...");
 	};
 
 	const handleNetworkChanged = async (network: BtcNetwork) => {
@@ -179,7 +177,7 @@ function App() {
 					top: "80px",
 					left: "120px",
 					width: "380px",
-					zIndex: 9999,
+					// zIndex: 9999,
 				}}
 				autoClose={5000}
 				hideProgressBar={false}

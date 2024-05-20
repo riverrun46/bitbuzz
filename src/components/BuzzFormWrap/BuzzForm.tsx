@@ -6,7 +6,6 @@ import cls from "classnames";
 import { IsEncrypt, mergeFileLists } from "../../utils/file";
 import { isNil } from "ramda";
 import CustomFeerate from "../CustomFeerate";
-import { toast } from "react-toastify";
 
 export interface AttachmentItem {
 	fileName: string;
@@ -24,6 +23,7 @@ type IProps = {
 	buzzFormHandle: UseFormReturn<BuzzData, any, BuzzData>;
 	onClearImageUploads: () => void;
 	filesPreview: string[];
+	handleRemoveImage: (index: number) => void;
 	feeRateOptions: {
 		name: string;
 		number: number;
@@ -47,20 +47,27 @@ export type BuzzData = {
 	images: FileList;
 };
 
-const renderImages = (data: string[]) => {
+const renderImages = (data: string[], handleRemoveImage: (index: number) => void) => {
 	return (
 		<div className="grid grid-cols-3 gap-2 place-items-center">
-			{data.map((image) => {
+			{data.map((image, index) => {
 				return (
-					<img
-						className="image w-[150px] h-[150px]"
-						style={{
-							objectFit: "cover",
-						}}
-						src={image}
-						alt=""
-						key={image}
-					/>
+					<div className="relative">
+						<img
+							src="/icon_close.png"
+							className="absolute top-1 right-1 cursor-pointer  w-[24px] h-[24px]"
+							onClick={() => handleRemoveImage(index)}
+						/>
+						<img
+							className="image rounded-md w-[150px] h-[150px]"
+							style={{
+								objectFit: "cover",
+							}}
+							src={image}
+							alt=""
+							key={image}
+						/>
+					</div>
 				);
 			})}
 		</div>
@@ -72,7 +79,7 @@ const BuzzForm = ({
 	buzzFormHandle,
 	onClearImageUploads,
 	filesPreview,
-
+	handleRemoveImage,
 	feeRateOptions,
 	handleCustomFeeChange,
 	customFee,
@@ -153,7 +160,7 @@ const BuzzForm = ({
 								if (!isNil(files) && files.length > 0) {
 									for (const item of Array.from(files ?? [])) {
 										if (item.size > 200 * 1024) {
-											toast.error(
+											alert(
 												`File size cannot be greater than 200kb (filename: ${item.name})`
 											);
 											e.target.value = ""; // clear file input value
@@ -192,7 +199,7 @@ const BuzzForm = ({
 						}
 					}}
 				/> */}
-				{filesPreview && renderImages(filesPreview)}
+				{filesPreview && renderImages(filesPreview, handleRemoveImage)}
 			</div>
 			{/* set price */}
 			{/* <div className="flex flex-col gap-2">

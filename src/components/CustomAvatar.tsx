@@ -8,7 +8,7 @@ const CustomAvatar = ({ userInfo }: { userInfo: UserInfo }) => {
 
 	const hasName = !isNil(userInfo?.name) && !isEmpty(userInfo?.name);
 	const hasAvatar = !isNil(userInfo?.avatar) && !isEmpty(userInfo?.avatar);
-	const userAlt = hasName ? userInfo.name.slice(0, 2) : (userInfo?.address ?? "").slice(-4, -2);
+	const userAlt = hasName ? userInfo.name.slice(0, 2) : (userInfo?.metaid ?? "").slice(-4, -2);
 	const src = `${MAN_BASE_URL_MAPPING[network]}${userInfo?.avatar ?? ""}`;
 	return hasAvatar ? (
 		<img

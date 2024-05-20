@@ -189,3 +189,19 @@ export const mergeFileLists = (fileListA: FileList, fileListB: FileList): FileLi
 
 	return dataTransfer.files;
 };
+
+export function removeFileFromList(fileList: FileList, index: number) {
+	// Step 1: Create a new File array without the file at the specified index
+	const filesArray = Array.from(fileList)
+		.slice(0, index)
+		.concat(Array.from(fileList).slice(index + 1));
+
+	// Step 2: Create a new FileList object with the remaining files
+	const newFileList = new DataTransfer();
+	for (let i = 0; i < filesArray.length; i++) {
+		newFileList.items.add(filesArray[i]);
+	}
+
+	// Step 3: Return the new FileList object
+	return newFileList.files;
+}
