@@ -28,7 +28,7 @@ import EditMetaIDModal from "./components/MetaIDFormWrap/EditMetaIDModal";
 import { useCallback, useEffect } from "react";
 import { BtcNetwork } from "./api/request";
 
-function App22() {
+function App() {
 	const [connected, setConnected] = useAtom(connectedAtom);
 	const setWallet = useSetAtom(walletAtom);
 	const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
@@ -159,7 +159,11 @@ function App22() {
 
 	return (
 		<div className="relative overflow-auto">
-			<Navbar onWalletConnectStart={onWalletConnectStart} onLogout={onLogout} />
+			<Navbar
+				onWalletConnectStart={onWalletConnectStart}
+				onLogout={onLogout}
+				btcConnector={btcConnector!}
+			/>
 
 			<div className="container pt-[100px] bg-[black] text-white h-screen">
 				<Routes>
@@ -197,4 +201,4 @@ function App22() {
 	);
 }
 
-export default App22;
+export default App;

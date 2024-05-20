@@ -6,22 +6,25 @@ import BuzzForm, { AttachmentItem, BuzzData } from "./BuzzForm";
 import { toast } from "react-toastify";
 import LoadingOverlay from "react-loading-overlay-ts";
 // import dayjs from 'dayjs';
-import { buzzEntityAtom } from "../../store/buzz";
 import { useAtomValue } from "jotai";
 import { isEmpty, isNil } from "ramda";
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { btcConnectorAtom, globalFeeRateAtom } from "../../store/user";
+import { globalFeeRateAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { image2Attach } from "../../utils/file";
 import useImagesPreview from "../../hooks/useImagesPreview";
 import { fetchFeeRate } from "../../api/buzz";
-import { CreateOptions } from "@metaid/metaid";
-const BuzzFormWrap = () => {
+import { CreateOptions, IBtcConnector, IBtcEntity } from "@metaid/metaid";
+
+type Iprops = {
+	btcConnector: IBtcConnector;
+};
+
+const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 	const [isAdding, setIsAdding] = useState(false);
-	const buzzEntity = useAtomValue(buzzEntityAtom);
-	const btcConnector = useAtomValue(btcConnectorAtom);
+
 	const globalFeeRate = useAtomValue(globalFeeRateAtom);
 	const queryClient = useQueryClient();
 
@@ -50,6 +53,7 @@ const BuzzFormWrap = () => {
 
 	const handleAddBuzz = async (buzz: { content: string; images: AttachmentItem[] }) => {
 		setIsAdding(true);
+		const buzzEntity: IBtcEntity = await btcConnector.use("buzz");
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const finalBody: any = { content: buzz.content };

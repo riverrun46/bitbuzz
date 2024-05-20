@@ -9,13 +9,15 @@ import BuzzFormWrap from "./BuzzFormWrap";
 import CustomAvatar from "./CustomAvatar";
 import { BtcNetwork } from "../api/request";
 import { toast } from "react-toastify";
+import { IBtcConnector } from "@metaid/metaid";
 
 type IProps = {
 	onWalletConnectStart: () => Promise<void>;
 	onLogout: () => void;
+	btcConnector: IBtcConnector;
 };
 
-const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
+const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 	const networks = ["Mainnet", "Testnet", "Regtest"];
 	const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom);
 	const [network, setNetwork] = useAtom(networkAtom);
@@ -201,7 +203,7 @@ const Navbar = ({ onWalletConnectStart, onLogout }: IProps) => {
 						</button>
 					</form>
 					<h3 className="font-medium text-white text-[16px] text-center">New Buzz</h3>
-					<BuzzFormWrap />
+					<BuzzFormWrap btcConnector={btcConnector} />
 				</div>
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
