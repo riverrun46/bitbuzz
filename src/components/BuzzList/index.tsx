@@ -1,4 +1,4 @@
-import { RotateCw, Sparkle } from "lucide-react";
+import { Sparkle } from "lucide-react";
 import { useEffect, useState } from "react";
 // import { useState } from "react";
 // import cls from "classnames";
@@ -7,10 +7,10 @@ import { fetchBuzzs } from "../../api/buzz";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { buzzEntityAtom } from "../../store/buzz";
 import { isNil } from "ramda";
-import { btcConnectorAtom, networkAtom, userInfoAtom } from "../../store/user";
+import { networkAtom } from "../../store/user";
 import { IBtcEntity } from "@metaid/metaid";
 // import { btcConnect } from "@metaid/metaid";
 // import { useCallback } from 'react';
@@ -46,9 +46,8 @@ export type Pin = {
 
 const BuzzList = () => {
 	const [total, setTotal] = useState<null | number>(null);
-	const btcConnector = useAtomValue(btcConnectorAtom);
-	const setUserInfo = useSetAtom(userInfoAtom);
-	// const _wallet = useAtomValue(walletAtom);
+	// const btcConnector = useAtomValue(btcConnectorAtom);
+	// const setUserInfo = useSetAtom(userInfoAtom);
 	const network = useAtomValue(networkAtom);
 
 	const navigate = useNavigate();
@@ -64,18 +63,10 @@ const BuzzList = () => {
 		if (!isNil(buzzEntity)) {
 			getTotal(buzzEntity!);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [buzzEntity]);
 
-	const {
-		data,
-		isLoading,
-		// isFetching,
-		isRefetching,
-		refetch,
-		fetchNextPage,
-		isFetchingNextPage,
-		hasNextPage,
-	} = useInfiniteQuery({
+	const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
 		queryKey: ["buzzes", network],
 		enabled: !isNil(buzzEntity),
 
