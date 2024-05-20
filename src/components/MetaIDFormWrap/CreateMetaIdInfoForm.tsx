@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import cls from "classnames";
 import { Copy, CopyCheck, Image } from "lucide-react";
 import useImagesPreview from "../../hooks/useImagesPreview";
@@ -13,6 +13,7 @@ import { useMemo, useState } from "react";
 import CustomFeerate from "../CustomFeerate";
 import { globalFeeRateAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
+import { toast } from "react-toastify";
 // import { useEffect, useState } from 'react';
 
 export type UserInfo = {
@@ -36,6 +37,7 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 		formState: { errors },
 		setValue,
 		watch,
+		control,
 	} = useForm<UserInfo>({
 		defaultValues: { name: initialValues?.name, bio: initialValues?.bio },
 	});
@@ -162,12 +164,37 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 						)}
 					</div>
 
-					<input type="file" id="addPFP" className="hidden" {...register("avatar")} />
+					<Controller
+						control={control}
+						name="avatar"
+						render={({ field: { onChange } }) => (
+							<input
+								type="file"
+								id="addPFP"
+								className="hidden"
+								{...register("avatar")}
+								onChange={(e) => {
+									const maxFileSize = 200 * 1024; // max file size 200 kb
+									const files = e.target.files;
+									if (!isNil(files) && files[0].size > maxFileSize) {
+										toast.error("File size cannot be greater than 200kb");
+
+										setValue("avatar", [] as any); // clear file input value
+										e.target.value = ""; // clear file input value
+										return;
+									}
+									onChange(files);
+								}}
+							/>
+						)}
+					/>
+
+					{/* <input type="file" id="addPFP" className="hidden" {...register("avatar")} /> */}
 
 					{!isNil(avatar) && avatar.length !== 0 ? (
-						<div className="bg-inheirt border border-dashed border-main rounded-full w-[100px] h-[100px] grid place-items-center mx-auto">
+						<div className="relative w-[105px] h-[105px]  bg-inheirt border border-dashed border-main rounded-full grid place-items-center mx-auto">
 							<img
-								className="image self-center rounded-full h-[100px] w-[100px] "
+								className="absolute top-[1px] left-0.5 image self-center rounded-full h-[100px] w-[100px] "
 								style={{
 									objectFit: "cover",
 								}}

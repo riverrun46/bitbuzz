@@ -130,14 +130,32 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 	};
 
 	const renderImages = (pinIds: string[]) => {
+		if (pinIds.length === 1) {
+			return (
+				<img
+					className="image h-[60%] w-[60%]"
+					style={{
+						objectFit: "cover",
+						objectPosition: "center",
+					}}
+					src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinIds[0]}`}
+					alt=""
+					key={pinIds[0]}
+				/>
+			);
+		}
 		return (
 			<div className="grid grid-cols-3 gap-2 place-items-center">
 				{pinIds.map((pinId) => {
 					return (
 						<img
-							className="image"
-							height={"48px"}
-							width={"auto"}
+							className="image h-[48px] w-auto"
+							style={{
+								objectFit: "cover",
+								objectPosition: "center",
+								width: "100%",
+								height: "100%",
+							}}
 							src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinId}`}
 							alt=""
 							key={pinId}

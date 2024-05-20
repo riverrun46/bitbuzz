@@ -1,5 +1,6 @@
 import { IBtcConnector } from "@metaid/metaid";
 import CreateMetaIDFormWrap from "./CreateMetaIDFormWrap";
+import { ToastContainer } from "react-toastify";
 
 type Iprops = {
 	btcConnector: IBtcConnector;
@@ -35,6 +36,26 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
 				</form>
+				<ToastContainer
+					position="top-left"
+					toastStyle={{
+						position: "absolute",
+						top: "80px",
+						left: "120px",
+						width: "380px",
+						zIndex: 9999,
+					}}
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="dark"
+					closeButton={false}
+				/>
 			</dialog>
 
 			<dialog id="create_metaid_success_modal" className="modal">
@@ -56,8 +77,13 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
 							height={300}
 						/>
 						<div className="flex flex-col items-center mt-48 gap-8">
-							<div className="font-medium text-white w-[60%] text-[16px] text-center">
-								MetaID created successfully!Now you can connect your wallet again!
+							<div className="flex flex-col gap-2">
+								<div className="font-medium text-white w-full text-[16px] text-center">
+									MetaID created successfully!
+								</div>
+								<div className="font-medium text-white w-full text-[16px] text-center">
+									Now you can connect your wallet again!
+								</div>
 							</div>
 							<div
 								className="btn btn-sm btn-primary rounded-full text-md font-medium	w-[80px]"
@@ -71,6 +97,26 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
 				{/* <form method="dialog" className="modal-backdrop">
 					<button>close</button>
 				</form> */}
+				<ToastContainer
+					position="top-left"
+					toastStyle={{
+						position: "absolute",
+						top: "80px",
+						left: "120px",
+						width: "380px",
+						zIndex: 9999,
+					}}
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="dark"
+					closeButton={false}
+				/>
 			</dialog>
 		</>
 	);

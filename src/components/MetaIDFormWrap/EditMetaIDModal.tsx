@@ -1,5 +1,6 @@
 import { IBtcConnector } from "@metaid/metaid";
 import EditMetaIDFormWrap from "./EditMetaIDFormWrap";
+import { ToastContainer } from "react-toastify";
 
 type Iprops = {
 	btcConnector: IBtcConnector;
@@ -8,7 +9,7 @@ type Iprops = {
 const EditMetaIDModal = ({ btcConnector }: Iprops) => {
 	return (
 		<dialog id="edit_metaid_modal" className="modal">
-			<div className="modal-box bg-[#191C20] py-5  w-[50%]">
+			<div className="modal-box bg-[#191C20] py-5 !z-20 w-[50%]">
 				<form method="dialog">
 					{/* if there is a button in form, it will close the modal */}
 					<button className="border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5">
@@ -23,6 +24,26 @@ const EditMetaIDModal = ({ btcConnector }: Iprops) => {
 			<form method="dialog" className="modal-backdrop">
 				<button>close</button>
 			</form>
+			<ToastContainer
+				position="top-left"
+				toastStyle={{
+					position: "absolute",
+					top: "80px",
+					left: "120px",
+					width: "380px",
+					zIndex: 9999,
+				}}
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="dark"
+				closeButton={false}
+			/>
 		</dialog>
 	);
 };

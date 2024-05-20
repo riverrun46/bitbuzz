@@ -131,7 +131,8 @@ const BuzzList = () => {
 					<div className="loading loading-dots absolute right-0 text-gray text-sm "></div>
 				)}
 
-				<Sparkle className="text-main" /> */}
+				*/}
+				<Sparkle className="text-main" />
 			</div>
 
 			{/* <div className="text-white flex mx-auto border border-white w-fit rounded-full mt-8">

@@ -22,7 +22,7 @@ import { buzzEntityAtom } from "./store/buzz";
 import { errors } from "./utils/errors";
 import { isNil } from "ramda";
 import { checkMetaletInstalled } from "./utils/wallet";
-import { conirmMetaletTestnet } from "./utils/wallet";
+// import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from "./components/MetaIDFormWrap/CreateMetaIDModal";
 import EditMetaIDModal from "./components/MetaIDFormWrap/EditMetaIDModal";
 import { useCallback, useEffect } from "react";
@@ -60,7 +60,7 @@ function App() {
 			address: _wallet.address,
 			pub: _wallet.pub,
 		});
-		await conirmMetaletTestnet();
+		// await conirmMetaletTestnet();
 		if (isNil(_wallet?.address)) {
 			toast.error(errors.NO_METALET_LOGIN, {
 				className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
@@ -179,6 +179,7 @@ function App() {
 					top: "80px",
 					left: "120px",
 					width: "380px",
+					zIndex: 9999,
 				}}
 				autoClose={5000}
 				hideProgressBar={false}

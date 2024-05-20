@@ -4,7 +4,6 @@ import { UserInfo } from "../store/user";
 
 export const checkMetaletInstalled = async () => {
 	const metalet = window?.metaidwallet;
-	// const connectRes = await metalet?.connect();
 	if (typeof metalet === "undefined") {
 		toast.error(errors.NO_METALET_DETECTED, {
 			className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",

@@ -8,7 +8,7 @@ import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 import BuzzFormWrap from "./BuzzFormWrap";
 import CustomAvatar from "./CustomAvatar";
 import { BtcNetwork } from "../api/request";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { IBtcConnector } from "@metaid/metaid";
 
 type IProps = {
@@ -208,6 +208,26 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 				<form method="dialog" className="modal-backdrop">
 					<button>close</button>
 				</form>
+				<ToastContainer
+					position="top-left"
+					toastStyle={{
+						position: "absolute",
+						top: "80px",
+						left: "120px",
+						width: "380px",
+						zIndex: 9999,
+					}}
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="dark"
+					closeButton={false}
+				/>
 			</dialog>
 		</>
 	);

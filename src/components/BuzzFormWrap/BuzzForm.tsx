@@ -6,6 +6,7 @@ import cls from "classnames";
 import { IsEncrypt, mergeFileLists } from "../../utils/file";
 import { isNil } from "ramda";
 import CustomFeerate from "../CustomFeerate";
+import { toast } from "react-toastify";
 
 export interface AttachmentItem {
 	fileName: string;
@@ -148,18 +149,29 @@ const BuzzForm = ({
 							className="hidden"
 							{...register("images")}
 							onChange={(e) => {
-								if (!isNil(e.target.files) && e.target.files.length > 0) {
+								const files = e.target.files;
+								if (!isNil(files) && files.length > 0) {
+									for (const item of Array.from(files ?? [])) {
+										if (item.size > 200 * 1024) {
+											toast.error(
+												`File size cannot be greater than 200kb (filename: ${item.name})`
+											);
+											e.target.value = ""; // clear file input value
+											console.log("bcccccc");
+											return;
+										}
+									}
 									if (getValues("images").length > 0) {
 										const mergeRes = mergeFileLists(
 											getValues("images"),
-											e.target.files
+											files!
 										);
 										// console.log("current get files", getValues("images"));
-										// console.log("current change files", e.target.files);
+										// console.log("current change files", files);
 										// console.log("mergeFileLists", mergeRes);
 										onChange(mergeRes);
 									} else {
-										onChange(e.target.files);
+										onChange(files);
 									}
 								}
 							}}

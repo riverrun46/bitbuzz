@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import cls from "classnames";
 import { Image } from "lucide-react";
 import useImagesPreview from "../../hooks/useImagesPreview";
@@ -13,6 +13,7 @@ import { fetchFeeRate } from "../../api/buzz";
 import { MAN_BASE_URL_MAPPING } from "../../api/request";
 import { useAtomValue } from "jotai";
 import { globalFeeRateAtom, networkAtom } from "../../store/user";
+import { toast } from "react-toastify";
 
 export type FormUserInfo = {
 	name: string;
@@ -32,8 +33,10 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 		register,
 		handleSubmit,
 		formState: { errors },
+
 		setValue,
 		watch,
+		control,
 	} = useForm<FormUserInfo>({
 		defaultValues: {
 			name: initialValues?.name ?? "",
@@ -49,8 +52,8 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 	}, [initialValues]);
 
 	const avatar = watch("avatar");
-
 	const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
+	console.log("filesPreview", filesPreview);
 	const onCreateSubmit: SubmitHandler<FormUserInfo> = async (data) => {
 		const submitAvatar =
 			!isNil(data?.avatar) && data.avatar.length !== 0 ? await image2Attach(data.avatar) : [];
@@ -136,8 +139,9 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 				)}
 
 				<div className="flex flex-col gap-2">
-					<div className="flex justify-between">
+					<div className="flex justify-between items-center">
 						<div className="text-white">New PFP</div>
+
 						{!isNil(avatar) && avatar.length !== 0 && (
 							<div
 								className="btn btn-xs btn-outline font-normal text-white"
@@ -151,12 +155,37 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 						)}
 					</div>
 
-					<input type="file" id="addPFP2" className="hidden" {...register("avatar")} />
+					<Controller
+						control={control}
+						name="avatar"
+						render={({ field: { onChange } }) => (
+							<input
+								type="file"
+								id="addPFP2"
+								className="hidden"
+								{...register("avatar")}
+								onChange={(e) => {
+									const maxFileSize = 200 * 1024; // max file size 200kb
+									const files = e.target.files;
+									if (!isNil(files) && files[0].size > maxFileSize) {
+										toast.error("File size cannot be greater than 200kb");
+
+										setValue("avatar", [] as any); // clear file input value
+										e.target.value = ""; // clear file input value
+										return;
+									}
+									onChange(files);
+								}}
+							/>
+						)}
+					/>
+
+					{/* <input type="file" id="addPFP2" className="hidden" {...register("avatar")} /> */}
 
 					{!isNil(avatar) && avatar.length !== 0 ? (
-						<div className="bg-inheirt border border-dashed border-main rounded-full w-[100px] h-[100px] grid place-items-center mx-auto">
+						<div className="relative w-[105px] h-[105px] bg-inheirt border border-dashed border-main rounded-full grid place-items-center mx-auto">
 							<img
-								className="image self-center rounded-full h-[100px] w-[100px]"
+								className="absolute top-[1px] left-0.5 image self-center rounded-full h-[100px] w-[100px]"
 								style={{
 									objectFit: "cover",
 								}}
