@@ -164,14 +164,14 @@ export const image2Attach = async (images: FileList) => {
 	const attachments: AttachmentItem[] = [];
 
 	for (let i = 0; i < images.length; i++) {
-		if (attachments.length <= 3) {
-			// 压缩图片
-			const compressed = await compressImage(images[i]);
-			const result = await FileToAttachmentItem(compressed);
-			if (result) attachments.push(result);
-		} else {
-			break;
-		}
+		// 压缩图片
+		const compressed = await compressImage(images[i]);
+		const result = await FileToAttachmentItem(compressed);
+		if (result) attachments.push(result);
+		// if (attachments.length <= 3) {
+		// } else {
+		// 	break;
+		// }
 	}
 	return attachments;
 };
