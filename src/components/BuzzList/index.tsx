@@ -113,17 +113,17 @@ const BuzzList = () => {
 		}
 	}, [inView, hasNextPage, fetchNextPage]);
 
-	const handleRefresh = async () => {
-		refetch();
-		// const _wallet = await MetaletWalletForBtc.create();
-		// const _btcConnector: BtcConnector = await btcConnect({
-		// 	network,
-		// 	wallet: _wallet ?? undefined,
-		// });
-		const _user = await btcConnector!.getUser({ network });
+	// const handleRefresh = async () => {
+	// 	refetch();
+	// 	// const _wallet = await MetaletWalletForBtc.create();
+	// 	// const _btcConnector: BtcConnector = await btcConnect({
+	// 	// 	network,
+	// 	// 	wallet: _wallet ?? undefined,
+	// 	// });
+	// 	const _user = await btcConnector!.getUser({ network });
 
-		setUserInfo(_user);
-	};
+	// 	setUserInfo(_user);
+	// };
 
 	return (
 		<div>
@@ -131,7 +131,7 @@ const BuzzList = () => {
 				<Sparkle className="text-main" />
 
 				<div className="text-white text-[36px] font-['Impact']">{"What's New Today"}</div>
-				{!isRefetching ? (
+				{/* {!isRefetching ? (
 					<RotateCw
 						className="text-gray absolute right-0 cursor-pointer"
 						onClick={handleRefresh}
@@ -140,7 +140,7 @@ const BuzzList = () => {
 					<div className="loading loading-dots absolute right-0 text-gray text-sm "></div>
 				)}
 
-				<Sparkle className="text-main" />
+				<Sparkle className="text-main" /> */}
 			</div>
 
 			{/* <div className="text-white flex mx-auto border border-white w-fit rounded-full mt-8">

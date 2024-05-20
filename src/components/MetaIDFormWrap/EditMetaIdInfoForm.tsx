@@ -86,8 +86,8 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 		name: string;
 		number: number;
 	}>({
-		name: "Slow",
-		number: feeRateData?.hourFee ?? 1,
+		name: "Custom",
+		number: Number(customFee),
 	});
 	return (
 		<form
