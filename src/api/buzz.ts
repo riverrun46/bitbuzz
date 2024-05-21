@@ -137,7 +137,7 @@ export type FeeRateApi = {
 
 export async function fetchFeeRate({ netWork }: { netWork?: BtcNetwork }): Promise<FeeRateApi> {
 	const response = await fetch(
-		`https://mempool.space/${netWork === "mainnet" ? "" : "testnet"}/api/v1/fees/recommended`,
+		`https://mempool.space/${netWork === "mainnet" ? "" : "testnet/"}api/v1/fees/recommended`,
 		{
 			method: "get",
 		}
