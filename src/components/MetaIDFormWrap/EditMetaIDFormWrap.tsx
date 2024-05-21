@@ -50,7 +50,10 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 				feeRate: Number(globalFeeRate),
 				network,
 				service: {
-					address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+					address:
+						network === "mainnet"
+							? "bc1pxn62rxeqzr39qjvq9fnz4t00qjvhepe0jzp44tnljwzaxjvt79dqph7h8m"
+							: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
 					satoshis: "1999",
 				},
 			})
