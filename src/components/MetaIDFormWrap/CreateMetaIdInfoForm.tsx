@@ -9,7 +9,7 @@ import { MetaidUserInfo } from "./CreateMetaIDFormWrap";
 import { useClipboard } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchFeeRate } from "../../api/buzz";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CustomFeerate from "../CustomFeerate";
 import { globalFeeRateAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
@@ -29,7 +29,7 @@ type IProps = {
 };
 
 const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IProps) => {
-	const globalFeeRate = useAtomValue(globalFeeRateAtom);
+	const globalFeerate = useAtomValue(globalFeeRateAtom);
 	const {
 		register,
 		handleSubmit,
@@ -48,16 +48,19 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
 	});
 
-	const [customFee, setCustomFee] = useState<string>(globalFeeRate);
+	const [customFee, setCustomFee] = useState<string>(globalFeerate);
+	useEffect(() => {
+		setCustomFee(globalFeerate);
+	}, [globalFeerate]);
 
 	const feeRateOptions = useMemo(() => {
 		return [
-			{ name: "Slow", number: feeRateData?.hourFee ?? Number(globalFeeRate) },
-			{ name: "Avg", number: feeRateData?.halfHourFee ?? Number(globalFeeRate) },
-			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeeRate) },
+			{ name: "Slow", number: feeRateData?.hourFee ?? Number(globalFeerate) },
+			{ name: "Avg", number: feeRateData?.halfHourFee ?? Number(globalFeerate) },
+			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeerate) },
 			{ name: "Custom", number: Number(customFee) },
 		];
-	}, [feeRateData, customFee, globalFeeRate]);
+	}, [feeRateData, customFee, globalFeerate]);
 	const [selectFeeRate, setSelectFeeRate] = useState<{
 		name: string;
 		number: number;

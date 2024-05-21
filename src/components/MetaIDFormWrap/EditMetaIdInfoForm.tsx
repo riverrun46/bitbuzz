@@ -75,6 +75,9 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 	});
 
 	const [customFee, setCustomFee] = useState<string>(globalFeerate);
+	useEffect(() => {
+		setCustomFee(globalFeerate);
+	}, [globalFeerate]);
 
 	const feeRateOptions = useMemo(() => {
 		return [

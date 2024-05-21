@@ -8,7 +8,7 @@ import LoadingOverlay from "react-loading-overlay-ts";
 // import dayjs from 'dayjs';
 import { useAtomValue } from "jotai";
 import { isEmpty, isNil } from "ramda";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { globalFeeRateAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
@@ -25,7 +25,7 @@ type Iprops = {
 const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 	const [isAdding, setIsAdding] = useState(false);
 
-	const globalFeeRate = useAtomValue(globalFeeRateAtom);
+	const globalFeerate = useAtomValue(globalFeeRateAtom);
 	const queryClient = useQueryClient();
 
 	const buzzFormHandle = useForm<BuzzData>();
@@ -120,16 +120,19 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 		setIsAdding(false);
 	};
 
-	const [customFee, setCustomFee] = useState<string>(globalFeeRate);
+	const [customFee, setCustomFee] = useState<string>(globalFeerate);
+	useEffect(() => {
+		setCustomFee(globalFeerate);
+	}, [globalFeerate]);
 
 	const feeRateOptions = useMemo(() => {
 		return [
-			{ name: "Slow", number: feeRateData?.hourFee ?? Number(globalFeeRate) },
-			{ name: "Avg", number: feeRateData?.halfHourFee ?? Number(globalFeeRate) },
-			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeeRate) },
+			{ name: "Slow", number: feeRateData?.hourFee ?? Number(globalFeerate) },
+			{ name: "Avg", number: feeRateData?.halfHourFee ?? Number(globalFeerate) },
+			{ name: "Fast", number: feeRateData?.fastestFee ?? Number(globalFeerate) },
 			{ name: "Custom", number: Number(customFee) },
 		];
-	}, [feeRateData, customFee, globalFeeRate]);
+	}, [feeRateData, customFee, globalFeerate]);
 	const [selectFeeRate, setSelectFeeRate] = useState<{
 		name: string;
 		number: number;
