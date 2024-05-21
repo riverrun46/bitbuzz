@@ -118,7 +118,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 					</div>
 
 					<div className="flex items-center gap-2">
-						<div className="text-gray">Global Fee:</div>
+						<div className="text-gray">Fee Rate:</div>
 						<input
 							inputMode="numeric"
 							type="number"
@@ -138,7 +138,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 						/>
 
 						<PencilLine
-							className="border rounded-full text-main bg-[black] p-2 cursor-pointer"
+							className="border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2"
 							size={45}
 							onClick={onBuzzStart}
 						/>
