@@ -70,7 +70,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 					// console.log("image.data", Buffer.from(image.data, "hex").toString("base64"));
 					fileOptions.push({
 						body: Buffer.from(image.data, "hex").toString("base64"),
-						contentType: "image/jpeg",
+						contentType: "image/jpeg;binary",
 						encoding: "base64",
 					});
 				}

@@ -67,8 +67,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		queryKey: ["userInfo", buzzItem!.address, network],
 		queryFn: () => btcConnector?.getUser({ network, currentAddress: buzzItem!.address }),
 	});
-	// console.log("address", buzzItem!.address);
-	// console.log("currentUserInfoData", currentUserInfoData.data);
+	const metaid = currentUserInfoData?.data?.metaid ?? btcConnector?.metaid;
 	const attachData = useQueries({
 		queries: attachPids.map((id: string) => {
 			return {
@@ -83,7 +82,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 			};
 		},
 	});
-	// console.log("attachData", attachData);
 
 	const handleLike = async (pinId: string) => {
 		await checkMetaletInstalled();
@@ -260,11 +258,14 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 						) : (
 							<CustomAvatar userInfo={currentUserInfoData.data} />
 						)}
-						<div className="text-gray">
-							{isNil(currentUserInfoData?.data?.name) ||
-							isEmpty(currentUserInfoData?.data?.name)
-								? "metaid-user-" + buzzItem.address.slice(-4)
-								: currentUserInfoData?.data?.name}
+						<div className="flex flex-col">
+							<div className="text-gray">
+								{isNil(currentUserInfoData?.data?.name) ||
+								isEmpty(currentUserInfoData?.data?.name)
+									? "metaid-user-" + buzzItem.address.slice(-4)
+									: currentUserInfoData?.data?.name}
+							</div>
+							<div className="text-gray text-xs">{(metaid ?? "").slice(0, 6)}</div>
 						</div>
 					</div>
 					{/* <FollowButton isFollowed={true} /> */}
