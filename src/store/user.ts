@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import { IBtcConnector, IMetaletWalletForBtc } from "@metaid/metaid";
 
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom } from "jotai";
 import { BtcNetwork } from "../api/request";
 import { atomWithStorage } from "jotai/utils";
 
