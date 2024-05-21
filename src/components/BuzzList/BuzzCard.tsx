@@ -294,7 +294,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 							<div>{summary}</div>
 						)}
 					</div>
-					<div>
+					<div className="mt-4">
 						{!attachData.pending &&
 							!isEmpty((attachData?.data ?? []).filter((d: any) => !isNil(d))) &&
 							// eslint-disable-next-line @typescript-eslint/no-explicit-any
