@@ -101,10 +101,15 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 				options: [
 					{
 						body: JSON.stringify({ isLike: "1", likeTo: pinId }),
+						flag: network === "mainnet" ? "metaid" : "testid",
 					},
 				],
 				noBroadcast: "no",
 				feeRate: Number(globalFeeRate),
+				service: {
+					address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+					satoshis: "1999",
+				},
 			});
 			console.log("likeRes", likeRes);
 			if (!isNil(likeRes?.revealTxIds[0])) {

@@ -1308,10 +1308,10 @@
   dependencies:
     inquirer "^9.2.11"
 
-"@metaid/metaid@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-1.2.2.tgz#df5b0d00bc48dbf434b637fb014d1f53fbba321f"
-  integrity sha512-U+tg0stm2jPRjwVGO+M7kZcjRRIbe4XGqi3XZxWSv6cDNJBWsRvNELc05m/QRwoxTxD38jFi674DbxPQBfv2iw==
+"@metaid/metaid@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-1.2.5.tgz#01eb6675cf88bafb6217b084915215dcd0df0d16"
+  integrity sha512-L91hGtYXWPsAak7Q68LwPkFeuNVGbvZ9lWZRqHmMn7k/SE7QGEQjFtjmCCCjbERV87+i3BGmN6Ui73NqjZx8cQ==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid-cli" "0.0.2"

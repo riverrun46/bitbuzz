@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CreateMetaIdInfoForm from "./CreateMetaIdInfoForm";
 import { useAtomValue } from "jotai";
-import { globalFeeRateAtom, walletAtom } from "../../store/user";
+import { globalFeeRateAtom, networkAtom, walletAtom } from "../../store/user";
 import { isNil } from "ramda";
 import { IBtcConnector } from "@metaid/metaid";
 
@@ -26,7 +26,7 @@ const CreateMetaIDFormWrap = ({
 	const [isCreating, setIsCreating] = useState(false);
 	const [balance, setBalance] = useState("0");
 	const wallet = useAtomValue(walletAtom);
-
+	const network = useAtomValue(networkAtom);
 	const globalFeeRate = useAtomValue(globalFeeRateAtom);
 
 	const getBtcBalance = async () => {
@@ -51,7 +51,15 @@ const CreateMetaIDFormWrap = ({
 		setIsCreating(true);
 
 		const res = await btcConnector
-			.createUserInfo({ ...userInfo, feeRate: Number(globalFeeRate) })
+			.createUserInfo({
+				...userInfo,
+				feeRate: Number(globalFeeRate),
+				network,
+				service: {
+					address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+					satoshis: "1999",
+				},
+			})
 			.catch((error: any) => {
 				setIsCreating(false);
 

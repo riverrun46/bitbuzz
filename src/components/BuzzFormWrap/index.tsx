@@ -10,7 +10,7 @@ import { useAtomValue } from "jotai";
 import { isEmpty, isNil } from "ramda";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { globalFeeRateAtom } from "../../store/user";
+import { globalFeeRateAtom, networkAtom } from "../../store/user";
 import { sleep } from "../../utils/time";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { image2Attach, removeFileFromList } from "../../utils/file";
@@ -27,7 +27,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 
 	const globalFeerate = useAtomValue(globalFeeRateAtom);
 	const queryClient = useQueryClient();
-
+	const network = useAtomValue(networkAtom);
 	const buzzFormHandle = useForm<BuzzData>();
 	const files = buzzFormHandle.watch("images");
 
@@ -72,12 +72,17 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 						body: Buffer.from(image.data, "hex").toString("base64"),
 						contentType: "image/jpeg;binary",
 						encoding: "base64",
+						flag: network === "mainnet" ? "metaid" : "testid",
 					});
 				}
 				const imageRes = await fileEntity.create({
 					options: fileOptions,
 					noBroadcast: "no",
 					feeRate: selectFeeRate?.number,
+					service: {
+						address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+						satoshis: "1999",
+					},
 				});
 
 				console.log("imageRes", imageRes);
@@ -90,9 +95,18 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 			console.log("finalBody", finalBody);
 
 			const createRes = await buzzEntity!.create({
-				options: [{ body: JSON.stringify(finalBody) }],
+				options: [
+					{
+						body: JSON.stringify(finalBody),
+						flag: network === "mainnet" ? "metaid" : "testid",
+					},
+				],
 				noBroadcast: "no",
 				feeRate: selectFeeRate?.number,
+				service: {
+					address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+					satoshis: "1999",
+				},
 			});
 			console.log("create res for inscribe", createRes);
 			if (!isNil(createRes?.revealTxIds[0])) {

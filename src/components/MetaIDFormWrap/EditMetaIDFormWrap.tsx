@@ -51,7 +51,15 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 		setIsEditing(true);
 
 		const res = await btcConnector
-			.updateUserInfo({ ...userInfo, feeRate: Number(globalFeeRate) })
+			.updateUserInfo({
+				...userInfo,
+				feeRate: Number(globalFeeRate),
+				network,
+				service: {
+					address: "myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D",
+					satoshis: "1999",
+				},
+			})
 			.catch((error: any) => {
 				console.log("error", error);
 				const errorMessage = (error as any)?.message ?? error;
