@@ -35,8 +35,8 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 	console.log("files:", files);
 	console.log("filesPreview:", filesPreview);
 	const { data: feeRateData } = useQuery({
-		queryKey: ["feeRate"],
-		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
+		queryKey: ["feeRate", network],
+		queryFn: () => fetchFeeRate({ netWork: network }),
 	});
 
 	const onClearImageUploads = () => {

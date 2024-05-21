@@ -9,7 +9,6 @@ import { globalFeeRateAtom, networkAtom, userInfoAtom } from "../../store/user";
 import EditMetaIdInfoForm from "./EditMetaIdInfoForm";
 import { useQueryClient } from "@tanstack/react-query";
 import { IBtcConnector } from "@metaid/metaid";
-// import { fetchFeeRate } from '../../api/buzz';
 
 export type MetaidUserInfo = {
 	name: string;
@@ -31,11 +30,6 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
 		bio: userInfo?.bio ?? "",
 		avatar: userInfo?.avatar ?? undefined,
 	});
-
-	// const { data: feeRateData } = useQuery({
-	//   queryKey: ['feeRate'],
-	//   queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-	// });
 
 	useEffect(() => {
 		setUserInfoStartValues({

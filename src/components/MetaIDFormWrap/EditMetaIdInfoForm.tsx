@@ -70,8 +70,8 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 	// console.log('avatar', avatar, !isNil(avatar) && avatar.length !== 0);
 
 	const { data: feeRateData } = useQuery({
-		queryKey: ["feeRate"],
-		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
+		queryKey: ["feeRate", network],
+		queryFn: () => fetchFeeRate({ netWork: network }),
 	});
 
 	const [customFee, setCustomFee] = useState<string>(globalFeerate);

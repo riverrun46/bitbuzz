@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchFeeRate } from "../../api/buzz";
 import { useEffect, useMemo, useState } from "react";
 import CustomFeerate from "../CustomFeerate";
-import { globalFeeRateAtom } from "../../store/user";
+import { globalFeeRateAtom, networkAtom } from "../../store/user";
 import { useAtomValue } from "jotai";
 // import { useEffect, useState } from 'react';
 
@@ -29,6 +29,7 @@ type IProps = {
 };
 
 const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IProps) => {
+	const network = useAtomValue(networkAtom);
 	const globalFeerate = useAtomValue(globalFeeRateAtom);
 	const {
 		register,
@@ -44,8 +45,8 @@ const CreateMetaIdInfoForm = ({ onSubmit, initialValues, address, balance }: IPr
 	const avatar = watch("avatar");
 
 	const { data: feeRateData } = useQuery({
-		queryKey: ["feeRate"],
-		queryFn: () => fetchFeeRate({ netWork: "testnet" }),
+		queryKey: ["feeRate", network],
+		queryFn: () => fetchFeeRate({ netWork: network }),
 	});
 
 	const [customFee, setCustomFee] = useState<string>(globalFeerate);

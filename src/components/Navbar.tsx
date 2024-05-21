@@ -1,8 +1,14 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { connectedAtom, globalFeeRateAtom, networkAtom, userInfoAtom } from "../store/user";
+import {
+	connectedAtom,
+	globalFeeRateAtom,
+	networkAtom,
+	userInfoAtom,
+	walletRestoreParamsAtom,
+} from "../store/user";
 
 import { checkMetaletConnected, checkMetaletInstalled } from "../utils/wallet";
 import BuzzFormWrap from "./BuzzFormWrap";
@@ -21,9 +27,9 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 	const networks = ["Mainnet", "Testnet", "Regtest"];
 	const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom);
 	const [network, setNetwork] = useAtom(networkAtom);
-
-	const connected = useAtomValue(connectedAtom);
-	const userInfo = useAtomValue(userInfoAtom);
+	const setWalletParams = useSetAtom(walletRestoreParamsAtom);
+	const [connected, setConnected] = useAtom(connectedAtom);
+	const [userInfo, setUserInfo] = useAtom(userInfoAtom);
 	const onBuzzStart = async () => {
 		await checkMetaletInstalled();
 		await checkMetaletConnected(connected);
@@ -39,6 +45,9 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
 	};
 
 	const handleSwitchNetwork = async (network: BtcNetwork) => {
+		setUserInfo(null);
+		setConnected(false);
+		setWalletParams(undefined);
 		const res = await window.metaidwallet.switchNetwork({ network: network });
 		if (res.status === "ok") {
 			toast.success("switch network successfully!");

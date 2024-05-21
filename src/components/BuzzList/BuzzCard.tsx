@@ -54,11 +54,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 			}),
 	});
 
-	// const { data: feeRateData } = useQuery({
-	//   queryKey: ['feeRate'],
-	//   queryFn: () => fetchFeeRate({ netWork: 'testnet' }),
-	// });
-
 	const isLikeByCurrentUser = (currentLikeData ?? [])?.find(
 		(d) => d?.pinAddress === btcConnector?.address
 	);
