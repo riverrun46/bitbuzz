@@ -50,7 +50,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 		queryFn: () =>
 			fetchCurrentBuzzLikes({
 				pinId: buzzItem!.id,
-				network: btcConnector!.network,
+				network,
 			}),
 	});
 
@@ -309,9 +309,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 							className="flex gap-2 items-center hover:text-slate-300"
 							onClick={() => {
 								window.open(
-									`https://mempool.space/zh/testnet/tx/${buzzItem.genesisTransaction}`,
-									"_blank"
-								);
+                  `https://mempool.space/${network === 'mainnet' ? '' : 'testnet/'}tx/${buzzItem.genesisTransaction}`,
+                  '_blank',
+                )
 							}}
 						>
 							<LucideLink size={12} />
