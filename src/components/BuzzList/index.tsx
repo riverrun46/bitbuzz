@@ -182,7 +182,7 @@ const BuzzList = () => {
 							// 		Load More
 							// 	</div>
 							// )
-							<div className=" place-items-center">Nothing more to load </div>
+							<div className=" place-items-center">No more results</div>
 						)}
 					</button>
 				</div>
