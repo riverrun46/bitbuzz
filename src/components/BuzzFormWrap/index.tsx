@@ -11,7 +11,7 @@ import { isEmpty, isNil } from 'ramda';
 import { useEffect, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { globalFeeRateAtom, networkAtom } from '../../store/user';
-import { sleep } from '../../utils/time';
+// import { sleep } from '../../utils/time';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { image2Attach, removeFileFromList } from '../../utils/file';
 import useImagesPreview from '../../hooks/useImagesPreview';
@@ -97,7 +97,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
           (rid) => 'metafile://' + rid + 'i0'
         );
       }
-      await sleep(5000);
+      //   await sleep(5000);
 
       console.log('finalBody', finalBody);
 
@@ -121,7 +121,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
       });
       console.log('create res for inscribe', createRes);
       if (!isNil(createRes?.revealTxIds[0])) {
-        await sleep(5000);
+        // await sleep(5000);
         queryClient.invalidateQueries({ queryKey: ['buzzes'] });
         toast.success('create buzz successfully');
         buzzFormHandle.reset();
