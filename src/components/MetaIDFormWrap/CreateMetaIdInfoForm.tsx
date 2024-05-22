@@ -7,11 +7,9 @@ import { isEmpty, isNil } from 'ramda';
 import { image2Attach } from '../../utils/file';
 import { MetaidUserInfo } from './CreateMetaIDFormWrap';
 import { useClipboard } from '@mantine/hooks';
-import { useQuery } from '@tanstack/react-query';
-import { fetchFeeRate } from '../../api/buzz';
-import { useEffect, useMemo, useState } from 'react';
+
 import CustomFeerate from '../CustomFeerate';
-import { globalFeeRateAtom, networkAtom } from '../../store/user';
+import { globalFeeRateAtom } from '../../store/user';
 import { useAtomValue } from 'jotai';
 // import { useEffect, useState } from 'react';
 
@@ -34,7 +32,6 @@ const CreateMetaIdInfoForm = ({
   address,
   balance,
 }: IProps) => {
-  const network = useAtomValue(networkAtom);
   const globalFeerate = useAtomValue(globalFeeRateAtom);
   const {
     register,
@@ -49,38 +46,6 @@ const CreateMetaIdInfoForm = ({
 
   const avatar = watch('avatar');
 
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate', network],
-    queryFn: () => fetchFeeRate({ netWork: network }),
-  });
-
-  const [customFee, setCustomFee] = useState<string>(globalFeerate);
-  useEffect(() => {
-    setCustomFee(globalFeerate);
-  }, [globalFeerate]);
-
-  const feeRateOptions = useMemo(() => {
-    return [
-      { name: 'Slow', number: feeRateData?.hourFee ?? Number(globalFeerate) },
-      {
-        name: 'Avg',
-        number: feeRateData?.halfHourFee ?? Number(globalFeerate),
-      },
-      {
-        name: 'Fast',
-        number: feeRateData?.fastestFee ?? Number(globalFeerate),
-      },
-      { name: 'Custom', number: Number(customFee) },
-    ];
-  }, [feeRateData, customFee, globalFeerate]);
-  const [selectFeeRate, setSelectFeeRate] = useState<{
-    name: string;
-    number: number;
-  }>({
-    name: 'Custom',
-    number: Number(customFee),
-  });
-
   const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
   const onCreateSubmit: SubmitHandler<UserInfo> = async (data) => {
     const submitAvatar =
@@ -94,7 +59,7 @@ const CreateMetaIdInfoForm = ({
         ? Buffer.from(submitAvatar[0].data, 'hex').toString('base64')
         : undefined,
       bio: isEmpty(data?.bio ?? '') ? undefined : data?.bio,
-      feeRate: selectFeeRate?.number,
+      feeRate: Number(globalFeerate),
     };
     console.log('submit profile data', submitData);
     onSubmit(submitData);
@@ -231,13 +196,7 @@ const CreateMetaIdInfoForm = ({
           )}
         </div>
 
-        <CustomFeerate
-          customFee={customFee}
-          setSelectFeeRate={setSelectFeeRate}
-          selectFeeRate={selectFeeRate}
-          handleCustomFeeChange={setCustomFee}
-          feeRateOptions={feeRateOptions}
-        />
+        <CustomFeerate />
 
         {/* <div className='flex flex-col gap-2'>
           <div className='text-white'>Your Bio</div>

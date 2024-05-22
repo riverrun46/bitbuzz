@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import cls from 'classnames';
 import { useQuery } from '@tanstack/react-query';
 import { globalFeeRateAtom, networkAtom } from '../store/user';
