@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { BookOpen, PencilLine } from 'lucide-react';
+import { PencilLine } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { connectedAtom, globalFeeRateAtom, userInfoAtom } from '../store/user';

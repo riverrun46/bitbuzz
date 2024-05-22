@@ -27,6 +27,7 @@ import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 import { useCallback, useEffect } from 'react';
 import { BtcNetwork } from './api/request';
+import InsertMetaletAlertModal from './components/MetaIDFormWrap/InsertMetaletAlertModal';
 
 function App() {
   const [connected, setConnected] = useAtom(connectedAtom);
@@ -203,6 +204,7 @@ function App() {
         onWalletConnectStart={onWalletConnectStart}
       />
       <EditMetaIDModal btcConnector={btcConnector!} />
+      <InsertMetaletAlertModal />
     </div>
   );
 }

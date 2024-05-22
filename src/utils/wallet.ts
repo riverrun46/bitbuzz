@@ -5,10 +5,14 @@ import { UserInfo } from '../store/user';
 export const checkMetaletInstalled = async () => {
   const metalet = window?.metaidwallet;
   if (typeof metalet === 'undefined') {
-    toast.error(errors.NO_METALET_DETECTED, {
-      className:
-        '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-    });
+    const doc_modal = document.getElementById(
+      'alert_install_metalet_modal'
+    ) as HTMLDialogElement;
+    doc_modal.showModal();
+    // toast.error(errors.NO_METALET_DETECTED, {
+    //   className:
+    //     '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+    // });
     throw new Error(errors.NO_METALET_DETECTED);
   }
 };

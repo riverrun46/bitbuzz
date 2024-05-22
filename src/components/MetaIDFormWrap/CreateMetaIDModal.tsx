@@ -1,5 +1,6 @@
 import { IBtcConnector } from '@metaid/metaid';
 import CreateMetaIDFormWrap from './CreateMetaIDFormWrap';
+// import CreateMetaIDSuccessModal from './CreateMetaIDSuccessModal';
 
 type Iprops = {
   btcConnector: IBtcConnector;
@@ -36,6 +37,7 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
           <button>close</button>
         </form>
       </dialog>
+      {/* <CreateMetaIDSuccessModal /> */}
 
       <dialog id='create_metaid_success_modal' className='modal'>
         <div className='modal-box bg-[#191C20] py-5  w-[50%]'>
