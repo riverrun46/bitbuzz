@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import cls from 'classnames';
 import { useQuery } from '@tanstack/react-query';
 import { globalFeeRateAtom, networkAtom } from '../store/user';
@@ -35,6 +35,13 @@ const CustomFeerate = () => {
   });
 
   const [globalFeerate, setGlobalFeerate] = useAtom(globalFeeRateAtom);
+
+  useEffect(() => {
+    setGlobalFeerate(
+      (feeRateData?.fastestFee ?? Number(globalFeerate)).toString()
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feeRateData]);
 
   const feeRateOptions = useMemo(() => {
     return [
