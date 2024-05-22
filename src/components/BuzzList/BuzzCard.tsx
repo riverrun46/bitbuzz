@@ -255,19 +255,46 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     preview_modal.showModal();
   };
 
-  //   const detectUrl = (summary: string) => {
-  //     const urlReg = /(https?:\/\/[^\s]+)/g;
+  const detectUrl = (summary: string) => {
+    const urlReg = /(https?:\/\/[^\s]+)/g;
 
-  //     const urls = summary.match(urlReg);
-  //     console.log('urls', urls);
-  //      if (urls) {
-  //       urls.forEach(function (url) {
-  //          const replacement = `<a href="${url}" style="text-decoration: underline;">${url}</a>`;
-  //          summary = summary.replace(url, replacement);
-  //       });
-  //     }
-  //     return summary;
-  //   };
+    const urls = summary.match(urlReg);
+    console.log('urls', urls);
+    if (urls) {
+      urls.forEach(function (url) {
+        // const replacement = (
+        //   <div
+        //     dangerouslySetInnerHTML={{
+        //       __html: `<a href="${url}" style="text-decoration: underline;">${url}</a>`,
+        //     }}
+        //   />
+        // );
+        summary = summary.replace(
+          url,
+          `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`
+        );
+      });
+    }
+    return summary;
+  };
+
+  const renderBasiceSummary = (summary: string) => {
+    return (
+      <div>
+        {(summary ?? '').split('\n').map((line, index) => (
+          <span key={index}>
+            {/* {line} */}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: detectUrl(line),
+              }}
+            />
+            <br />
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   const renderSummary = (summary: string, showDetail: boolean) => {
     return (
@@ -275,7 +302,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         {showDetail ? (
           <>
             {summary.length < 500 ? (
-              <div>{summary}</div>
+              renderBasiceSummary(summary)
             ) : (
               <div>
                 {summary.slice(0, 500)}
@@ -284,15 +311,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             )}
           </>
         ) : (
-          <div>
-            {(summary ?? '').split('\n').map((line, index) => (
-              <span key={index}>
-                {line}
-
-                <br />
-              </span>
-            ))}
-          </div>
+          renderBasiceSummary(summary)
         )}
       </>
     );
