@@ -1,26 +1,26 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { IBtcConnector, IMetaletWalletForBtc } from "@metaid/metaid";
+import { IBtcConnector, IMetaletWalletForBtc } from '@metaid/metaid';
 
-import { atom } from "jotai";
-import { BtcNetwork } from "../api/request";
-import { atomWithStorage } from "jotai/utils";
+import { atom } from 'jotai';
+import { BtcNetwork } from '../api/request';
+import { atomWithStorage } from 'jotai/utils';
 
 export type UserInfo = {
-	number: number;
-	rootTxId: string;
-	name: string;
-	nameId: string;
-	avatarId: string;
-	bioId: string;
-	address: string;
-	avatar: string | null;
-	bio: string;
-	soulbondToken: string;
-	unconfirmed: string;
-	metaid: string;
+  number: number;
+  rootTxId: string;
+  name: string;
+  nameId: string;
+  avatarId: string;
+  bioId: string;
+  address: string;
+  avatar: string | null;
+  bio: string;
+  soulbondToken: string;
+  unconfirmed: string;
+  metaid: string;
 };
 
-export const connectedAtom = atomWithStorage<boolean>("connectedAtom", false);
+export const connectedAtom = atomWithStorage<boolean>('connectedAtom', false);
 export const btcConnectorAtom = atom<IBtcConnector | null>(null);
 export const userInfoAtom = atom<UserInfo | null>(null);
 
@@ -32,20 +32,23 @@ export const walletAtom = atom<IMetaletWalletForBtc | undefined>(undefined);
  */
 export const unisatInstalledAtom = atom(false);
 export const accountsAtom = atom<string[]>([]);
-export const publicKeyAtom = atom("");
-export const addressAtom = atom("");
+export const publicKeyAtom = atom('');
+export const addressAtom = atom('');
 export const balanceAtom = atom({
-	confirmed: 0,
-	unconfirmed: 0,
-	total: 0,
+  confirmed: 0,
+  unconfirmed: 0,
+  total: 0,
 });
-export const networkAtom = atomWithStorage<BtcNetwork>("networkAtom", "mainnet");
-export const globalFeeRateAtom = atom<string>("60");
+export const networkAtom = atomWithStorage<BtcNetwork>(
+  'networkAtom',
+  'mainnet'
+);
+export const globalFeeRateAtom = atom<string>('30');
 
 export const walletRestoreParamsAtom = atomWithStorage<
-	| {
-			address: string;
-			pub: string;
-	  }
-	| undefined
->("walletRestoreParamsAtom", undefined);
+  | {
+      address: string;
+      pub: string;
+    }
+  | undefined
+>('walletRestoreParamsAtom', undefined);
