@@ -83,11 +83,6 @@ const BuzzForm = ({
   onClearImageUploads,
   filesPreview,
   handleRemoveImage,
-  feeRateOptions,
-  handleCustomFeeChange,
-  customFee,
-  selectFeeRate,
-  setSelectFeeRate,
 }: IProps) => {
   const {
     register,
@@ -127,7 +122,7 @@ const BuzzForm = ({
             {...register('content', { required: true })}
           />
           {errors.content && (
-            <span className='text-error absolute left-0 top-[175px] text-sm'>
+            <span className='text-error absolute left-0 bottom-[-24px] text-sm'>
               Buzz content can't be empty.
             </span>
           )}
@@ -219,13 +214,7 @@ const BuzzForm = ({
 				</div>
 			</div> */}
 
-      <CustomFeerate
-        customFee={customFee}
-        setSelectFeeRate={setSelectFeeRate}
-        selectFeeRate={selectFeeRate}
-        handleCustomFeeChange={handleCustomFeeChange}
-        feeRateOptions={feeRateOptions}
-      />
+      <CustomFeerate />
 
       <button
         className='btn btn-primary btn-sm rounded-full font-medium w-[80px] flex self-center'

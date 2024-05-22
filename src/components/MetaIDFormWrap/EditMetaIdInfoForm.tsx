@@ -6,10 +6,9 @@ import useImagesPreview from '../../hooks/useImagesPreview';
 import { isEmpty, isNil } from 'ramda';
 import { image2Attach } from '../../utils/file';
 import { MetaidUserInfo } from './CreateMetaIDFormWrap';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import CustomFeerate from '../CustomFeerate';
-import { useQuery } from '@tanstack/react-query';
-import { fetchFeeRate } from '../../api/buzz';
+
 import { MAN_BASE_URL_MAPPING } from '../../api/request';
 import { useAtomValue } from 'jotai';
 import { globalFeeRateAtom, networkAtom } from '../../store/user';
@@ -63,44 +62,13 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
         ? Buffer.from(submitAvatar[0].data, 'hex').toString('base64')
         : undefined,
       bio: isEmpty(data?.bio ?? '') ? undefined : data?.bio,
-      feeRate: selectFeeRate?.number ?? 1,
+      feeRate: Number(globalFeerate),
     };
     console.log('submit profile data', submitData);
     onSubmit(submitData);
   };
   // console.log('avatar', avatar, !isNil(avatar) && avatar.length !== 0);
 
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate', network],
-    queryFn: () => fetchFeeRate({ netWork: network }),
-  });
-
-  const [customFee, setCustomFee] = useState<string>(globalFeerate);
-  useEffect(() => {
-    setCustomFee(globalFeerate);
-  }, [globalFeerate]);
-
-  const feeRateOptions = useMemo(() => {
-    return [
-      { name: 'Slow', number: feeRateData?.hourFee ?? Number(globalFeerate) },
-      {
-        name: 'Avg',
-        number: feeRateData?.halfHourFee ?? Number(globalFeerate),
-      },
-      {
-        name: 'Fast',
-        number: feeRateData?.fastestFee ?? Number(globalFeerate),
-      },
-      { name: 'Custom', number: Number(customFee) },
-    ];
-  }, [feeRateData, customFee, globalFeerate]);
-  const [selectFeeRate, setSelectFeeRate] = useState<{
-    name: string;
-    number: number;
-  }>({
-    name: 'Custom',
-    number: Number(customFee),
-  });
   return (
     <form
       autoComplete='off'
@@ -219,13 +187,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
           )}
         </div>
 
-        <CustomFeerate
-          customFee={customFee}
-          setSelectFeeRate={setSelectFeeRate}
-          selectFeeRate={selectFeeRate}
-          handleCustomFeeChange={setCustomFee}
-          feeRateOptions={feeRateOptions}
-        />
+        <CustomFeerate />
 
         {/* <div className="flex flex-col gap-2">
 					<div className="text-white">Your Bio</div>
