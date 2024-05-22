@@ -5,27 +5,6 @@ import { globalFeeRateAtom, networkAtom } from '../store/user';
 import { useAtom, useAtomValue } from 'jotai';
 import { fetchFeeRate } from '../api/buzz';
 
-// type IProps = {
-//   // onSubmit: (buzz: { content: string; images: AttachmentItem[] }) => void;
-
-//   feeRateOptions: {
-//     name: string;
-//     number: number;
-//   }[];
-//   selectFeeRate: {
-//     name: string;
-//     number: number;
-//   };
-//   setSelectFeeRate: React.Dispatch<
-//     React.SetStateAction<{
-//       name: string;
-//       number: number;
-//     }>
-//   >;
-//   handleCustomFeeChange: (v: string) => void;
-//   customFee: string;
-// };
-
 const CustomFeerate = () => {
   const network = useAtomValue(networkAtom);
 

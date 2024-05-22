@@ -21,6 +21,7 @@
 		"compressorjs": "^1.2.1",
 		"crypto-js": "^4.2.0",
 		"dayjs": "^1.11.10",
+		"decimal.js-light": "^2.5.1",
 		"jotai": "^2.6.0",
 		"json-server": "^0.17.4",
 		"lucide-react": "^0.294.0",

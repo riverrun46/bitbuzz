@@ -7,6 +7,7 @@ import { isEmpty, isNil } from 'ramda';
 import { image2Attach } from '../../utils/file';
 import { MetaidUserInfo } from './CreateMetaIDFormWrap';
 import { useClipboard } from '@mantine/hooks';
+import Decimal from 'decimal.js-light';
 
 import CustomFeerate from '../CustomFeerate';
 import { globalFeeRateAtom } from '../../store/user';
@@ -90,7 +91,7 @@ const CreateMetaIdInfoForm = ({
             </div>
             <div className='flex gap-2 text-sm text-gray'>
               <div>Your Balance: </div>
-              <div> {balance}</div>
+              <div> {new Decimal(balance).div(10 ** 8).toNumber()}</div>
               <div>sats</div>
             </div>
           </div>
