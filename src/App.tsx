@@ -49,14 +49,12 @@ function App() {
   };
 
   const onWalletConnectStart = async () => {
-    console.log('onWalletConnectStart', window.metaidwallet);
     await checkMetaletInstalled();
 
     const _wallet = await MetaletWalletForBtc.create();
     await conirmMetaletMainnet();
     const _network = (await window.metaidwallet.getNetwork()).network;
     setNetwork(_network);
-    console.log('onWalletConnectStart', _wallet);
     setWallet(_wallet);
     setWalletParams({
       address: _wallet.address,
@@ -115,7 +113,6 @@ function App() {
         ...walletParams,
         internal: window.metaidwallet,
       });
-      console.log('refeshing wallet', _wallet);
       setWallet(_wallet);
       const _btcConnector = await btcConnect({
         wallet: _wallet,
@@ -145,7 +142,6 @@ function App() {
   };
 
   const handleNetworkChanged = async (network: BtcNetwork) => {
-    console.log('network', network);
     if (connected) {
       onLogout();
     }

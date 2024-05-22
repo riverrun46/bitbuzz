@@ -188,7 +188,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
                       className='text-[#1D2F2F] text-[14px]'
                       style={{ textIndent: '2.5em' }}
                     >
-                      Log out
+                      Disconnect
                     </a>
                   </li>
                 </ul>

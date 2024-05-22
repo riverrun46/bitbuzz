@@ -94,7 +94,7 @@ const CreateMetaIdInfoForm = ({
         ? Buffer.from(submitAvatar[0].data, 'hex').toString('base64')
         : undefined,
       bio: isEmpty(data?.bio ?? '') ? undefined : data?.bio,
-      feeRate: selectFeeRate?.number ?? 1,
+      feeRate: selectFeeRate?.number,
     };
     console.log('submit profile data', submitData);
     onSubmit(submitData);
@@ -135,7 +135,7 @@ const CreateMetaIdInfoForm = ({
         </div>
 
         <div className='flex flex-col gap-2'>
-          <div className='text-white'>Your Name</div>
+          <div className='text-white'>Name</div>
           <label
             className={cls(
               'input input-bordered border-white text-white bg-[black] flex items-center gap-2 relative',

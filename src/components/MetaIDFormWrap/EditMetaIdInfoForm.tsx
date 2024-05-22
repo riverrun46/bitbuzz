@@ -52,7 +52,6 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
 
   const avatar = watch('avatar');
   const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
-  console.log('filesPreview', filesPreview);
   const onCreateSubmit: SubmitHandler<FormUserInfo> = async (data) => {
     const submitAvatar =
       !isNil(data?.avatar) && data.avatar.length !== 0
@@ -110,7 +109,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
     >
       <div className='flex flex-col gap-8'>
         <div className='flex flex-col gap-2'>
-          <div className='text-white'>Your Name</div>
+          <div className='text-white'>Name</div>
           <label
             className={cls(
               'input input-bordered border-white text-white bg-[black] flex items-center gap-2 relative',
