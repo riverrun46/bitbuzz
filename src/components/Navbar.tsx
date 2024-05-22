@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { PencilLine } from 'lucide-react';
+import { BookOpen, PencilLine } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { connectedAtom, globalFeeRateAtom, userInfoAtom } from '../store/user';
@@ -73,6 +73,13 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
             <Link to={'/'}>
               <img src='/logo_navbar.png' width={100} height={45} />
             </Link>
+            <img
+              src='/icon_gitbook.svg'
+              className='text-gray w-5 h-5 cursor-pointer'
+              onClick={() => {
+                window.open(`https://doc.metaid.io/`, '_blank');
+              }}
+            />
             {/* <div className='dropdown dropdown-hover'>
               <div
                 className='border btn-xs btn rounded-md text-main bg-[black] cursor-pointer hover:bg-[black]'
