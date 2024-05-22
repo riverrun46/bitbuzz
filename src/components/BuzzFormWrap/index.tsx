@@ -8,14 +8,13 @@ import LoadingOverlay from 'react-loading-overlay-ts';
 // import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai';
 import { isEmpty, isNil } from 'ramda';
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { globalFeeRateAtom, networkAtom } from '../../store/user';
 // import { sleep } from '../../utils/time';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { image2Attach, removeFileFromList } from '../../utils/file';
 import useImagesPreview from '../../hooks/useImagesPreview';
-import { fetchFeeRate } from '../../api/buzz';
 import { CreateOptions, IBtcConnector, IBtcEntity } from '@metaid/metaid';
 
 type Iprops = {
@@ -32,11 +31,6 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
   const files = buzzFormHandle.watch('images');
 
   const [filesPreview, setFilesPreview] = useImagesPreview(files);
-
-  const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate', network],
-    queryFn: () => fetchFeeRate({ netWork: network }),
-  });
 
   const onClearImageUploads = () => {
     setFilesPreview([]);
@@ -82,7 +76,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
         const imageRes = await fileEntity.create({
           options: fileOptions,
           noBroadcast: 'no',
-          feeRate: selectFeeRate?.number,
+          feeRate: Number(globalFeerate),
           service: {
             address:
               network === 'mainnet'
@@ -110,7 +104,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
           },
         ],
         noBroadcast: 'no',
-        feeRate: selectFeeRate?.number,
+        feeRate: Number(globalFeerate),
         service: {
           address:
             network === 'mainnet'
@@ -150,33 +144,6 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
     setIsAdding(false);
   };
 
-  const [customFee, setCustomFee] = useState<string>(globalFeerate);
-  useEffect(() => {
-    setCustomFee(globalFeerate);
-  }, [globalFeerate]);
-
-  const feeRateOptions = useMemo(() => {
-    return [
-      { name: 'Slow', number: feeRateData?.hourFee ?? Number(globalFeerate) },
-      {
-        name: 'Avg',
-        number: feeRateData?.halfHourFee ?? Number(globalFeerate),
-      },
-      {
-        name: 'Fast',
-        number: feeRateData?.fastestFee ?? Number(globalFeerate),
-      },
-      { name: 'Custom', number: Number(customFee) },
-    ];
-  }, [feeRateData, customFee, globalFeerate]);
-  const [selectFeeRate, setSelectFeeRate] = useState<{
-    name: string;
-    number: number;
-  }>({
-    name: 'Custom',
-    number: Number(customFee),
-  });
-
   // console.log('select feerate', selectFeeRate);
   // console.log('feerate data', feeRateData);
   const handleRemoveImage = (index: number) => {
@@ -196,11 +163,6 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
         buzzFormHandle={buzzFormHandle}
         onClearImageUploads={onClearImageUploads}
         filesPreview={filesPreview}
-        customFee={customFee}
-        setSelectFeeRate={setSelectFeeRate}
-        selectFeeRate={selectFeeRate}
-        handleCustomFeeChange={setCustomFee}
-        feeRateOptions={feeRateOptions}
       />
     </LoadingOverlay>
   );

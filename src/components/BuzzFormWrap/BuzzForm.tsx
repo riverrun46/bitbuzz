@@ -24,22 +24,6 @@ type IProps = {
   onClearImageUploads: () => void;
   filesPreview: string[];
   handleRemoveImage: (index: number) => void;
-  feeRateOptions: {
-    name: string;
-    number: number;
-  }[];
-  selectFeeRate: {
-    name: string;
-    number: number;
-  };
-  setSelectFeeRate: React.Dispatch<
-    React.SetStateAction<{
-      name: string;
-      number: number;
-    }>
-  >;
-  handleCustomFeeChange: (v: string) => void;
-  customFee: string;
 };
 
 export type BuzzData = {
