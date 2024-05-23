@@ -49,7 +49,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
     const res = await btcConnector
       .updateUserInfo({
         ...userInfo,
-        feeRate: userInfo?.feeRate ?? Number(globalFeeRate),
+        feeRate: Number(globalFeeRate),
         network,
         service: {
           address:

@@ -55,7 +55,7 @@ const CreateMetaIDFormWrap = ({
     const res = await btcConnector
       .createUserInfo({
         ...userInfo,
-        feeRate: userInfo?.feeRate ?? Number(globalFeeRate),
+        feeRate: Number(globalFeeRate),
         network,
         service: {
           address:

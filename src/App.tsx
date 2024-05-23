@@ -51,9 +51,9 @@ function App() {
 
   const onWalletConnectStart = async () => {
     await checkMetaletInstalled();
-
     const _wallet = await MetaletWalletForBtc.create();
     await conirmMetaletMainnet();
+
     const _network = (await window.metaidwallet.getNetwork()).network;
     setNetwork(_network);
     setWallet(_wallet);
