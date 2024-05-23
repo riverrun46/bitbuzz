@@ -38,9 +38,10 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
   };
 
   const onCreateSubmit: SubmitHandler<BuzzData> = async (data) => {
-    console.log('submit image', data.images);
+    // console.log('submit raw image', data.images);
     const images =
       data.images.length !== 0 ? await image2Attach(data.images) : [];
+    // console.log('submit process image',  images);
 
     await handleAddBuzz({
       content: data.content,
@@ -68,7 +69,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
         for (const image of buzz.images) {
           fileOptions.push({
             body: Buffer.from(image.data, 'hex').toString('base64'),
-            contentType: 'image/jpeg;binary',
+            contentType: `${image.fileType};binary`,
             encoding: 'base64',
             flag: network === 'mainnet' ? 'metaid' : 'testid',
           });

@@ -259,7 +259,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     const urlReg = /(https?:\/\/[^\s]+)/g;
 
     const urls = summary.match(urlReg);
-    console.log('urls', urls);
+
     if (urls) {
       urls.forEach(function (url) {
         // const replacement = (

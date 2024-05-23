@@ -136,12 +136,14 @@ const BuzzForm = ({
           render={({ field: { onChange } }) => (
             <input
               type='file'
+              accept='.gif,.jpg,.jpeg,.png,.webp'
               multiple
               id='addImage'
               className='hidden'
               {...register('images')}
               onChange={(e) => {
                 const files = e.target.files;
+                console.log(e.target.files![0].type, 'file----type');
                 if (!isNil(files) && files.length > 0) {
                   for (const item of Array.from(files ?? [])) {
                     if (item.size > 200 * 1024) {
@@ -167,20 +169,7 @@ const BuzzForm = ({
             />
           )}
         />
-        {/* <input
-					type="file"
-					multiple
-					id="addImage"
-					className="hidden"
-					{...register("images")}
-					onChange={(e) => {
-						console.log("current change files", e.target.files);
-						console.log("current get files", getValues("images"));
-						if (!isNil(e.target.files)) {
-							onImageChange(e.target.files);
-						}
-					}}
-				/> */}
+
         {filesPreview && renderImages(filesPreview, handleRemoveImage)}
       </div>
       {/* set price */}

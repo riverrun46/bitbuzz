@@ -142,6 +142,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
             render={({ field: { onChange } }) => (
               <input
                 type='file'
+                accept='.gif,.jpg,.jpeg,.png,.webp'
                 id='addPFP2'
                 className='hidden'
                 {...register('avatar')}

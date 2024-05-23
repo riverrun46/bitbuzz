@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const useImagesPreview = (
-	files: FileList
+  files: FileList
 ): [string[], React.Dispatch<React.SetStateAction<string[]>>] => {
-	const [imgSrcs, setImgSrcs] = useState<string[]>([]);
+  const [imgSrcs, setImgSrcs] = useState<string[]>([]);
 
-	useEffect(() => {
-		if (files) {
-			const imageArray: string[] = Array.from(files).map((file) => URL.createObjectURL(file));
-			console.log("imageArray", imageArray);
-			setImgSrcs(imageArray);
-		}
-	}, [files]);
+  useEffect(() => {
+    if (files) {
+      const imageArray: string[] = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImgSrcs(imageArray);
+    }
+  }, [files]);
 
-	return [imgSrcs, setImgSrcs];
+  return [imgSrcs, setImgSrcs];
 };
 
 export default useImagesPreview;

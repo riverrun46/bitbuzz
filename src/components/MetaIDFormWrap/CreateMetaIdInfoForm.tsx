@@ -153,6 +153,7 @@ const CreateMetaIdInfoForm = ({
               <input
                 type='file'
                 id='addPFP'
+                accept='.gif,.jpg,.jpeg,.png,.webp'
                 className='hidden'
                 {...register('avatar')}
                 onChange={(e) => {
