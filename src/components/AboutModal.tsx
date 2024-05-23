@@ -25,7 +25,13 @@ const AboutModal = () => {
           </div>
           <h3 className="text-white text-xl mt-8 mb-2">About BitBuzz</h3>
 
-          <p className="text-gray">BitBuzz is an open-source application based on MetaID v2.</p>
+          <p className="text-gray">
+            BitBuzz is an open-source application based on
+            <a href="https://doc.metaid.io/" className="text-secondary hover:underline mx-1 italic" target="_blank">
+              MetaID v2
+            </a>
+            .
+          </p>
           <a href="https://github.com/senmonster/bitbuzz" className="text-lime-500 hover:underline">
             View source code
           </a>
