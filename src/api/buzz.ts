@@ -1,94 +1,82 @@
 // import { BuzzItem } from '../types';
-import axios from "axios";
-import { Pin } from "../components/BuzzList";
-import { BtcNetwork, MAN_BASE_URL_MAPPING } from "./request";
-import { IBtcEntity } from "@metaid/metaid";
+import axios from 'axios';
+import { Pin } from '../components/BuzzList';
+import { BtcNetwork } from './request';
+import { IBtcEntity } from '@metaid/metaid';
+import { environment } from '../utils/environments';
 
 export type LikeRes = {
-	_id: string;
-	isLike: string;
-	likeTo: string;
-	pinAddress: string;
-	pinId: string;
-	pinNumber: number;
+  _id: string;
+  isLike: string;
+  likeTo: string;
+  pinAddress: string;
+  pinId: string;
+  pinNumber: number;
 };
 
 export async function fetchBuzzs({
-	buzzEntity,
-	page,
-	limit,
-	network,
+  buzzEntity,
+  page,
+  limit,
+  network,
 }: {
-	buzzEntity: IBtcEntity;
-	page: number;
-	limit: number;
-	network: BtcNetwork;
+  buzzEntity: IBtcEntity;
+  page: number;
+  limit: number;
+  network: BtcNetwork;
 }): Promise<Pin[] | null> {
-	const response = await buzzEntity.list({ page, limit, network });
+  const response = await buzzEntity.list({ page, limit, network });
 
-	return response;
+  return response;
 }
 
 export async function fetchCurrentBuzzLikes({
-	pinId,
-	network,
+  pinId,
 }: {
-	pinId: string;
-	network: BtcNetwork;
+  pinId: string;
 }): Promise<LikeRes[] | null> {
-	const body = {
-		collection: "paylike",
-		action: "get",
-		filterRelation: "and",
-		field: [],
-		filter: [
-			{
-				operator: "=",
-				key: "likeTo",
-				value: pinId,
-			},
-		],
-		cursor: 0,
-		limit: 99999,
-		sort: [],
-	};
+  const body = {
+    collection: 'paylike',
+    action: 'get',
+    filterRelation: 'and',
+    field: [],
+    filter: [
+      {
+        operator: '=',
+        key: 'likeTo',
+        value: pinId,
+      },
+    ],
+    cursor: 0,
+    limit: 99999,
+    sort: [],
+  };
 
-	// const response = await fetch(`${MAN_BASE_URL_MAPPING[network]}/api/generalQuery`, {
-	// 	method: "POST",
-	// 	headers: {
-	// 		"Content-Type": "application/json",
-	// 	},
-	// 	body: JSON.stringify(body),
-	// });
-	// return response.json();
-
-	try {
-		const data = await axios
-			.post(`${MAN_BASE_URL_MAPPING[network]}/api/generalQuery`, body)
-			.then((res) => res.data);
-		return data.data;
-	} catch (error) {
-		console.error(error);
-		return null;
-	}
+  try {
+    const data = await axios
+      .post(`${environment.base_man_url}/api/generalQuery`, body)
+      .then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function getPinDetailByPid({
-	pid,
-	network,
+  pid,
 }: {
-	pid: string;
-	network: BtcNetwork;
+  pid: string;
 }): Promise<Pin | undefined> {
-	const url = `${MAN_BASE_URL_MAPPING[network]}/api/pin/${pid}`;
+  const url = `${environment.base_man_url}/api/pin/${pid}`;
 
-	try {
-		const data = await axios.get(url).then((res) => res.data);
-		return data.data;
-	} catch (error) {
-		console.error(error);
-		return undefined;
-	}
+  try {
+    const data = await axios.get(url).then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
 }
 
 ////////////// mock buzz api
@@ -128,21 +116,27 @@ export async function getPinDetailByPid({
 // }
 
 export type FeeRateApi = {
-	fastestFee: number;
-	halfHourFee: number;
-	hourFee: number;
-	economyFee: number;
-	minimumFee: number;
+  fastestFee: number;
+  halfHourFee: number;
+  hourFee: number;
+  economyFee: number;
+  minimumFee: number;
 };
 
-export async function fetchFeeRate({ netWork }: { netWork?: BtcNetwork }): Promise<FeeRateApi> {
-	const response = await fetch(
-		`https://mempool.space/${netWork === "mainnet" ? "" : "testnet/"}api/v1/fees/recommended`,
-		{
-			method: "get",
-		}
-	);
-	return response.json();
+export async function fetchFeeRate({
+  netWork,
+}: {
+  netWork?: BtcNetwork;
+}): Promise<FeeRateApi> {
+  const response = await fetch(
+    `https://mempool.space/${
+      netWork === 'mainnet' ? '' : 'testnet/'
+    }api/v1/fees/recommended`,
+    {
+      method: 'get',
+    }
+  );
+  return response.json();
 }
 
 ////////////// mock buzz api

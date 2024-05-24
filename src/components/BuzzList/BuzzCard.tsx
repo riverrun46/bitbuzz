@@ -7,23 +7,21 @@ import cls from 'classnames';
 import dayjs from 'dayjs';
 import { Pin } from '.';
 import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getPinDetailByPid } from '../../api/pin';
 import {
   btcConnectorAtom,
   connectedAtom,
   globalFeeRateAtom,
-  networkAtom,
 } from '../../store/user';
 import { useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
-import { fetchCurrentBuzzLikes } from '../../api/buzz';
+import { fetchCurrentBuzzLikes, getPinDetailByPid } from '../../api/buzz';
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
 } from '../../utils/wallet';
-import { MAN_BASE_URL_MAPPING } from '../../api/request';
+import { environment } from '../../utils/environments';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -34,7 +32,6 @@ type IProps = {
 const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
-  const network = useAtomValue(networkAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
   // console.log("buzzitem", buzzItem);
@@ -56,11 +53,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   // console.log("current address", buzzItem!.address);
 
   const { data: currentLikeData } = useQuery({
-    queryKey: ['payLike', buzzItem!.id, network],
+    queryKey: ['payLike', buzzItem!.id, environment.network],
     queryFn: () =>
       fetchCurrentBuzzLikes({
         pinId: buzzItem!.id,
-        network,
       }),
   });
 
@@ -69,16 +65,19 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   );
 
   const currentUserInfoData = useQuery({
-    queryKey: ['userInfo', buzzItem!.address, network],
+    queryKey: ['userInfo', buzzItem!.address, environment.network],
     queryFn: () =>
-      btcConnector?.getUser({ network, currentAddress: buzzItem!.address }),
+      btcConnector?.getUser({
+        network: environment.network,
+        currentAddress: buzzItem!.address,
+      }),
   });
   const metaid = currentUserInfoData?.data?.metaid ?? btcConnector?.metaid;
   const attachData = useQueries({
     queries: attachPids.map((id: string) => {
       return {
         queryKey: ['post', id],
-        queryFn: () => getPinDetailByPid({ pid: id, network }),
+        queryFn: () => getPinDetailByPid({ pid: id }),
       };
     }),
     combine: (results: any) => {
@@ -108,18 +107,15 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         options: [
           {
             body: JSON.stringify({ isLike: '1', likeTo: pinId }),
-            flag: network === 'mainnet' ? 'metaid' : 'testid',
+            flag: environment.flag,
             contentType: 'text/plain;utf-8',
           },
         ],
         noBroadcast: 'no',
         feeRate: Number(globalFeeRate),
         service: {
-          address:
-            network === 'mainnet'
-              ? 'bc1pxn62rxeqzr39qjvq9fnz4t00qjvhepe0jzp44tnljwzaxjvt79dqph7h8m'
-              : 'myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D',
-          satoshis: '1999',
+          address: environment.service_address,
+          satoshis: environment.service_staoshi,
         },
       });
       console.log('likeRes', likeRes);
@@ -158,7 +154,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               objectFit: 'cover',
               objectPosition: 'center',
             }}
-            src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinIds[0]}`}
+            src={`${environment.base_man_url}/content/${pinIds[0]}`}
             alt=''
             key={pinIds[0]}
           />
@@ -182,7 +178,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                   width: '100%',
                   height: '100%',
                 }}
-                src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinIds[0]}`}
+                src={`${environment.base_man_url}/content/${pinIds[0]}`}
                 alt=''
               />
             </div>
@@ -198,7 +194,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         <div className='grid grid-cols-3 gap-2 place-items-center'>
           {pinIds.map((pinId) => {
             return (
-              <>
+              <div key={pinId}>
                 <img
                   className='image !h-[180px] w-auto'
                   onClick={() => {
@@ -210,7 +206,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                     width: '100%',
                     height: '100%',
                   }}
-                  src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinId}`}
+                  src={`${environment.base_man_url}/content/${pinId}`}
                   alt=''
                   key={pinId}
                 />
@@ -233,7 +229,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                         width: '100%',
                         height: '100%',
                       }}
-                      src={`${MAN_BASE_URL_MAPPING[network]}/content/${pinId}`}
+                      src={`${environment.base_man_url}/content/${pinId}`}
                       alt=''
                     />
                   </div>
@@ -241,7 +237,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                     <button>close</button>
                   </form>
                 </dialog>
-              </>
+              </div>
             );
           })}
         </div>
@@ -379,7 +375,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               onClick={() => {
                 window.open(
                   `https://mempool.space/${
-                    network === 'mainnet' ? '' : 'testnet/'
+                    environment.network === 'mainnet' ? '' : 'testnet/'
                   }tx/${buzzItem.genesisTransaction}`,
                   '_blank'
                 );

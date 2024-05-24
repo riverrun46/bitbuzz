@@ -1,16 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import cls from 'classnames';
 import { useQuery } from '@tanstack/react-query';
-import { globalFeeRateAtom, networkAtom } from '../store/user';
-import { useAtom, useAtomValue } from 'jotai';
+import { globalFeeRateAtom } from '../store/user';
+import { useAtom } from 'jotai';
 import { fetchFeeRate } from '../api/buzz';
+import { environment } from '../utils/environments';
 
 const CustomFeerate = () => {
-  const network = useAtomValue(networkAtom);
-
   const { data: feeRateData } = useQuery({
-    queryKey: ['feeRate', network],
-    queryFn: () => fetchFeeRate({ netWork: network }),
+    queryKey: ['feeRate', environment.network],
+    queryFn: () => fetchFeeRate({ netWork: environment.network }),
   });
 
   const [globalFeerate, setGlobalFeerate] = useAtom(globalFeeRateAtom);

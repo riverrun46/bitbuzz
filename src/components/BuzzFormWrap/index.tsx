@@ -10,12 +10,13 @@ import { useAtomValue } from 'jotai';
 import { isEmpty, isNil } from 'ramda';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { globalFeeRateAtom, networkAtom } from '../../store/user';
+import { globalFeeRateAtom } from '../../store/user';
 // import { sleep } from '../../utils/time';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { image2Attach, removeFileFromList } from '../../utils/file';
 import useImagesPreview from '../../hooks/useImagesPreview';
 import { CreateOptions, IBtcConnector, IBtcEntity } from '@metaid/metaid';
+import { environment } from '../../utils/environments';
 
 type Iprops = {
   btcConnector: IBtcConnector;
@@ -26,7 +27,6 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
 
   const globalFeerate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
-  const network = useAtomValue(networkAtom);
   const buzzFormHandle = useForm<BuzzData>();
   const files = buzzFormHandle.watch('images');
 
@@ -71,7 +71,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
             body: Buffer.from(image.data, 'hex').toString('base64'),
             contentType: `${image.fileType};binary`,
             encoding: 'base64',
-            flag: network === 'mainnet' ? 'metaid' : 'testid',
+            flag: environment.flag,
           });
         }
         const imageRes = await fileEntity.create({
@@ -79,11 +79,8 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
           noBroadcast: 'no',
           feeRate: Number(globalFeerate),
           service: {
-            address:
-              network === 'mainnet'
-                ? 'bc1pxn62rxeqzr39qjvq9fnz4t00qjvhepe0jzp44tnljwzaxjvt79dqph7h8m'
-                : 'myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D',
-            satoshis: '1999',
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
           },
         });
 
@@ -101,17 +98,14 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
           {
             body: JSON.stringify(finalBody),
             contentType: 'text/plain;utf-8',
-            flag: network === 'mainnet' ? 'metaid' : 'testid',
+            flag: environment.flag,
           },
         ],
         noBroadcast: 'no',
         feeRate: Number(globalFeerate),
         service: {
-          address:
-            network === 'mainnet'
-              ? 'bc1pxn62rxeqzr39qjvq9fnz4t00qjvhepe0jzp44tnljwzaxjvt79dqph7h8m'
-              : 'myp2iMt6NeGQxMLt6Hzx1Ho6NbMkiigZ8D',
-          satoshis: '1999',
+          address: environment.service_address,
+          satoshis: environment.service_staoshi,
         },
       });
       console.log('create res for inscribe', createRes);

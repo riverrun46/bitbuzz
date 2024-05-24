@@ -9,9 +9,9 @@ import { MetaidUserInfo } from './CreateMetaIDFormWrap';
 import { useEffect } from 'react';
 import CustomFeerate from '../CustomFeerate';
 
-import { MAN_BASE_URL_MAPPING } from '../../api/request';
 import { useAtomValue } from 'jotai';
-import { globalFeeRateAtom, networkAtom } from '../../store/user';
+import { globalFeeRateAtom } from '../../store/user';
+import { environment } from '../../utils/environments';
 
 export type FormUserInfo = {
   name: string;
@@ -25,7 +25,6 @@ type IProps = {
 };
 
 const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
-  const network = useAtomValue(networkAtom);
   const globalFeerate = useAtomValue(globalFeeRateAtom);
   const {
     register,
@@ -113,7 +112,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
               style={{
                 objectFit: 'cover',
               }}
-              src={`${MAN_BASE_URL_MAPPING[network]}${initialValues?.avatar}`}
+              src={`${environment.base_man_url}${initialValues?.avatar}`}
               alt=''
             />
           </div>

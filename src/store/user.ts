@@ -2,7 +2,6 @@
 import { IBtcConnector, IMetaletWalletForBtc } from '@metaid/metaid';
 
 import { atom } from 'jotai';
-import { BtcNetwork } from '../api/request';
 import { atomWithStorage } from 'jotai/utils';
 
 export type UserInfo = {
@@ -39,7 +38,7 @@ export const balanceAtom = atom({
   unconfirmed: 0,
   total: 0,
 });
-export const networkAtom = atom<BtcNetwork>('mainnet');
+
 export const globalFeeRateAtom = atom<string>('30');
 
 export const walletRestoreParamsAtom = atomWithStorage<

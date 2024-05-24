@@ -7,8 +7,7 @@ import { connectedAtom, globalFeeRateAtom, userInfoAtom } from '../store/user';
 import { checkMetaletConnected, checkMetaletInstalled } from '../utils/wallet';
 import BuzzFormWrap from './BuzzFormWrap';
 import CustomAvatar from './CustomAvatar';
-// import { BtcNetwork } from '../api/request';
-// import { toast } from 'react-toastify';
+
 import { IBtcConnector } from '@metaid/metaid';
 import AboutModal from './AboutModal';
 
@@ -19,19 +18,14 @@ type IProps = {
 };
 
 const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
-  // const networks = ['Mainnet', 'Testnet', 'Regtest'];
   const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom);
-  // const [network, setNetwork] = useAtom(networkAtom);
-  // const setWalletParams = useSetAtom(walletRestoreParamsAtom);
-  // const [connected, setConnected] = useAtom(connectedAtom);
-  // const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+
   const connected = useAtomValue(connectedAtom);
   const userInfo = useAtomValue(userInfoAtom);
 
   const onBuzzStart = async () => {
     await checkMetaletInstalled();
     await checkMetaletConnected(connected);
-    // const stillPool = await checkMetaidInitStillPool(userInfo!);
 
     const doc_modal = document.getElementById(
       'new_buzz_modal'
@@ -45,26 +39,6 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
     ) as HTMLDialogElement;
     doc_modal.showModal();
   };
-
-  // const handleSwitchNetwork = async (network: BtcNetwork) => {
-  // 	setUserInfo(null);
-  // 	setConnected(false);
-  // 	setWalletParams(undefined);
-  // 	const res = await window.metaidwallet.switchNetwork({ network: network });
-  // 	if (res.status === "ok") {
-  // 		toast.success("switch network successfully!");
-  // 		setNetwork(res.network);
-  // 	} else if (res.status === "canceled") {
-  // 		toast.error("switch cancelled!", {
-  // 			className: "!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg",
-  // 		});
-  // 		return;
-  // 	} else {
-  // 		toast.error("switch network failed!", {
-  // 			className: "!text-[#DE613F]!bg-[black] border border-[#DE613f]!rounded-lg",
-  // 		});
-  // 	}
-  // };
 
   return (
     <>

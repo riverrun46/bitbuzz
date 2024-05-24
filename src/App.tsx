@@ -9,11 +9,10 @@ import './react-toastify.css';
 // import "react-toastify/dist/ReactToastify.css";
 import { MetaletWalletForBtc, btcConnect } from '@metaid/metaid';
 
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   btcConnectorAtom,
   connectedAtom,
-  networkAtom,
   userInfoAtom,
   walletAtom,
   walletRestoreParamsAtom,
@@ -21,19 +20,19 @@ import {
 import { buzzEntityAtom } from './store/buzz';
 import { errors } from './utils/errors';
 import { isEmpty, isNil } from 'ramda';
-import { checkMetaletInstalled, conirmMetaletMainnet } from './utils/wallet';
+import { checkMetaletInstalled, confirmCurrentNetwork } from './utils/wallet';
 // import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 import { useCallback, useEffect } from 'react';
 import { BtcNetwork } from './api/request';
 import InsertMetaletAlertModal from './components/MetaIDFormWrap/InsertMetaletAlertModal';
+import { environment } from './utils/environments';
 
 function App() {
   const [connected, setConnected] = useAtom(connectedAtom);
   const setWallet = useSetAtom(walletAtom);
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
-  const network = useAtomValue(networkAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom);
 
@@ -52,7 +51,7 @@ function App() {
   const onWalletConnectStart = async () => {
     await checkMetaletInstalled();
     const _wallet = await MetaletWalletForBtc.create();
-    await conirmMetaletMainnet();
+    await confirmCurrentNetwork();
 
     setWallet(_wallet);
     setWalletParams({
@@ -69,7 +68,7 @@ function App() {
 
     //////////////////////////
     const _btcConnector = await btcConnect({
-      network,
+      network: environment.network,
       wallet: _wallet,
     });
 
@@ -80,7 +79,9 @@ function App() {
     // ) as HTMLDialogElement;
     // doc_modal.showModal();
     // console.log("getUser", await _btcConnector.getUser());
-    const resUser = await _btcConnector.getUser({ network });
+    const resUser = await _btcConnector.getUser({
+      network: environment.network,
+    });
     console.log('user now', resUser);
     if (isNil(resUser?.name) || isEmpty(resUser?.name)) {
       const doc_modal = document.getElementById(
@@ -97,7 +98,7 @@ function App() {
 
   const getBuzzEntity = async () => {
     // await conirmMetaletMainnet();
-    const _btcConnector = await btcConnect({ network });
+    const _btcConnector = await btcConnect({ network: environment.network });
     setBtcConnector(_btcConnector);
     const _buzzEntity = await _btcConnector.use('buzz');
     setBuzzEntity(_buzzEntity);
@@ -115,7 +116,7 @@ function App() {
       setWallet(_wallet);
       const _btcConnector = await btcConnect({
         wallet: _wallet,
-        network: network,
+        network: environment.network,
       });
       setBtcConnector(_btcConnector);
       setUserInfo(_btcConnector.user);
@@ -146,13 +147,13 @@ function App() {
     }
     toast.error('Wallet Network Changed  ');
     if (network !== 'mainnet') {
-      toast.error(errors.SWITCH_MAINNET_ALERT, {
+      toast.error(errors.SWITCH_NETWORK_ALERT, {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
       });
-      await window.metaidwallet.switchNetwork({ network: 'mainnet' });
+      await window.metaidwallet.switchNetwork({ network: environment.network });
 
-      throw new Error(errors.SWITCH_MAINNET_ALERT);
+      throw new Error(errors.SWITCH_NETWORK_ALERT);
     }
   };
 
