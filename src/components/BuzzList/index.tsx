@@ -12,6 +12,7 @@ import { isNil } from 'ramda';
 import { IBtcEntity } from '@metaid/metaid';
 import { environment } from '../../utils/environments';
 
+// pin detail
 export type Pin = {
   id: string;
   number: number;
