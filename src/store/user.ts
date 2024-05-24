@@ -39,10 +39,7 @@ export const balanceAtom = atom({
   unconfirmed: 0,
   total: 0,
 });
-export const networkAtom = atomWithStorage<BtcNetwork>(
-  'networkAtom',
-  'mainnet'
-);
+export const networkAtom = atom<BtcNetwork>('mainnet');
 export const globalFeeRateAtom = atom<string>('30');
 
 export const walletRestoreParamsAtom = atomWithStorage<

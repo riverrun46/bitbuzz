@@ -9,7 +9,7 @@ import './react-toastify.css';
 // import "react-toastify/dist/ReactToastify.css";
 import { MetaletWalletForBtc, btcConnect } from '@metaid/metaid';
 
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   btcConnectorAtom,
   connectedAtom,
@@ -33,7 +33,7 @@ function App() {
   const [connected, setConnected] = useAtom(connectedAtom);
   const setWallet = useSetAtom(walletAtom);
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
-  const [network, setNetwork] = useAtom(networkAtom);
+  const network = useAtomValue(networkAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom);
 
@@ -54,8 +54,6 @@ function App() {
     const _wallet = await MetaletWalletForBtc.create();
     await conirmMetaletMainnet();
 
-    const _network = (await window.metaidwallet.getNetwork()).network;
-    setNetwork(_network);
     setWallet(_wallet);
     setWalletParams({
       address: _wallet.address,
@@ -147,7 +145,15 @@ function App() {
       onLogout();
     }
     toast.error('Wallet Network Changed  ');
-    setNetwork(network ?? 'testnet');
+    if (network !== 'mainnet') {
+      toast.error(errors.SWITCH_MAINNET_ALERT, {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      });
+      await window.metaidwallet.switchNetwork({ network: 'mainnet' });
+
+      throw new Error(errors.SWITCH_MAINNET_ALERT);
+    }
   };
 
   useEffect(() => {

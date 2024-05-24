@@ -100,7 +100,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
         options: [
           {
             body: JSON.stringify(finalBody),
-            contentType: 'text/plain',
+            contentType: 'text/plain;utf-8',
             flag: network === 'mainnet' ? 'metaid' : 'testid',
           },
         ],

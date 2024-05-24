@@ -109,6 +109,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           {
             body: JSON.stringify({ isLike: '1', likeTo: pinId }),
             flag: network === 'mainnet' ? 'metaid' : 'testid',
+            contentType: 'text/plain;utf-8',
           },
         ],
         noBroadcast: 'no',
