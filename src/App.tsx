@@ -146,7 +146,7 @@ function App() {
       onLogout();
     }
     toast.error('Wallet Network Changed  ');
-    if (network !== 'mainnet') {
+    if (network !== environment.network) {
       toast.error(errors.SWITCH_NETWORK_ALERT, {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',

@@ -1,5 +1,5 @@
 import { environment } from './environments';
-
+// add current network
 export const errors = {
   NO_METALET_DETECTED:
     'It appears that you do not have Metalet Wallet Extentsion installed or have not created a wallet account.',
