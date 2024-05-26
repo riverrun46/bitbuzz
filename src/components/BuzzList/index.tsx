@@ -11,7 +11,7 @@ import { buzzEntityAtom } from '../../store/buzz';
 import { isNil } from 'ramda';
 import { IBtcEntity } from '@metaid/metaid';
 import { environment } from '../../utils/environments';
-
+import cls from 'classnames';
 // pin detail
 export type Pin = {
   id: string;
@@ -38,6 +38,7 @@ export type Pin = {
 };
 
 const BuzzList = () => {
+  const [showNewBuzz, setShowNewBuzz] = useState<boolean>(false);
   const [total, setTotal] = useState<null | number>(null);
 
   const navigate = useNavigate();
@@ -128,26 +129,26 @@ const BuzzList = () => {
         <Sparkle className='text-main' />
       </div>
 
-      {/* <div className="text-white flex mx-auto border border-white w-fit rounded-full mt-8">
-				<div
-					className={cls("btn w-[150px] h-[26px] cursor-pointer", {
-						"btn-primary rounded-full": !showNewBuzz,
-						"btn-outline border-none": showNewBuzz,
-					})}
-					onClick={() => setShowNewBuzz(false)}
-				>
-					Follow
-				</div>
-				<div
-					className={cls("btn w-[150px] h-[26px] cursor-pointer", {
-						"btn-primary rounded-full": showNewBuzz,
-						"btn-outline border-none": !showNewBuzz,
-					})}
-					onClick={() => setShowNewBuzz(true)}
-				>
-					New
-				</div>
-			</div> */}
+      <div className='text-white flex mx-auto border border-white w-fit rounded-full mt-8'>
+        <div
+          className={cls('btn w-[150px] h-[26px] cursor-pointer', {
+            'btn-primary rounded-full': !showNewBuzz,
+            'btn-outline border-none': showNewBuzz,
+          })}
+          onClick={() => setShowNewBuzz(false)}
+        >
+          Follow
+        </div>
+        <div
+          className={cls('btn w-[150px] h-[26px] cursor-pointer', {
+            'btn-primary rounded-full': showNewBuzz,
+            'btn-outline border-none': !showNewBuzz,
+          })}
+          onClick={() => setShowNewBuzz(true)}
+        >
+          New
+        </div>
+      </div>
 
       {isLoading ? (
         <div className='flex items-center gap-2 justify-center h-[200px]'>

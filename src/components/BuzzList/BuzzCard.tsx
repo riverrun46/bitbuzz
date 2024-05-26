@@ -22,6 +22,7 @@ import {
   checkMetaletInstalled,
 } from '../../utils/wallet';
 import { environment } from '../../utils/environments';
+import FollowButton from '../Buttons/FollowButton';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -87,59 +88,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       };
     },
   });
-
-  const handleLike = async (pinId: string) => {
-    await checkMetaletInstalled();
-    await checkMetaletConnected(connected);
-    // const stillPool = await checkMetaidInitStillPool(userInfo!);
-
-    if (isLikeByCurrentUser) {
-      toast.error('You have already liked that buzz...', {
-        className:
-          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-      return;
-    }
-
-    const likeEntity = await btcConnector!.use('like');
-    try {
-      const likeRes = await likeEntity.create({
-        options: [
-          {
-            body: JSON.stringify({ isLike: '1', likeTo: pinId }),
-            flag: environment.flag,
-            contentType: 'text/plain;utf-8',
-          },
-        ],
-        noBroadcast: 'no',
-        feeRate: Number(globalFeeRate),
-        service: {
-          address: environment.service_address,
-          satoshis: environment.service_staoshi,
-        },
-      });
-      console.log('likeRes', likeRes);
-      if (!isNil(likeRes?.revealTxIds[0])) {
-        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-        queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
-        // await sleep(5000);
-        toast.success('like buzz successfully');
-      }
-    } catch (error) {
-      console.log('error', error);
-      const errorMessage = (error as any)?.message ?? error;
-      const toastMessage = errorMessage?.includes(
-        'Cannot read properties of undefined'
-      )
-        ? 'User Canceled'
-        : errorMessage;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error(toastMessage, {
-        className:
-          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-    }
-  };
 
   const renderImages = (pinIds: string[]) => {
     if (pinIds.length === 1) {
@@ -314,6 +262,111 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     );
   };
 
+  const handleLike = async (pinId: string) => {
+    await checkMetaletInstalled();
+    await checkMetaletConnected(connected);
+
+    if (isLikeByCurrentUser) {
+      toast.error('You have already liked that buzz...', {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      });
+      return;
+    }
+
+    const likeEntity = await btcConnector!.use('like');
+    try {
+      const likeRes = await likeEntity.create({
+        options: [
+          {
+            body: JSON.stringify({ isLike: '1', likeTo: pinId }),
+            flag: environment.flag,
+            contentType: 'text/plain;utf-8',
+          },
+        ],
+        noBroadcast: 'no',
+        feeRate: Number(globalFeeRate),
+        service: {
+          address: environment.service_address,
+          satoshis: environment.service_staoshi,
+        },
+      });
+      console.log('likeRes', likeRes);
+      if (!isNil(likeRes?.revealTxIds[0])) {
+        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+        queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
+        // await sleep(5000);
+        toast.success('like buzz successfully');
+      }
+    } catch (error) {
+      console.log('error', error);
+      const errorMessage = (error as any)?.message ?? error;
+      const toastMessage = errorMessage?.includes(
+        'Cannot read properties of undefined'
+      )
+        ? 'User Canceled'
+        : errorMessage;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error(toastMessage, {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      });
+    }
+  };
+
+  const handleFollow = async (isFollowed: boolean) => {
+    await checkMetaletInstalled();
+    await checkMetaletConnected(connected);
+
+    if (isLikeByCurrentUser) {
+      toast.error('You have already liked that buzz...', {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      });
+      return;
+    }
+
+    const followEntity = await btcConnector!.use('follow');
+    try {
+      const likeRes = await followEntity.create({
+        options: [
+          {
+            body: currentUserInfoData.data?.metaid,
+            flag: environment.flag,
+            contentType: 'text/plain;utf-8',
+          },
+        ],
+        noBroadcast: 'no',
+        feeRate: Number(globalFeeRate),
+        service: {
+          address: environment.service_address,
+          satoshis: environment.service_staoshi,
+        },
+      });
+      console.log('likeRes', likeRes);
+      if (!isNil(likeRes?.revealTxIds[0])) {
+        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+        queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
+        // await sleep(5000);
+        toast.success('like buzz successfully');
+      }
+    } catch (error) {
+      console.log('error', error);
+      const errorMessage = (error as any)?.message ?? error;
+      const toastMessage = errorMessage?.includes(
+        'Cannot read properties of undefined'
+      )
+        ? 'User Canceled'
+        : errorMessage;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error(toastMessage, {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      });
+    }
+  };
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
     return <div>can't fetch this buzz</div>;
   }
@@ -347,13 +400,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               </div>
             </div>
           </div>
-          {/* <FollowButton isFollowed={true} /> */}
+          <FollowButton isFollowed={false} handleFollow={handleFollow} />
         </div>
         <div
           className={cls('border-y border-white p-4', {
             'cursor-pointer': !isNil(onBuzzDetail),
           })}
-          // onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
         >
           <div
             className='flex flex-col gap-2'

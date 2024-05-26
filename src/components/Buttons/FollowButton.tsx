@@ -1,10 +1,11 @@
 import { CheckCheck } from 'lucide-react';
 type Iprops = {
+  handleFollow: (isFollowed: boolean) => void;
   isFollowed?: boolean;
 };
-const FollowButton = ({ isFollowed }: Iprops) => {
+const FollowButton = ({ isFollowed, handleFollow }: Iprops) => {
   return (
-    <div>
+    <div onClick={() => handleFollow(isFollowed ?? false)}>
       {isFollowed ? (
         <div className='btn btn-ghost btn-sm text-gray '>
           <CheckCheck /> Followed
