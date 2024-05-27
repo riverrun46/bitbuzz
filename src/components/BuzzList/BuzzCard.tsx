@@ -275,11 +275,11 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     return summary;
   };
 
-  const renderBasiceSummary = (summary: string) => {
+  const renderBasicSummary = (summary: string) => {
     return (
       <div>
         {(summary ?? '').split('\n').map((line, index) => (
-          <span key={index}>
+          <span key={index} className='break-all'>
             {/* {line} */}
             <div
               dangerouslySetInnerHTML={{
@@ -299,7 +299,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         {showDetail ? (
           <>
             {summary.length < 500 ? (
-              renderBasiceSummary(summary)
+              renderBasicSummary(summary)
             ) : (
               <div>
                 {summary.slice(0, 500)}
@@ -308,7 +308,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             )}
           </>
         ) : (
-          renderBasiceSummary(summary)
+          renderBasicSummary(summary)
         )}
       </>
     );
