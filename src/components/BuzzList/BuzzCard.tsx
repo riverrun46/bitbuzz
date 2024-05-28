@@ -446,12 +446,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     }
   };
 
-  console.log(
-    currentUserInfoData.data?.name,
-    !(myFollowingList ?? []).includes(metaid ?? '') &&
-      (myFollowingListData?.list ?? []).includes(metaid),
-    'isUnfollowpending'
-  );
+  // console.log(
+  //   currentUserInfoData.data?.name,
+  //   !(myFollowingList ?? []).includes(metaid ?? '') &&
+  //     (myFollowingListData?.list ?? []).includes(metaid),
+  //   'isUnfollowpending'
+  // );
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
