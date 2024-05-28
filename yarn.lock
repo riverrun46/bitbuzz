@@ -1328,6 +1328,27 @@
     ramda "^0.29.1"
     uuid "^9.0.1"
 
+"@metaid/metaid@^1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.2.8.tgz#38ecfd375219d27ec0c95a3d67398e5c25422873"
+  integrity sha512-nLcXc5ACyokAxLm8jqaD3VDj6Xnog0dkOKyQxsWRz7xQTYsK7Oi4lY+KSZKJuMqy9s2QXmWWabFXQ4pRHk1z0Q==
+  dependencies:
+    "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
+    "@metaid/metaid" "^1.2.7"
+    "@metaid/metaid-cli" "0.0.2"
+    "@okxweb3/crypto-lib" "^1.0.1"
+    "@scure/bip39" "^1.2.2"
+    "@types/ramda" "^0.29.12"
+    axios "^1.5.0"
+    bip32 "^4.0.0"
+    bip39 "^3.1.0"
+    bitcoinjs-lib "^6.1.5"
+    chalk "3.0.0"
+    dayjs "^1.11.9"
+    meta-contract "^0.3.35"
+    ramda "^0.29.1"
+    uuid "^9.0.1"
+
 "@noble/ed25519@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-1.7.3.tgz#57e1677bf6885354b466c38e2b620c62f45a7123"
