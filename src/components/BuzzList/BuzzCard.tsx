@@ -172,7 +172,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             return (
               <div key={pinId}>
                 <img
-                  className='image !h-[180px] !w-[100%]'
+                  className='image'
                   onClick={() => {
                     handleImagePreview(pinId);
                   }}
