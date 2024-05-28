@@ -13,6 +13,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import {
   btcConnectorAtom,
   connectedAtom,
+  myFollowingListAtom,
   userInfoAtom,
   walletAtom,
   walletRestoreParamsAtom,
@@ -26,8 +27,10 @@ import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 import { useCallback, useEffect } from 'react';
 import { BtcNetwork } from './api/request';
-import InsertMetaletAlertModal from './components/MetaIDFormWrap/InsertMetaletAlertModal';
+import InsertMetaletAlertModal from './components/InsertMetaletAlertModal';
 import { environment } from './utils/environments';
+import { useQuery } from '@tanstack/react-query';
+import { fetchFollowingList } from './api/buzz';
 
 function App() {
   const [connected, setConnected] = useAtom(connectedAtom);
@@ -35,8 +38,25 @@ function App() {
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
   const setUserInfo = useSetAtom(userInfoAtom);
   const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom);
-
+  const setMyFollowingList = useSetAtom(myFollowingListAtom);
   const setBuzzEntity = useSetAtom(buzzEntityAtom);
+
+  const { data: myFollowingListData } = useQuery({
+    queryKey: ['myFollowing', btcConnector?.metaid],
+    enabled: !isEmpty(btcConnector?.metaid ?? ''),
+    queryFn: () =>
+      fetchFollowingList({
+        metaid: btcConnector?.metaid ?? '',
+        params: { cursor: '0', size: '100', followDetail: false },
+      }),
+  });
+
+  useEffect(() => {
+    if (!isNil(myFollowingListData)) {
+      setMyFollowingList(myFollowingListData.list);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myFollowingListData]);
 
   const onLogout = () => {
     setConnected(false);
@@ -44,6 +64,7 @@ function App() {
     setBuzzEntity(null);
     setUserInfo(null);
     setWalletParams(undefined);
+    setMyFollowingList([]);
     window.metaidwallet.removeListener('accountsChanged');
     window.metaidwallet.removeListener('networkChanged');
   };

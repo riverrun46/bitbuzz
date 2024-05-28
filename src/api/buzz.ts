@@ -1,7 +1,6 @@
 // import { BuzzItem } from '../types';
 import axios from 'axios';
-import { Pin } from '../components/BuzzList';
-import { BtcNetwork } from './request';
+import { BtcNetwork, Pin } from './request';
 import { IBtcEntity } from '@metaid/metaid';
 import { environment } from '../utils/environments';
 
@@ -28,6 +27,39 @@ export async function fetchBuzzs({
   const response = await buzzEntity.list({ page, limit, network });
 
   return response;
+}
+
+export async function fetchMyFollowingBuzzs(params: {
+  page: number;
+  size: number;
+  path: string;
+  metaidList: string[];
+}): Promise<Pin[] | null> {
+  const url = `${environment.base_man_url}/api/getAllPinByPathAndMetaId`;
+
+  try {
+    const data = await axios.post(url, params).then((res) => res.data);
+    return data.data.list;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+export async function fetchMyFollowingBuzzsWithTotal(params: {
+  page: number;
+  size: number;
+  path: string;
+  metaidList: string[];
+}): Promise<{ total: number; currentPage: Pin[] } | null> {
+  const url = `${environment.base_man_url}/api/getAllPinByPathAndMetaId`;
+
+  try {
+    const data = await axios.post(url, params).then((res) => res.data);
+    return { total: data.data.total, currentPage: data.data.list };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function fetchCurrentBuzzLikes({
@@ -79,41 +111,76 @@ export async function getPinDetailByPid({
   }
 }
 
-////////////// mock buzz api
+export async function fetchFollowerList({
+  metaid,
+  params,
+}: {
+  metaid: string;
+  params: {
+    cursor: string;
+    size: string;
+    followDetail: boolean;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}): Promise<any> {
+  try {
+    const data = await axios
+      .get(`${environment.base_man_url}/api/metaid/followerList/${metaid}`, {
+        params,
+      })
+      .then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+export async function fetchFollowingList({
+  metaid,
+  params,
+}: {
+  metaid: string;
+  params: {
+    cursor: string;
+    size: string;
+    followDetail: boolean;
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}): Promise<{ list: any; total: number }> {
+  try {
+    const data = await axios
+      .get(`${environment.base_man_url}/api/metaid/followingList/${metaid}`, {
+        params,
+      })
+      .then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
-// export async function fetchBuzz(id: string): Promise<BuzzItem> {
-// 	const response = await axios.get(`http://localhost:3000/buzzes/${id}`);
-// 	return response.data;
-// }
-
-// export async function createBuzz(newBuzz: BuzzItem): Promise<BuzzItem> {
-// 	const response = await fetch(`http://localhost:3000/buzzes`, {
-// 		method: "POST",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		body: JSON.stringify(newBuzz),
-// 	});
-// 	return response.json();
-// }
-
-// export async function updateBuzz(updatedBuzz: BuzzItem): Promise<BuzzItem> {
-// 	const response = await fetch(`http://localhost:3000/buzzes/${updatedBuzz.id}`, {
-// 		method: "PUT",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		body: JSON.stringify(updatedBuzz),
-// 	});
-// 	return response.json();
-// }
-
-// export async function deleteBuzz(id: string) {
-// 	const response = await fetch(`http://localhost:3000/buzzes/${id}`, {
-// 		method: "DELETE",
-// 	});
-// 	return response.json();
-// }
+export async function fetchFollowDetailPin(params: {
+  metaId: string;
+  followerMetaId: string;
+}): Promise<{
+  metaId: string;
+  followMetaId: string;
+  followTime: number;
+  followPinId: string;
+  unFollowPinId: string;
+  status: boolean;
+}> {
+  try {
+    const data = await axios
+      .get(`${environment.base_man_url}/api/follow/record`, { params })
+      .then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 
 export type FeeRateApi = {
   fastestFee: number;

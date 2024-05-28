@@ -48,3 +48,8 @@ export const walletRestoreParamsAtom = atomWithStorage<
     }
   | undefined
 >('walletRestoreParamsAtom', undefined);
+
+export const myFollowingListAtom = atomWithStorage<string[]>(
+  'myFollowingListAtom',
+  []
+);

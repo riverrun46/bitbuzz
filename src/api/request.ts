@@ -13,6 +13,7 @@ export type Pin = {
   number: number;
   rootTxId: string;
   address: string;
+  createAddress: string;
   output: string;
   outputValue: number;
   timestamp: number;
@@ -38,3 +39,27 @@ export type Pin = {
   pop: string;
   metaid: string;
 };
+
+// export type Pin = {
+//   id: string;
+//   number: number;
+//   rootTxId: string;
+//   address: string;
+//   output: string;
+//   outputValue: number;
+//   timestamp: number;
+//   genesisFee: number;
+//   genesisHeight: number;
+//   genesisTransaction: string;
+//   txInIndex: number;
+//   txInOffset: number;
+//   operation: string;
+//   path: string;
+//   parentPath: string;
+//   encryption: string;
+//   version: string;
+//   contentType: string;
+//   contentBody: string;
+//   contentLength: number;
+//   contentSummary: string;
+// };

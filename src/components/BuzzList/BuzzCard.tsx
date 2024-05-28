@@ -5,24 +5,30 @@ import { Heart, Link as LucideLink } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
 import dayjs from 'dayjs';
-import { Pin } from '.';
 import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   btcConnectorAtom,
   connectedAtom,
   globalFeeRateAtom,
+  myFollowingListAtom,
 } from '../../store/user';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import CustomAvatar from '../CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
-import { fetchCurrentBuzzLikes, getPinDetailByPid } from '../../api/buzz';
+import {
+  fetchCurrentBuzzLikes,
+  fetchFollowDetailPin,
+  fetchFollowingList,
+  getPinDetailByPid,
+} from '../../api/buzz';
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
 } from '../../utils/wallet';
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
+import { Pin } from '../../api/request';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -31,10 +37,12 @@ type IProps = {
 };
 
 const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
+  const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
+
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
   const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
@@ -70,10 +78,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     queryFn: () =>
       btcConnector?.getUser({
         network: environment.network,
-        currentAddress: buzzItem!.address,
+        currentAddress: buzzItem!.createAddress,
       }),
   });
-  const metaid = currentUserInfoData?.data?.metaid ?? btcConnector?.metaid;
+  const metaid = currentUserInfoData?.data?.metaid;
   const attachData = useQueries({
     queries: attachPids.map((id: string) => {
       return {
@@ -87,6 +95,26 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         pending: results.some((result: any) => result.isPending),
       };
     },
+  });
+
+  const { data: myFollowingListData } = useQuery({
+    queryKey: ['myFollowing', btcConnector?.metaid],
+    enabled: !isEmpty(btcConnector?.metaid ?? ''),
+    queryFn: () =>
+      fetchFollowingList({
+        metaid: btcConnector?.metaid ?? '',
+        params: { cursor: '0', size: '100', followDetail: false },
+      }),
+  });
+
+  const { data: followDetailData } = useQuery({
+    queryKey: ['followDetail', btcConnector?.metaid, metaid],
+    enabled: !isEmpty(btcConnector?.metaid ?? '') && !isEmpty(metaid),
+    queryFn: () =>
+      fetchFollowDetailPin({
+        metaId: metaid ?? '',
+        followerMetaId: btcConnector?.metaid ?? '',
+      }),
   });
 
   const renderImages = (pinIds: string[]) => {
@@ -144,7 +172,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             return (
               <div key={pinId}>
                 <img
-                  className='image !h-[180px] w-auto'
+                  className='image !h-[180px] !w-[100%]'
                   onClick={() => {
                     handleImagePreview(pinId);
                   }}
@@ -223,7 +251,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     return summary;
   };
 
-  const renderBasiceSummary = (summary: string) => {
+  const renderBasicSummary = (summary: string) => {
     return (
       <div>
         {(summary ?? '').split('\n').map((line, index) => (
@@ -247,7 +275,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         {showDetail ? (
           <>
             {summary.length < 500 ? (
-              renderBasiceSummary(summary)
+              renderBasicSummary(summary)
             ) : (
               <div>
                 {summary.slice(0, 500)}
@@ -256,7 +284,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             )}
           </>
         ) : (
-          renderBasiceSummary(summary)
+          renderBasicSummary(summary)
         )}
       </>
     );
@@ -314,55 +342,103 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     }
   };
 
-  const handleFollow = async (isFollowed: boolean) => {
+  const handleFollow = async () => {
     await checkMetaletInstalled();
     await checkMetaletConnected(connected);
 
-    if (isLikeByCurrentUser) {
-      toast.error('You have already liked that buzz...', {
-        className:
-          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-      return;
-    }
+    // const doc_modal = document.getElementById(
+    //   'confirm_follow_modal'
+    // ) as HTMLDialogElement;
+    // doc_modal.showModal();
 
-    const followEntity = await btcConnector!.use('follow');
-    try {
-      const likeRes = await followEntity.create({
-        options: [
+    if (
+      !isNil(followDetailData) &&
+      (myFollowingListData?.list ?? []).includes(metaid)
+    ) {
+      try {
+        const unfollowRes = await btcConnector!.inscribe(
+          [
+            {
+              operation: 'revoke',
+              path: '/follow',
+              body: `@${followDetailData.followPinId}`,
+              contentType: 'text/plain;utf-8',
+
+              flag: environment.flag,
+            },
+          ],
+          'no',
+          Number(globalFeeRate),
           {
-            body: currentUserInfoData.data?.metaid,
-            flag: environment.flag,
-            contentType: 'text/plain;utf-8',
-          },
-        ],
-        noBroadcast: 'no',
-        feeRate: Number(globalFeeRate),
-        service: {
-          address: environment.service_address,
-          satoshis: environment.service_staoshi,
-        },
-      });
-      console.log('likeRes', likeRes);
-      if (!isNil(likeRes?.revealTxIds[0])) {
-        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-        queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
-        // await sleep(5000);
-        toast.success('like buzz successfully');
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
+          }
+        );
+        if (!isNil(unfollowRes?.revealTxIds[0])) {
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+          // queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
+          // await sleep(5000);
+          toast.success('like buzz successfully');
+        }
+      } catch (error) {
+        console.log('error', error);
+        const errorMessage = (error as any)?.message ?? error;
+        const toastMessage = errorMessage?.includes(
+          'Cannot read properties of undefined'
+        )
+          ? 'User Canceled'
+          : errorMessage;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        toast.error(toastMessage, {
+          className:
+            '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+        });
       }
-    } catch (error) {
-      console.log('error', error);
-      const errorMessage = (error as any)?.message ?? error;
-      const toastMessage = errorMessage?.includes(
-        'Cannot read properties of undefined'
-      )
-        ? 'User Canceled'
-        : errorMessage;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error(toastMessage, {
-        className:
-          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
+    } else {
+      try {
+        const followRes = await btcConnector!.inscribe(
+          [
+            {
+              operation: 'create',
+              path: '/follow',
+              body: currentUserInfoData.data?.metaid,
+              contentType: 'text/plain;utf-8',
+
+              flag: environment.flag,
+            },
+          ],
+          'no',
+          Number(globalFeeRate),
+          {
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
+          }
+        );
+        if (!isNil(followRes?.revealTxIds[0])) {
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+          setMyFollowingList((d: string[]) => {
+            return [...d, metaid!];
+          });
+          // queryClient.invalidateQueries({
+          //   queryKey: ['payLike', buzzItem!.id],
+          // });
+          // await sleep(5000);
+          toast.success('Follow successfully');
+        }
+      } catch (error) {
+        console.log('error', error);
+        const errorMessage = (error as any)?.message ?? error;
+        const toastMessage = errorMessage?.includes(
+          'Cannot read properties of undefined'
+        )
+          ? 'User Canceled'
+          : errorMessage;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        toast.error(toastMessage, {
+          className:
+            '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+        });
+      }
     }
   };
 
@@ -382,7 +458,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             {isNil(currentUserInfoData.data) ? (
               <div className='avatar placeholder'>
                 <div className='bg-[#2B3440] text-[#D7DDE4] rounded-full w-12'>
-                  <span>{buzzItem!.address.slice(-4, -2)}</span>
+                  <span>{buzzItem!.metaid.slice(0, 6)}</span>
                 </div>
               </div>
             ) : (
@@ -392,7 +468,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               <div className='text-gray'>
                 {isNil(currentUserInfoData?.data?.name) ||
                 isEmpty(currentUserInfoData?.data?.name)
-                  ? 'metaid-user-' + buzzItem.address.slice(-4)
+                  ? 'metaid-user-' + buzzItem.address.slice(0, 6)
                   : currentUserInfoData?.data?.name}
               </div>
               <div className='text-gray text-xs'>
@@ -400,7 +476,17 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               </div>
             </div>
           </div>
-          <FollowButton isFollowed={false} handleFollow={handleFollow} />
+          <FollowButton
+            isFollowed={
+              !isEmpty(followDetailData?.followPinId ?? '') &&
+              (myFollowingListData?.list ?? []).includes(metaid)
+            }
+            isFollowingPending={
+              myFollowingList.includes(metaid ?? '') &&
+              !(myFollowingListData?.list ?? []).includes(metaid)
+            }
+            handleFollow={handleFollow}
+          />
         </div>
         <div
           className={cls('border-y border-white p-4', {
