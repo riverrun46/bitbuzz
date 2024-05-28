@@ -125,7 +125,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             onClick={() => {
               handleImagePreview(pinIds[0]);
             }}
-            className='image h-[60%] w-[60%]'
+            className='image h-[60%] w-[60%] !rounded-md'
             style={{
               objectFit: 'cover',
               objectPosition: 'center',
@@ -147,7 +147,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               </h3>
 
               <img
-                className='image w-auto mt-6'
+                className='image w-auto mt-6 !rounded-md'
                 style={{
                   objectFit: 'cover',
                   objectPosition: 'center',
@@ -172,7 +172,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             return (
               <div key={pinId}>
                 <img
-                  className='image'
+                  className='image !rounded-md'
                   onClick={() => {
                     handleImagePreview(pinId);
                   }}
@@ -198,7 +198,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                       Image Preview
                     </h3>
                     <img
-                      className='image h-[48px] w-auto mt-6'
+                      className='image h-[48px] w-auto mt-6 !rounded-md'
                       style={{
                         objectFit: 'cover',
                         objectPosition: 'center',
@@ -360,10 +360,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           [
             {
               operation: 'revoke',
-              path: '/follow',
-              body: `@${followDetailData.followPinId}`,
+              path: `@${followDetailData.followPinId}`,
               contentType: 'text/plain;utf-8',
-
               flag: environment.flag,
             },
           ],
@@ -376,9 +374,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         );
         if (!isNil(unfollowRes?.revealTxIds[0])) {
           queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-          // queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
+          setMyFollowingList((d) => {
+            return d.filter((i) => i !== metaid);
+          });
           // await sleep(5000);
-          toast.success('like buzz successfully');
+          toast.success(
+            'Unfollowing successfully!Please wait for the transaction to be confirmed.'
+          );
         }
       } catch (error) {
         console.log('error', error);
@@ -423,7 +425,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           //   queryKey: ['payLike', buzzItem!.id],
           // });
           // await sleep(5000);
-          toast.success('Follow successfully');
+          toast.success(
+            'Follow successfully! Please wait for the transaction to be confirmed!'
+          );
         }
       } catch (error) {
         console.log('error', error);
@@ -441,6 +445,13 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       }
     }
   };
+
+  console.log(
+    currentUserInfoData.data?.name,
+    !(myFollowingList ?? []).includes(metaid ?? '') &&
+      (myFollowingListData?.list ?? []).includes(metaid),
+    'isUnfollowpending'
+  );
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
@@ -477,13 +488,14 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             </div>
           </div>
           <FollowButton
-            isFollowed={
-              !isEmpty(followDetailData?.followPinId ?? '') &&
-              (myFollowingListData?.list ?? []).includes(metaid)
-            }
+            isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
             isFollowingPending={
-              myFollowingList.includes(metaid ?? '') &&
+              (myFollowingList ?? []).includes(metaid ?? '') &&
               !(myFollowingListData?.list ?? []).includes(metaid)
+            }
+            isUnfollowingPending={
+              !(myFollowingList ?? []).includes(metaid ?? '') &&
+              (myFollowingListData?.list ?? []).includes(metaid)
             }
             handleFollow={handleFollow}
           />

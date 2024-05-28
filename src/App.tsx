@@ -52,8 +52,8 @@ function App() {
   });
 
   useEffect(() => {
-    if (!isNil(myFollowingListData)) {
-      setMyFollowingList(myFollowingListData.list);
+    if (!isEmpty(myFollowingListData?.list ?? [])) {
+      setMyFollowingList(myFollowingListData?.list ?? []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myFollowingListData]);

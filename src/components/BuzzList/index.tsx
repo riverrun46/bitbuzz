@@ -7,7 +7,7 @@ import FollowingBuzzList from './FollowingBuzzList';
 // pin detail
 
 const BuzzList = () => {
-  const [showNewBuzz, setShowNewBuzz] = useState<boolean>(false);
+  const [showNewBuzz, setShowNewBuzz] = useState<boolean>(true);
 
   return (
     <div>
