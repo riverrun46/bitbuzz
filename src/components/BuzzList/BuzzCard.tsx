@@ -488,22 +488,20 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               </div>
             </div>
           </div>
-          {!isEmpty(btcConnector?.metaid ?? '') &&
-            !isEmpty(metaid ?? '') &&
-            btcConnector?.metaid !== metaid && (
-              <FollowButton
-                isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
-                isFollowingPending={
-                  (myFollowingList ?? []).includes(metaid ?? '') &&
-                  !(myFollowingListData?.list ?? []).includes(metaid)
-                }
-                isUnfollowingPending={
-                  !(myFollowingList ?? []).includes(metaid ?? '') &&
-                  (myFollowingListData?.list ?? []).includes(metaid)
-                }
-                handleFollow={handleFollow}
-              />
-            )}
+          {btcConnector?.metaid !== metaid && (
+            <FollowButton
+              isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
+              isFollowingPending={
+                (myFollowingList ?? []).includes(metaid ?? '') &&
+                !(myFollowingListData?.list ?? []).includes(metaid)
+              }
+              isUnfollowingPending={
+                !(myFollowingList ?? []).includes(metaid ?? '') &&
+                (myFollowingListData?.list ?? []).includes(metaid)
+              }
+              handleFollow={handleFollow}
+            />
+          )}
         </div>
         <div
           className={cls('border-y border-white p-4', {
