@@ -178,9 +178,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                   }}
                   style={{
                     objectFit: 'cover',
-                    objectPosition: 'center',
-                    width: '100%',
-                    height: '100%',
+                    // objectPosition: 'center',
+
+                    width: '220px',
+                    height: '200px',
                   }}
                   src={`${environment.base_man_url}/content/${pinId}`}
                   alt=''

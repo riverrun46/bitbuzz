@@ -12,7 +12,6 @@ const FollowButton = ({
   isFollowingPending,
   isUnfollowingPending,
 }: Iprops) => {
-  console.log('isUnfollowingPending', isUnfollowingPending);
   return (
     <div
       onClick={() => {
@@ -31,19 +30,21 @@ const FollowButton = ({
           className={cls(
             'btn btn-outline flex items-center btn-sm btn-primary rounded-full w-[100px]',
             {
-              'btn-disabled cursor-not-allowed !bg-gray !border-none w-[130px]':
+              'btn-disabled cursor-not-allowed !bg-main/20 !border-none w-[130px]':
                 isFollowingPending || isUnfollowingPending,
             }
           )}
         >
           {(isFollowingPending || isUnfollowingPending) && (
-            <span className='loading loading-spinner loading-xs'></span>
+            <span className='loading loading-spinner loading-xs text-main/25'></span>
           )}
-          {isFollowingPending
-            ? 'Following'
-            : isUnfollowingPending
-            ? 'Unfollowing'
-            : 'Follow'}
+          {isFollowingPending ? (
+            <span className='text-main/25'>Following</span>
+          ) : isUnfollowingPending ? (
+            <span className='text-main/25'>Unfollowing</span>
+          ) : (
+            'Follow'
+          )}
         </button>
       )}
     </div>

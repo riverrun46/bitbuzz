@@ -29,7 +29,7 @@ import { useCallback, useEffect } from 'react';
 import { BtcNetwork } from './api/request';
 import InsertMetaletAlertModal from './components/InsertMetaletAlertModal';
 import { environment } from './utils/environments';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { fetchFollowingList } from './api/buzz';
 
 function App() {
@@ -41,22 +41,25 @@ function App() {
   const setMyFollowingList = useSetAtom(myFollowingListAtom);
   const setBuzzEntity = useSetAtom(buzzEntityAtom);
 
-  const { data: myFollowingListData } = useQuery({
-    queryKey: ['myFollowing', btcConnector?.metaid],
-    enabled: !isEmpty(btcConnector?.metaid ?? ''),
-    queryFn: () =>
+  const mutateMyFollowing = useMutation({
+    mutationKey: ['myFollowing', btcConnector?.metaid],
+    mutationFn: (metaid: string) =>
       fetchFollowingList({
-        metaid: btcConnector?.metaid ?? '',
+        metaid: metaid,
         params: { cursor: '0', size: '100', followDetail: false },
       }),
   });
 
-  useEffect(() => {
-    if (!isEmpty(myFollowingListData?.list ?? [])) {
-      setMyFollowingList(myFollowingListData?.list ?? []);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [myFollowingListData]);
+  // useEffect(() => {
+  //   if (!isEmpty(myFollowingListData?.list ?? [])) {
+  //     setMyFollowingList((d) => {
+  //       // need to handle data after following and unfollowing
+  //       const fetchList = myFollowingListData?.list ?? [];
+  //       return dropRepeats([...d, ...fetchList]);
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [myFollowingListData]);
 
   const onLogout = () => {
     setConnected(false);
@@ -88,6 +91,7 @@ function App() {
     }
 
     //////////////////////////
+
     const _btcConnector = await btcConnect({
       network: environment.network,
       wallet: _wallet,
@@ -95,6 +99,10 @@ function App() {
 
     setBtcConnector(_btcConnector);
 
+    const myFollowingListData = await mutateMyFollowing.mutateAsync(
+      _btcConnector?.metaid ?? ''
+    );
+    setMyFollowingList(myFollowingListData?.list ?? []);
     // const doc_modal = document.getElementById(
     //   'create_metaid_modal'
     // ) as HTMLDialogElement;
@@ -142,7 +150,7 @@ function App() {
       setBtcConnector(_btcConnector);
       setUserInfo(_btcConnector.user);
       // setConnected(true);
-      console.log('refetch user', _btcConnector.user);
+      // console.log('refetch user', _btcConnector.user);
     }
   };
 
