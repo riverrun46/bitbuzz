@@ -541,7 +541,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               {buzzItem?.number === -1 && (
                 <div
                   className='tooltip tooltip-secondary mt-0.5'
-                  data-tip='This buzz(PIN} is still in the mempool...'
+                  data-tip='This buzz(PIN) is still in the mempool...'
                 >
                   <span className='loading loading-ring loading-sm cursor-pointer'></span>
                 </div>
