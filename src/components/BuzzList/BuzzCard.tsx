@@ -537,8 +537,19 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
             </div>
-            <div>
-              {dayjs.unix(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+            <div className='flex gap-2'>
+              {buzzItem?.number === -1 && (
+                <div
+                  className='tooltip tooltip-secondary mt-0.5'
+                  data-tip='This buzz(PIN} is still in the mempool...'
+                >
+                  <span className='loading loading-ring loading-sm cursor-pointer'></span>
+                </div>
+              )}
+
+              <div>
+                {dayjs.unix(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+              </div>
             </div>
           </div>
         </div>
