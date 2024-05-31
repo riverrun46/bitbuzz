@@ -50,27 +50,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
             <Link to={'/'}>
               <img src='/logo_navbar.png' width={100} height={45} />
             </Link>
-            <div className='ml-4 flex gap-2'>
-              <a
-                href='https://docs.metaid.io/'
-                className='text-lime-900 font-bold hover:underline hover:text-lime-700'
-                target='_blank'
-              >
-                Docs
-              </a>
 
-              <button
-                className='text-lime-900 font-bold hover:underline hover:text-lime-700'
-                onClick={() => {
-                  const doc_modal = document.getElementById(
-                    'about_modal'
-                  ) as HTMLDialogElement;
-                  doc_modal.showModal();
-                }}
-              >
-                About
-              </button>
-            </div>
             {/* <div className='dropdown dropdown-hover'>
               <div
                 className='border btn-xs btn rounded-md text-main bg-[black] cursor-pointer hover:bg-[black]'
@@ -117,7 +97,32 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
           </div>
 
           <div className='flex items-center gap-2'>
-            <div className='text-gray'>Fee Rate:</div>
+            <div className='gap-4 hidden lg:flex'>
+              <a
+                href='https://docs.metaid.io/'
+                className='text-lime-900 font-bold hover:underline hover:text-lime-700'
+                target='_blank'
+              >
+                Docs
+              </a>
+              <button
+                className='text-lime-900 font-bold hover:underline hover:text-lime-700'
+                onClick={() => {
+                  const doc_modal = document.getElementById(
+                    'about_modal'
+                  ) as HTMLDialogElement;
+                  doc_modal.showModal();
+                }}
+              >
+                About
+              </button>
+              <div className='border-r border border-[#1D2F2F]/50 mr-2'></div>{' '}
+            </div>
+
+            <img
+              src='/charging-pile.png'
+              className='w-[30px] h-[35px] hidden md:block'
+            />
             <input
               inputMode='numeric'
               type='number'
@@ -127,7 +132,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
                 appearance: 'textfield',
               }}
               aria-hidden
-              className='w-[80px] input input-xs  bg-gray/40  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none'
+              className='w-[65px] h-[32px] input input-xs  bg-[black]  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none  hidden md:block'
               step={1}
               value={globalFeeRate}
               onChange={(e) => {
@@ -135,6 +140,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
                 setGlobalFeeRate(v);
               }}
             />
+            <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
 
             <PencilLine
               className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2'
