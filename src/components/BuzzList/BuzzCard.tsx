@@ -248,15 +248,6 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`
         );
       });
-      console.log(summary);
-      summary = summary
-        .replace('<metaid_flag>', 'metaid_flag')
-        .replace('<operation>', 'operation')
-        .replace('<path>', 'path')
-        .replace('<encryption>', 'encryption')
-        .replace('<version>', 'version')
-        .replace('<content-type>', 'content-type')
-        .replace('<payload>', 'payload');
     }
 
     return summary;
