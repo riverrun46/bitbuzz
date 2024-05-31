@@ -29,6 +29,7 @@ import {
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
+import sanitizeHtml from 'sanitize-html';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -249,6 +250,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
         );
       });
     }
+
     return summary;
   };
 
@@ -257,12 +259,26 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       <div>
         {(summary ?? '').split('\n').map((line, index) => (
           <span key={index} className='break-all'>
-            {/* {line} */}
-            <div
+            {/* <div
               dangerouslySetInnerHTML={{
                 __html: detectUrl(line),
               }}
-            />
+            /> */}
+            {sanitizeHtml(detectUrl(line), {
+              allowedTags: [
+                'metaid_flag',
+                'operation',
+                'path',
+                'encryption',
+                'version',
+                'content-type',
+                'payload',
+                'a',
+              ],
+              allowedAttributes: {
+                a: ['href'],
+              },
+            })}
             <br />
           </span>
         ))}
@@ -279,8 +295,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               renderBasicSummary(summary)
             ) : (
               <div>
-                {summary.slice(0, 500)}
-                <span className='text-main'>{' more >>'}</span>
+                {renderBasicSummary(summary.slice(0, 800))}
+                <span className='text-main ml-2'>{' more >>'}</span>
               </div>
             )}
           </>
