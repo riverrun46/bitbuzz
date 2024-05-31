@@ -29,7 +29,6 @@ import {
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
-import sanitizeHtml from 'sanitize-html';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -249,8 +248,29 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`
         );
       });
+      console.log(summary);
+      summary = summary
+        .replace('<metaid_flag>', 'metaid_flag')
+        .replace('<operation>', 'operation')
+        .replace('<path>', 'path')
+        .replace('<encryption>', 'encryption')
+        .replace('<version>', 'version')
+        .replace('<content-type>', 'content-type')
+        .replace('<payload>', 'payload');
     }
 
+    return summary;
+  };
+
+  const handleSpecial = (summary: string) => {
+    summary = summary
+      .replace('<metaid_flag>', 'metaid_flag')
+      .replace('<operation>', 'operation')
+      .replace('<path>', 'path')
+      .replace('<encryption>', 'encryption')
+      .replace('<version>', 'version')
+      .replace('<content-type>', 'content-type')
+      .replace('<payload>', 'payload');
     return summary;
   };
 
@@ -259,26 +279,36 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       <div>
         {(summary ?? '').split('\n').map((line, index) => (
           <span key={index} className='break-all'>
-            {/* <div
+            <div
               dangerouslySetInnerHTML={{
-                __html: detectUrl(line),
+                __html: handleSpecial(detectUrl(line)),
               }}
-            /> */}
-            {sanitizeHtml(detectUrl(line), {
-              allowedTags: [
-                'metaid_flag',
-                'operation',
-                'path',
-                'encryption',
-                'version',
-                'content-type',
-                'payload',
-                'a',
-              ],
-              allowedAttributes: {
-                a: ['href'],
-              },
-            })}
+            />
+            {/* {line.includes('</a>') ? (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: detectUrl(line),
+                }}
+              />
+            ) : (
+              <>
+                {sanitizeHtml(detectUrl(line), {
+                  allowedTags: [
+                    'metaid_flag',
+                    'operation',
+                    'path',
+                    'encryption',
+                    'version',
+                    'content-type',
+                    'payload',
+                    'a',
+                  ],
+                  allowedAttributes: {
+                    a: ['href', 'target', 'style'],
+                  },
+                })}
+              </>
+            )} */}
             <br />
           </span>
         ))}
