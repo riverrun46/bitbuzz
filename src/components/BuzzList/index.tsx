@@ -11,7 +11,7 @@ const BuzzList = () => {
 
   return (
     <div>
-      <div className='flex gap-2 items-center place-content-center mt-0  '>
+      <div className='flex gap-2 items-center place-content-center mt-0'>
         <Sparkle className='text-main' />
 
         <div className="text-white text-[36px] font-['Impact']">
