@@ -5,18 +5,18 @@ import BackButton from '../components/Buttons/BackButton';
 import BuzzCard from '../components/BuzzList/BuzzCard';
 
 const Profile = () => {
-  const { id: tempId } = useParams();
-  const id = tempId ?? '';
+  const { id: address } = useParams();
+  // const userAddress = address ?? '';
 
-  const { isLoading, data: buzzDetailData } = useQuery({
-    queryKey: ['protocol', id],
-    queryFn: () => getPinDetailByPid({ pid: id! }),
-  });
+  // const { isLoading, data: buzzDetailData } = useQuery({
+  //   queryKey: ['userinfo', id],
+  //   queryFn: () => getPinDetailByPid({ pid: id! }),
+  // });
 
   return (
     <div>
       <BackButton />
-      <div>Profile </div>
+      {/* <div>Profile </div>
       <div className='mt-6'>
         {isLoading ? (
           <div className='grid place-items-center h-[200px]'>
@@ -25,7 +25,7 @@ const Profile = () => {
         ) : (
           <BuzzCard buzzItem={buzzDetailData} />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

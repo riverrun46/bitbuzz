@@ -4,13 +4,7 @@ import { environment } from '../utils/environments';
 
 type Iprops = {
   userInfo: UserInfo;
-  onProfileDetail?: ({
-    metaid,
-    address,
-  }: {
-    metaid: string;
-    address: string;
-  }) => void;
+  onProfileDetail?: (address: string) => void;
 };
 
 const CustomAvatar = ({ userInfo, onProfileDetail }: Iprops) => {
@@ -21,15 +15,7 @@ const CustomAvatar = ({ userInfo, onProfileDetail }: Iprops) => {
     : (userInfo?.metaid ?? '').slice(-4, -2);
   const src = `${environment.base_man_url}${userInfo?.avatar ?? ''}`;
   return (
-    <div
-      onClick={() =>
-        onProfileDetail &&
-        onProfileDetail({
-          address: userInfo?.address,
-          metaid: userInfo?.metaid,
-        })
-      }
-    >
+    <div onClick={() => onProfileDetail && onProfileDetail(userInfo?.address)}>
       {hasAvatar ? (
         <img
           src={src}

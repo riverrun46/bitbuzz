@@ -31,6 +31,7 @@ import InsertMetaletAlertModal from './components/InsertMetaletAlertModal';
 import { environment } from './utils/environments';
 import { useMutation } from '@tanstack/react-query';
 import { fetchFollowingList } from './api/buzz';
+import Profile from './pages/Profile';
 
 function App() {
   const [connected, setConnected] = useAtom(connectedAtom);
@@ -212,6 +213,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/buzz/:id' element={<Buzz />} />
           <Route path='/buzz/:id/edit' element={<EditBuzz />} />
+          <Route path='/profile/:id' element={<Profile />} />
         </Routes>
       </div>
       <ToastContainer

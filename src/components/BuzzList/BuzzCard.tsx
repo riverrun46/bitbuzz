@@ -29,6 +29,7 @@ import {
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
+import { useNavigate } from 'react-router-dom';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -42,6 +43,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const btcConnector = useAtomValue(btcConnectorAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
@@ -484,6 +486,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     }
   };
 
+  const onProfileDetail = (address: string) => {
+    navigate(`/profile/${address}`);
+  };
+
   // console.log(
   //   currentUserInfoData.data?.name,
   //   !(myFollowingList ?? []).includes(metaid ?? '') &&
@@ -511,7 +517,10 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                 </div>
               </div>
             ) : (
-              <CustomAvatar userInfo={currentUserInfoData.data} />
+              <CustomAvatar
+                userInfo={currentUserInfoData.data}
+                onProfileDetail={onProfileDetail}
+              />
             )}
             <div className='flex flex-col'>
               <div className='text-gray'>
