@@ -33,7 +33,7 @@ const config: Config = {
     },
     container: {
       center: true,
-      padding: '8rem',
+      padding: { DEFAULT: '2rem', lg: '8rem' },
       screens: {
         '2xl': '1000px',
       },

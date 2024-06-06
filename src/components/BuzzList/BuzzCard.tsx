@@ -29,7 +29,7 @@ import {
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -43,7 +43,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const btcConnector = useAtomValue(btcConnectorAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
@@ -137,7 +137,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             key={pinIds[0]}
           />
           <dialog id={`preview_modal_${pinIds[0]}`} className='modal  !z-20'>
-            <div className='modal-box bg-[#191C20] !z-20 py-5 w-[50%]'>
+            <div className='modal-box bg-[#191C20] !z-20 py-5  w-[90%] lg:w-[50%]'>
               <form method='dialog'>
                 {/* if there is a button in form, it will close the modal */}
                 <button className='border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5'>
@@ -190,7 +190,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                   key={pinId}
                 />
                 <dialog id={`preview_modal_${pinId}`} className='modal  !z-20'>
-                  <div className='modal-box bg-[#191C20] !z-20 py-5 w-[50%]'>
+                  <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
                     <form method='dialog'>
                       {/* if there is a button in form, it will close the modal */}
                       <button className='border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5'>
@@ -486,9 +486,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     }
   };
 
-  const onProfileDetail = (address: string) => {
-    navigate(`/profile/${address}`);
-  };
+  // const onProfileDetail = (address: string) => {
+  //   navigate(`/profile/${address}`);
+  // };
 
   // console.log(
   //   currentUserInfoData.data?.name,
@@ -519,7 +519,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             ) : (
               <CustomAvatar
                 userInfo={currentUserInfoData.data}
-                onProfileDetail={onProfileDetail}
+                // onProfileDetail={onProfileDetail}
               />
             )}
             <div className='flex flex-col'>
