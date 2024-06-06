@@ -1,11 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
-import { getPinDetailByPid } from '../api/buzz';
+// import { useQuery } from '@tanstack/react-query';
+// import { useParams } from 'react-router-dom';
+// import { getPinDetailByPid } from '../api/buzz';
 import BackButton from '../components/Buttons/BackButton';
-import BuzzCard from '../components/BuzzList/BuzzCard';
+// import BuzzCard from '../components/BuzzList/BuzzCard';
 
 const Profile = () => {
-  const { id: address } = useParams();
+  // const { id: address } = useParams();
   // const userAddress = address ?? '';
 
   // const { isLoading, data: buzzDetailData } = useQuery({
