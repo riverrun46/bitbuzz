@@ -42,7 +42,7 @@ const CustomFeerate = () => {
   }, [feeRateData, globalFeerate]);
 
   return (
-    <div className='w-full flex flex-row gap-6 items-center rounded border-2 border-main/40 shadow p-4'>
+    <div className='w-full flex flex-col lg:flex-row gap-6 items-center rounded border-2 border-main/40 shadow p-4'>
       <div className='flex flex-col gap-4 w-[55%]'>
         <div className='text-gray text-[20px]'>Fee Rate</div>
 
@@ -68,7 +68,7 @@ const CustomFeerate = () => {
         </div>
       </div>
 
-      <div className='flex flex-col gap-4 '>
+      <div className='flex flex-col gap-4'>
         {feeRateOptions.map((d) => {
           return (
             <div
