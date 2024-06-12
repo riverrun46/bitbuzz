@@ -75,12 +75,14 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
           });
         }
         const imageRes = await fileEntity.create({
-          options: fileOptions,
-          noBroadcast: 'no',
-          feeRate: Number(globalFeerate),
-          service: {
-            address: environment.service_address,
-            satoshis: environment.service_staoshi,
+          dataArray: fileOptions,
+          options: {
+            noBroadcast: 'no',
+            feeRate: Number(globalFeerate),
+            service: {
+              address: environment.service_address,
+              satoshis: environment.service_staoshi,
+            },
           },
         });
 
@@ -94,18 +96,20 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
       console.log('finalBody', finalBody);
 
       const createRes = await buzzEntity!.create({
-        options: [
+        dataArray: [
           {
             body: JSON.stringify(finalBody),
             contentType: 'text/plain;utf-8',
             flag: environment.flag,
           },
         ],
-        noBroadcast: 'no',
-        feeRate: Number(globalFeerate),
-        service: {
-          address: environment.service_address,
-          satoshis: environment.service_staoshi,
+        options: {
+          noBroadcast: 'no',
+          feeRate: Number(globalFeerate),
+          service: {
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
+          },
         },
       });
       console.log('create res for inscribe', createRes);

@@ -54,12 +54,14 @@ const CreateMetaIDFormWrap = ({
 
     const res = await btcConnector
       .createUserInfo({
-        ...userInfo,
-        feeRate: Number(globalFeeRate),
-        network: environment.network,
-        service: {
-          address: environment.service_address,
-          satoshis: environment.service_staoshi,
+        userData: { ...userInfo },
+        options: {
+          feeRate: Number(globalFeeRate),
+          network: environment.network,
+          service: {
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
+          },
         },
       })
       .catch((error: any) => {

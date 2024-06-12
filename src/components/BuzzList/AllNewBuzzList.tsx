@@ -11,7 +11,15 @@ import { fetchBuzzs } from '../../api/buzz';
 import { Pin } from '../../api/request';
 import BuzzCard from './BuzzCard';
 
-const AllNewBuzzList = () => {
+type Iprops = {
+  address?: string;
+  queryKey?: string[];
+};
+
+const AllNewBuzzList = ({
+  address,
+  queryKey = ['buzzes', environment.network],
+}: Iprops) => {
   const [total, setTotal] = useState<null | number>(null);
 
   const navigate = useNavigate();
@@ -32,7 +40,7 @@ const AllNewBuzzList = () => {
 
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey: ['buzzes', environment.network],
+      queryKey,
       enabled: !isNil(buzzEntity),
 
       queryFn: ({ pageParam }) =>
@@ -41,6 +49,7 @@ const AllNewBuzzList = () => {
           limit: 5,
           buzzEntity: buzzEntity!,
           network: environment.network,
+          address,
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {

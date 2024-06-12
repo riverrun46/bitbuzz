@@ -3,11 +3,12 @@ import { isEmpty, isNil } from 'ramda';
 import { environment } from '../utils/environments';
 
 type Iprops = {
-  userInfo: UserInfo;
+  userInfo?: UserInfo;
   onProfileDetail?: (address: string) => void;
+  size?: string;
 };
 
-const CustomAvatar = ({ userInfo, onProfileDetail }: Iprops) => {
+const CustomAvatar = ({ userInfo, onProfileDetail, size = '48px' }: Iprops) => {
   const hasName = !isNil(userInfo?.name) && !isEmpty(userInfo?.name);
   const hasAvatar = !isNil(userInfo?.avatar) && !isEmpty(userInfo?.avatar);
   const userAlt = hasName
@@ -15,19 +16,32 @@ const CustomAvatar = ({ userInfo, onProfileDetail }: Iprops) => {
     : (userInfo?.metaid ?? '').slice(-4, -2);
   const src = `${environment.base_man_url}${userInfo?.avatar ?? ''}`;
   return (
-    <div onClick={() => onProfileDetail && onProfileDetail(userInfo?.address)}>
+    <div
+      onClick={() =>
+        onProfileDetail && onProfileDetail(userInfo?.address ?? '')
+      }
+    >
       {hasAvatar ? (
         <img
           src={src}
           alt='user avatar'
-          className='rounded-full self-start w-[48px] h-[48px] cursor-pointer'
+          className='rounded-full self-start cursor-pointer'
           style={{
+            width: size,
+            height: size,
             objectFit: 'cover',
           }}
         />
       ) : (
         <div className='avatar placeholder cursor-pointer'>
-          <div className='bg-[#2B3440] text-[#D7DDE4] rounded-full w-12'>
+          <div
+            className='bg-[#2B3440] text-[#D7DDE4] rounded-full'
+            style={{
+              width: size,
+              height: size,
+              objectFit: 'cover',
+            }}
+          >
             <span>{userAlt}</span>
           </div>
         </div>

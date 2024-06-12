@@ -29,7 +29,7 @@ import {
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -43,7 +43,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const btcConnector = useAtomValue(btcConnectorAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
   const queryClient = useQueryClient();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // console.log("buzzitem", buzzItem);
   let summary = buzzItem!.contentSummary;
@@ -84,6 +84,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       }),
   });
   const metaid = currentUserInfoData?.data?.metaid;
+
   const attachData = useQueries({
     queries: attachPids.map((id: string) => {
       return {
@@ -314,12 +315,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       <>
         {showDetail ? (
           <>
-            {summary.length < 500 ? (
+            {summary.length < 800 ? (
               renderBasicSummary(summary)
             ) : (
-              <div>
-                {renderBasicSummary(summary.slice(0, 800))}
-                <span className='text-main ml-2'>{' more >>'}</span>
+              <div className=''>
+                {renderBasicSummary(summary.slice(0, 800) + '...')}
+                <span className=' text-main'>{' more >>'}</span>
               </div>
             )}
           </>
@@ -345,18 +346,20 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     const likeEntity = await btcConnector!.use('like');
     try {
       const likeRes = await likeEntity.create({
-        options: [
+        dataArray: [
           {
             body: JSON.stringify({ isLike: '1', likeTo: pinId }),
             flag: environment.flag,
             contentType: 'text/plain;utf-8',
           },
         ],
-        noBroadcast: 'no',
-        feeRate: Number(globalFeeRate),
-        service: {
-          address: environment.service_address,
-          satoshis: environment.service_staoshi,
+        options: {
+          noBroadcast: 'no',
+          feeRate: Number(globalFeeRate),
+          service: {
+            address: environment.service_address,
+            satoshis: environment.service_staoshi,
+          },
         },
       });
       console.log('likeRes', likeRes);
@@ -396,8 +399,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       (myFollowingListData?.list ?? []).includes(metaid)
     ) {
       try {
-        const unfollowRes = await btcConnector!.inscribe(
-          [
+        const unfollowRes = await btcConnector!.inscribe({
+          inscribeDataArray: [
             {
               operation: 'revoke',
               path: `@${followDetailData.followPinId}`,
@@ -405,13 +408,15 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               flag: environment.flag,
             },
           ],
-          'no',
-          Number(globalFeeRate),
-          {
-            address: environment.service_address,
-            satoshis: environment.service_staoshi,
-          }
-        );
+          options: {
+            noBroadcast: 'no',
+            feeRate: Number(globalFeeRate),
+            service: {
+              address: environment.service_address,
+              satoshis: environment.service_staoshi,
+            },
+          },
+        });
         if (!isNil(unfollowRes?.revealTxIds[0])) {
           queryClient.invalidateQueries({ queryKey: ['buzzes'] });
           setMyFollowingList((d) => {
@@ -438,8 +443,8 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
       }
     } else {
       try {
-        const followRes = await btcConnector!.inscribe(
-          [
+        const followRes = await btcConnector!.inscribe({
+          inscribeDataArray: [
             {
               operation: 'create',
               path: '/follow',
@@ -449,13 +454,15 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               flag: environment.flag,
             },
           ],
-          'no',
-          Number(globalFeeRate),
-          {
-            address: environment.service_address,
-            satoshis: environment.service_staoshi,
-          }
-        );
+          options: {
+            noBroadcast: 'no',
+            feeRate: Number(globalFeeRate),
+            service: {
+              address: environment.service_address,
+              satoshis: environment.service_staoshi,
+            },
+          },
+        });
         if (!isNil(followRes?.revealTxIds[0])) {
           queryClient.invalidateQueries({ queryKey: ['buzzes'] });
           setMyFollowingList((d: string[]) => {
@@ -486,9 +493,9 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     }
   };
 
-  // const onProfileDetail = (address: string) => {
-  //   navigate(`/profile/${address}`);
-  // };
+  const onProfileDetail = (address: string) => {
+    navigate(`/profile/${address}`);
+  };
 
   // console.log(
   //   currentUserInfoData.data?.name,
@@ -519,7 +526,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
             ) : (
               <CustomAvatar
                 userInfo={currentUserInfoData.data}
-                // onProfileDetail={onProfileDetail}
+                onProfileDetail={onProfileDetail}
               />
             )}
             <div className='flex flex-col'>

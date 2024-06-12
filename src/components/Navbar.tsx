@@ -116,7 +116,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
               >
                 About
               </button>
-              <div className='border-r border border-[#1D2F2F]/50 mr-2'></div>{' '}
+              <div className='border-r border border-[#1D2F2F]/50 mr-2'></div>
             </div>
 
             <img

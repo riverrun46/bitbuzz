@@ -18,13 +18,15 @@ export async function fetchBuzzs({
   page,
   limit,
   network,
+  address,
 }: {
   buzzEntity: IBtcEntity;
   page: number;
   limit: number;
   network: BtcNetwork;
+  address?: string;
 }): Promise<Pin[] | null> {
-  const response = await buzzEntity.list({ page, limit, network });
+  const response = await buzzEntity.list({ page, limit, network, address });
 
   return response;
 }
@@ -122,7 +124,7 @@ export async function fetchFollowerList({
     followDetail: boolean;
   };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}): Promise<any> {
+}): Promise<{ list: any; total: number }> {
   try {
     const data = await axios
       .get(`${environment.base_man_url}/api/metaid/followerList/${metaid}`, {
@@ -132,7 +134,7 @@ export async function fetchFollowerList({
     return data.data;
   } catch (error) {
     console.error(error);
-    return null;
+    throw error;
   }
 }
 export async function fetchFollowingList({
