@@ -25,7 +25,7 @@ import { checkMetaletInstalled, confirmCurrentNetwork } from './utils/wallet';
 // import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { BtcNetwork } from './api/request';
 import InsertMetaletAlertModal from './components/InsertMetaletAlertModal';
 import { environment } from './utils/environments';
@@ -34,6 +34,8 @@ import { fetchFollowingList } from './api/buzz';
 import Profile from './pages/Profile';
 
 function App() {
+  const ref = useRef<null | HTMLDivElement>(null);
+
   const [connected, setConnected] = useAtom(connectedAtom);
   const setWallet = useSetAtom(walletAtom);
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
@@ -200,17 +202,23 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected, window?.metaidwallet]);
 
+  const onScrollToTop = () => {
+    ref.current!.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className='relative overflow-auto'>
-      <Navbar
-        onWalletConnectStart={onWalletConnectStart}
-        onLogout={onLogout}
-        btcConnector={btcConnector!}
-      />
+      <div ref={ref}>
+        <Navbar
+          onWalletConnectStart={onWalletConnectStart}
+          onLogout={onLogout}
+          btcConnector={btcConnector!}
+        />
+      </div>
 
       <div className='container pt-[100px] bg-[black] text-white h-screen'>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home onScrollToTop={onScrollToTop} />} />
           <Route path='/buzz/:id' element={<Buzz />} />
           <Route path='/buzz/:id/edit' element={<EditBuzz />} />
           <Route path='/profile/:id' element={<Profile />} />
