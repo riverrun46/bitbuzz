@@ -98,7 +98,7 @@ const BuzzForm = ({
         <div className='relative'>
           <textarea
             className={cls(
-              'textarea textarea-bordered border-white text-white bg-[black] textarea-sm h-[160px] w-full ',
+              'textarea textarea-bordered focus:outline-none border-white text-white bg-[black] textarea-sm h-[160px] w-full ',
               {
                 'textarea-error': errors.content,
               }
