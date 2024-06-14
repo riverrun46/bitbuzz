@@ -48,7 +48,12 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
         <div className='container flex justify-between'>
           <div className='flex items-center gap-2'>
             <Link to={'/'}>
-              <img src='/logo_navbar.png' width={100} height={45} />
+              <img
+                src='/logo_navbar.png'
+                // width={100}
+                // height={26}
+                className='w-20 h-5 md:w-[100px] md:h-[26px]'
+              />
             </Link>
 
             {/* <div className='dropdown dropdown-hover'>
@@ -143,15 +148,15 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
             <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
 
             <PencilLine
-              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2'
-              size={45}
+              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-9 h-9 md:w-12 md:h-12'
+              // size={45}
               onClick={onBuzzStart}
             />
 
             {connected ? (
               <div className='dropdown dropdown-hover'>
                 {/* <div tabIndex={0} role="button" className="btn m-1">Hover</div> */}
-                <div tabIndex={0} role='button' className='cursor-pointer'>
+                <div tabIndex={0} role='button' className='cursor-pointer '>
                   <CustomAvatar userInfo={userInfo!} />
                 </div>
                 <ul
@@ -199,7 +204,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
               </div>
             ) : (
               <div
-                className='btn btn-outline hover:bg-[black] hover:text-main rounded-full font-medium w-[180px]'
+                className='btn-sm w-[120px] text-[12px] md:text-[14px] md:btn-md md:w-[180px] btn btn-outline hover:bg-[black] hover:text-main rounded-full font-medium'
                 onClick={onWalletConnectStart}
               >
                 Connect Wallet

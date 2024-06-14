@@ -12,7 +12,7 @@ type Iprops = {
 
 const ProfileCard = ({ address }: Iprops) => {
   const btcConnector = useAtomValue(btcConnectorAtom);
-
+  console.log('btcConnector', btcConnector);
   const profileUserData = useQuery({
     queryKey: ['userInfo', address, environment.network],
     queryFn: () =>
@@ -45,15 +45,15 @@ const ProfileCard = ({ address }: Iprops) => {
   const metaidPrefix = (profileUserData?.data?.metaid ?? '').slice(0, 6);
 
   return (
-    <div className='border w-full border-white rounded-xl relative pt-[170px]'>
+    <div className='border w-full border-white rounded-xl relative pt-[100px] md:pt-[170px]'>
       <img src='/profile-bar.png' className='absolute top-0' />
       <div className='flex justify-between p-6'>
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 items-center '>
           <CustomAvatar userInfo={profileUserData?.data} size='80px' />
-          <div className='text-[24px] font-bold font-mono'>
+          <div className='font-bold font-mono text-[12px] md:text-[24px] '>
             {profileUserData?.data?.name ?? `MetaID-User-${metaidPrefix}`}
           </div>
-          <div className='flex gap-2'>
+          <div className='flex gap-2 text-[12px] md:text-[14px] '>
             <div className='text-main'>{`MetaID:  ${metaidPrefix}`}</div>
             {/* <a
               className='btn btn-xs bg-main text-[black] hover:text-main hover:bg-[black]'
@@ -65,7 +65,7 @@ const ProfileCard = ({ address }: Iprops) => {
           </div>
         </div>
 
-        <div className='flex self-center mt-10'>
+        <div className='flex self-center mt-10 text-[12px] md:text-[14px]'>
           <div className='flex gap-1'>
             <div className='text-main'>{followingListData?.total ?? 0}</div>
             <div className='text-[#A4A59D]'>Following</div>

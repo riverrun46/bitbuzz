@@ -38,6 +38,7 @@ export type Pin = {
   content: string;
   pop: string;
   metaid: string;
+  chainName: 'mvc' | 'btc';
 };
 
 // export type Pin = {

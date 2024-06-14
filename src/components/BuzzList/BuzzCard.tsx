@@ -46,6 +46,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
   const navigate = useNavigate();
 
   // console.log("buzzitem", buzzItem);
+  const isFromBtc = buzzItem?.chainName === 'btc';
   let summary = buzzItem!.contentSummary;
   const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
   // console.log("isjson", isSummaryJson);
@@ -54,11 +55,12 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
 
   summary = isSummaryJson ? parseSummary.content : summary;
 
-  const attachPids = isSummaryJson
-    ? (parseSummary?.attachments ?? []).map(
-        (d: string) => d.split('metafile://')[1]
-      )
-    : [];
+  const attachPids =
+    isSummaryJson && !isEmpty(parseSummary?.attachments ?? []) && isFromBtc
+      ? (parseSummary?.attachments ?? []).map(
+          (d: string) => d.split('metafile://')[1]
+        )
+      : [];
 
   // const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
   // console.log("current address", buzzItem!.address);
@@ -529,7 +531,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
                 onProfileDetail={onProfileDetail}
               />
             )}
-            <div className='flex flex-col'>
+            <div className='flex flex-col md:text-md text-sm'>
               <div className='text-gray'>
                 {isNil(currentUserInfoData?.data?.name) ||
                 isEmpty(currentUserInfoData?.data?.name)
@@ -577,7 +579,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
           </div>
           <div className='flex justify-between text-gray mt-2'>
             <div
-              className='flex gap-2 items-center hover:text-slate-300'
+              className='flex gap-2 items-center hover:text-slate-300 md:text-md text-xs'
               onClick={() => {
                 window.open(
                   `https://mempool.space/${
@@ -590,7 +592,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
             </div>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 md:text-md text-xs'>
               {buzzItem?.number === -1 && (
                 <div
                   className='tooltip tooltip-secondary mt-0.5'

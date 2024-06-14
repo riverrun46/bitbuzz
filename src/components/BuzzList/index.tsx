@@ -14,7 +14,7 @@ const BuzzList = () => {
       <div className='flex gap-2 items-center place-content-center mt-0'>
         <Sparkle className='text-main' />
 
-        <div className="text-white text-[36px] font-['Impact']">
+        <div className="text-white text-[24px] lg:text-[36px] font-['Impact']">
           {"What's New Today"}
         </div>
 
@@ -23,19 +23,25 @@ const BuzzList = () => {
 
       <div className='text-white flex mx-auto border border-white w-fit rounded-full mt-8'>
         <div
-          className={cls('btn w-[150px] h-[26px] cursor-pointer', {
-            'btn-primary rounded-full': showNewBuzz,
-            'btn-outline border-none': !showNewBuzz,
-          })}
+          className={cls(
+            'btn w-[120px] h-[20px] md:w-[150px] md:h-[26px] cursor-pointer',
+            {
+              'btn-primary rounded-full': showNewBuzz,
+              'btn-outline border-none': !showNewBuzz,
+            }
+          )}
           onClick={() => setShowNewBuzz(true)}
         >
           New
         </div>
         <div
-          className={cls('btn w-[150px] h-[26px] cursor-pointer', {
-            'btn-primary rounded-full': !showNewBuzz,
-            'btn-outline border-none': showNewBuzz,
-          })}
+          className={cls(
+            'btn w-[120px] h-[20px] md:w-[150px] md:h-[26px] cursor-pointer',
+            {
+              'btn-primary rounded-full': !showNewBuzz,
+              'btn-outline border-none': showNewBuzz,
+            }
+          )}
           onClick={() => setShowNewBuzz(false)}
         >
           Follow
