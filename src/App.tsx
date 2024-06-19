@@ -115,8 +115,7 @@ function App() {
       network: environment.network,
     });
     console.log('user now', resUser);
-    alert(_btcConnector);
-    alert(resUser);
+
     if (isNil(resUser?.name) || isEmpty(resUser?.name)) {
       const doc_modal = document.getElementById(
         'create_metaid_modal'
