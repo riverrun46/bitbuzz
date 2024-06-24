@@ -13,7 +13,7 @@ export type Pin = {
   number: number;
   rootTxId: string;
   address: string;
-  createAddress: string;
+  creator: string;
   output: string;
   outputValue: number;
   timestamp: number;

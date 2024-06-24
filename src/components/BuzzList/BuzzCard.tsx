@@ -35,9 +35,15 @@ type IProps = {
   buzzItem: Pin | undefined;
   onBuzzDetail?: (txid: string) => void;
   innerRef?: React.Ref<HTMLDivElement>;
+  showFollowButton?: boolean;
 };
 
-const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
+const BuzzCard = ({
+  buzzItem,
+  onBuzzDetail,
+  innerRef,
+  showFollowButton = true,
+}: IProps) => {
   const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
@@ -82,7 +88,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
     queryFn: () =>
       btcConnector?.getUser({
         network: environment.network,
-        currentAddress: buzzItem!.createAddress,
+        currentAddress: buzzItem!.creator,
       }),
   });
   const metaid = currentUserInfoData?.data?.metaid;
@@ -532,7 +538,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               />
             )}
             <div className='flex flex-col md:text-md text-sm'>
-              <div className='text-gray'>
+              <div className='text-slate-200'>
                 {isNil(currentUserInfoData?.data?.name) ||
                 isEmpty(currentUserInfoData?.data?.name)
                   ? 'metaid-user-' + buzzItem.address.slice(0, 6)
@@ -543,7 +549,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               </div>
             </div>
           </div>
-          {btcConnector?.metaid !== metaid && (
+          {btcConnector?.metaid !== metaid && showFollowButton && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
               isFollowingPending={
@@ -592,7 +598,7 @@ const BuzzCard = ({ buzzItem, onBuzzDetail, innerRef }: IProps) => {
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
             </div>
-            <div className='flex gap-2 md:text-md text-xs'>
+            <div className='flex gap-2 md:text-md text-xs items-center'>
               {buzzItem?.number === -1 && (
                 <div
                   className='tooltip tooltip-secondary mt-0.5'

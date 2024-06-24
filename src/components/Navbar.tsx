@@ -10,6 +10,7 @@ import CustomAvatar from './CustomAvatar';
 
 import { IBtcConnector } from '@metaid/metaid';
 import AboutModal from './AboutModal';
+import NavabarMobileMenu from './NavabarMobileMenu';
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>;
@@ -44,65 +45,15 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
     <>
       <AboutModal />
 
-      <div className='z-10 navbar p-3 bg-main absolute top-0'>
+      <div className='z-10 navbar py-3 px-0 bg-main absolute top-0'>
         <div className='container flex justify-between'>
-          <div className='flex items-center gap-2'>
-            <Link to={'/'}>
-              <img
-                src='/logo_navbar.png'
-                // width={100}
-                // height={26}
-                className='w-20 h-5 md:w-[100px] md:h-[26px]'
-              />
-            </Link>
-
-            {/* <div className='dropdown dropdown-hover'>
-              <div
-                className='border btn-xs btn rounded-md text-main bg-[black] cursor-pointer hover:bg-[black]'
-                tabIndex={0}
-                role='button'
-              >
-                {network ?? 'testnet'}
-              </div>
-              <ul
-                tabIndex={0}
-                className='dropdown-content z-[1] menu px-4 py-4 gap-3 shadow bg-main rounded-box w-[120px] border border-[#131519] left-[-30px]'
-                style={{
-                  borderRadius: '12px',
-                  boxShadow: '0px 4px 10px 0px rgba(169, 211, 18, 0.5)',
-                }}
-              >
-                {networks.map((network, index) => {
-                  return (
-                    <div key={network}>
-                      <li
-                        className='hover:bg-[rgba(219, 243, 136, 0.5)] rounded-box relative'
-                        key={network}
-                        onClick={() =>
-                          handleSwitchNetwork(
-                            network.toLowerCase() as BtcNetwork
-                          )
-                        }
-                      >
-                        <a
-                          className='text-[#1D2F2F] text-[14px]'
-                          // style={{ textIndent: '2.2em' }}
-                        >
-                          {network}
-                        </a>
-                      </li>
-                      {index !== 2 && (
-                        <div className='border border-[#1D2F2F]/50 w-[80%] mx-auto'></div>
-                      )}
-                    </div>
-                  );
-                })}
-              </ul>
-            </div> */}
-          </div>
+          <Link to={'/'} className='md:block hidden'>
+            <img src='/logo_navbar.png' className='w-[100px] h-[26px]' />
+          </Link>
+          <NavabarMobileMenu />
 
           <div className='flex items-center gap-2'>
-            <div className='gap-4 hidden lg:flex'>
+            <div className='gap-4 hidden md:flex'>
               <a
                 href='https://docs.metaid.io/'
                 className='text-lime-900 font-bold hover:underline hover:text-lime-700'
@@ -148,20 +99,19 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
             <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
 
             <PencilLine
-              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-9 h-9 md:w-12 md:h-12'
+              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-12 h-12'
               // size={45}
               onClick={onBuzzStart}
             />
 
             {connected ? (
               <div className='dropdown dropdown-hover'>
-                {/* <div tabIndex={0} role="button" className="btn m-1">Hover</div> */}
                 <div tabIndex={0} role='button' className='cursor-pointer '>
                   <CustomAvatar userInfo={userInfo!} />
                 </div>
                 <ul
                   tabIndex={0}
-                  className='dropdown-content z-[1] menu px-4 py-4 gap-3 shadow bg-main rounded-box w-[170px] border border-[#131519] left-[-86px]'
+                  className='dropdown-content z-[1] menu px-4 py-4 gap-3 shadow bg-main rounded-box w-[170px] border border-[#131519] right-0'
                   style={{
                     borderRadius: '12px',
                     boxShadow: '0px 4px 10px 0px rgba(169, 211, 18, 0.5)',
