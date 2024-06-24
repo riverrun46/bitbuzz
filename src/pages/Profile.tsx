@@ -20,6 +20,7 @@ const Profile = () => {
       <AllNewBuzzList
         address={address}
         queryKey={['buzzes', environment.network, address]}
+        showFollowButton={false}
       />
     </div>
   );

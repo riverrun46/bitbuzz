@@ -14,10 +14,12 @@ import BuzzCard from './BuzzCard';
 type Iprops = {
   address?: string;
   queryKey?: string[];
+  showFollowButton?: boolean;
 };
 
 const AllNewBuzzList = ({
   address,
+  showFollowButton = true,
   queryKey = ['buzzes', environment.network],
 }: Iprops) => {
   const [total, setTotal] = useState<null | number>(null);
@@ -68,6 +70,7 @@ const AllNewBuzzList = ({
           key={pin.id}
           buzzItem={pin}
           onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}
+          showFollowButton={showFollowButton}
         />
       );
     })

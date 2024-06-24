@@ -79,7 +79,6 @@ function App() {
     await checkMetaletInstalled();
     const _wallet = await MetaletWalletForBtc.create();
     await confirmCurrentNetwork();
-
     setWallet(_wallet);
     setWalletParams({
       address: _wallet.address,
@@ -111,6 +110,7 @@ function App() {
     // ) as HTMLDialogElement;
     // doc_modal.showModal();
     // console.log("getUser", await _btcConnector.getUser());
+
     const resUser = await _btcConnector.getUser({
       network: environment.network,
     });
