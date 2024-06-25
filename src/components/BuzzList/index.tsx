@@ -10,7 +10,7 @@ const BuzzList = () => {
   const [showNewBuzz, setShowNewBuzz] = useState<boolean>(true);
 
   return (
-    <div>
+    <>
       <div className='flex gap-2 items-center place-content-center mt-0'>
         <Sparkle className='text-main' />
 
@@ -80,7 +80,7 @@ const BuzzList = () => {
           </button>
         </div>
       )} */}
-    </div>
+    </>
   );
 };
 
