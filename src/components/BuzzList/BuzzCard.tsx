@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
 import { Heart, Link as LucideLink } from 'lucide-react';
-// import { MessageCircle, Send, } from "lucide-react";
+// import { Send } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
 import dayjs from 'dayjs';
@@ -30,6 +30,8 @@ import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
 import { useNavigate } from 'react-router-dom';
+import ForwardBuzzAlertModal from './ForwardBuzzAlertModal';
+import BuzzFormWrap from '../BuzzFormWrap';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -616,23 +618,55 @@ const BuzzCard = ({
         </div>
 
         <div className='flex items-center justify-between pb-4 px-4'>
-          <div className='flex gap-2'>
-            <Heart
-              className={cls(
-                { 'text-[red]': isLikeByCurrentUser },
-                'cursor-pointer'
-              )}
-              fill={isLikeByCurrentUser && 'red'}
-              onClick={() => handleLike(buzzItem!.id)}
-            />
-
-            {!isNil(currentLikeData) ? currentLikeData.length : null}
-            {/* <MessageCircle />
-					<Send /> */}
+          <div className='flex gap-3 items-center'>
+            <div className='flex gap-1 items-center'>
+              <Heart
+                className={cls(
+                  { 'text-[red]': isLikeByCurrentUser },
+                  'cursor-pointer'
+                )}
+                fill={isLikeByCurrentUser && 'red'}
+                onClick={() => handleLike(buzzItem!.id)}
+              />
+              {!isNil(currentLikeData) ? currentLikeData.length : null}
+            </div>
+            {/* <div className='flex gap-1 items-center'>
+              <Send
+                className={cls('cursor-pointer')}
+                onClick={async () => {
+                  await checkMetaletInstalled();
+                  await checkMetaletConnected(connected);
+                  (document.getElementById(
+                    'forward_buzz_alert_modal'
+                  ) as HTMLDialogElement)!.showModal();
+                }}
+              />
+            </div> */}
+            {/* <div className='flex gap-1 items-center'>
+              <MessageCircle />
+            </div> */}
           </div>
           {/* <div className="btn btn-sm rounded-full">Want To Buy</div> */}
         </div>
       </div>
+      <ForwardBuzzAlertModal />
+      <dialog id='repost_buzz_modal' className='modal !z-20'>
+        <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
+          <form method='dialog'>
+            {/* if there is a button in form, it will close the modal */}
+            <button className='border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5'>
+              ✕
+            </button>
+          </form>
+          <h3 className='font-medium text-white text-[16px] text-center'>
+            Repost Buzz
+          </h3>
+          <BuzzFormWrap btcConnector={btcConnector!} />
+        </div>
+        <form method='dialog' className='modal-backdrop'>
+          <button>close</button>
+        </form>
+      </dialog>
     </>
   );
 };

@@ -7,7 +7,7 @@ const InsertMetaletAlertModal = () => {
   //   };
   return (
     <dialog id='alert_install_metalet_modal' className='modal'>
-      <div className='modal-box modal-open bg-[#191C20] py-5 w-[90%] md:w-[50%]'>
+      <div className='modal-box bg-[#191C20] py-5 md:w-[90%] w-[50%]'>
         <form method='dialog'>
           {/* if there is a button in form, it will close the modal */}
           {/* <button

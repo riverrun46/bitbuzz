@@ -16,7 +16,7 @@ const Home = ({ onScrollToTop }: Iprops) => {
 
         <BuzzList />
         <ArrowBigUpDash
-          className='fixed bottom-0 right-[10px] lg:right-4 w-8 h-8 cursor-pointer hover:text-main'
+          className='fixed bottom-2 right-[5px] lg:right-[20px] w-10 h-10 cursor-pointer hover:text-main'
           onClick={onScrollToTop}
         />
       </main>

@@ -163,7 +163,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
           </div>
         </div>
       </div>
-      <dialog id='new_buzz_modal' className='modal  !z-20'>
+      <dialog id='new_buzz_modal' className='modal !z-20'>
         <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
           <form method='dialog'>
             {/* if there is a button in form, it will close the modal */}
