@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
 import { Heart, Link as LucideLink } from 'lucide-react';
-// import { MessageCircle, Send, } from "lucide-react";
+import { Send } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
 import dayjs from 'dayjs';
@@ -616,19 +616,24 @@ const BuzzCard = ({
         </div>
 
         <div className='flex items-center justify-between pb-4 px-4'>
-          <div className='flex gap-2'>
-            <Heart
-              className={cls(
-                { 'text-[red]': isLikeByCurrentUser },
-                'cursor-pointer'
-              )}
-              fill={isLikeByCurrentUser && 'red'}
-              onClick={() => handleLike(buzzItem!.id)}
-            />
-
-            {!isNil(currentLikeData) ? currentLikeData.length : null}
-            {/* <MessageCircle />
-					<Send /> */}
+          <div className='flex gap-3 items-center'>
+            <div className='flex gap-1 items-center'>
+              <Heart
+                className={cls(
+                  { 'text-[red]': isLikeByCurrentUser },
+                  'cursor-pointer'
+                )}
+                fill={isLikeByCurrentUser && 'red'}
+                onClick={() => handleLike(buzzItem!.id)}
+              />
+              {!isNil(currentLikeData) ? currentLikeData.length : null}
+            </div>
+            <div className='flex gap-1 items-center'>
+              <Send className={cls('cursor-pointer')} />
+            </div>
+            {/* <div className='flex gap-1 items-center'>
+              <MessageCircle />
+            </div> */}
           </div>
           {/* <div className="btn btn-sm rounded-full">Want To Buy</div> */}
         </div>
