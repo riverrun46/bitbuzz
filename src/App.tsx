@@ -32,6 +32,7 @@ import { environment } from './utils/environments';
 import { useMutation } from '@tanstack/react-query';
 import { fetchFollowingList } from './api/buzz';
 import Profile from './pages/Profile';
+import FollowDetail from './pages/followDetail';
 
 function App() {
   const ref = useRef<null | HTMLDivElement>(null);
@@ -223,6 +224,7 @@ function App() {
           <Route path='/buzz/:id' element={<Buzz />} />
           <Route path='/buzz/:id/edit' element={<EditBuzz />} />
           <Route path='/profile/:id' element={<Profile />} />
+          <Route path='/follow-detail/:id' element={<FollowDetail />} />
         </Routes>
       </div>
       <ToastContainer

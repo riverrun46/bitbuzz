@@ -32,6 +32,7 @@ import { Pin } from '../../api/request';
 import { useNavigate } from 'react-router-dom';
 import ForwardBuzzAlertModal from './ForwardBuzzAlertModal';
 import BuzzFormWrap from '../BuzzFormWrap';
+import ProfileCard from '../ProfileCard';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -526,31 +527,42 @@ const BuzzCard = ({
         ref={innerRef}
       >
         <div className='flex items-center justify-between pt-4 px-4'>
-          <div className='flex gap-2 items-center'>
-            {isNil(currentUserInfoData.data) ? (
-              <div className='avatar placeholder'>
-                <div className='bg-[#2B3440] text-[#D7DDE4] rounded-full w-12'>
-                  <span>{buzzItem!.metaid.slice(0, 6)}</span>
+          <div className='dropdown dropdown-hover'>
+            <div
+              tabIndex={0}
+              role='button'
+              className='flex gap-2 items-center cursor-pointer'
+            >
+              {isNil(currentUserInfoData.data) ? (
+                <div className='avatar placeholder'>
+                  <div className='bg-[#2B3440] text-[#D7DDE4] rounded-full w-12'>
+                    <span>{buzzItem!.metaid.slice(0, 6)}</span>
+                  </div>
+                </div>
+              ) : (
+                <CustomAvatar
+                  userInfo={currentUserInfoData.data}
+                  onProfileDetail={onProfileDetail}
+                />
+              )}
+              <div className='flex flex-col md:text-md text-sm'>
+                <div className='text-slate-200'>
+                  {isNil(currentUserInfoData?.data?.name) ||
+                  isEmpty(currentUserInfoData?.data?.name)
+                    ? 'metaid-user-' + buzzItem.address.slice(0, 6)
+                    : currentUserInfoData?.data?.name}
+                </div>
+                <div className='text-gray text-xs'>
+                  {(metaid ?? '').slice(0, 6)}
                 </div>
               </div>
-            ) : (
-              <CustomAvatar
-                userInfo={currentUserInfoData.data}
-                onProfileDetail={onProfileDetail}
-              />
-            )}
-            <div className='flex flex-col md:text-md text-sm'>
-              <div className='text-slate-200'>
-                {isNil(currentUserInfoData?.data?.name) ||
-                isEmpty(currentUserInfoData?.data?.name)
-                  ? 'metaid-user-' + buzzItem.address.slice(0, 6)
-                  : currentUserInfoData?.data?.name}
-              </div>
-              <div className='text-gray text-xs'>
-                {(metaid ?? '').slice(0, 6)}
-              </div>
+            </div>
+
+            <div tabIndex={0} className='dropdown-content'>
+              <ProfileCard address={buzzItem.address} isDropdown />
             </div>
           </div>
+
           {btcConnector?.metaid !== metaid && showFollowButton && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
