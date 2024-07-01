@@ -214,10 +214,21 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
         <div className='flex justify-between'>
           <div className='flex flex-col gap-2 items-start '>
             <CustomAvatar userInfo={profileUserData?.data} />
-            <div className='font-bold font-mono  '>
-              {profileUserData?.data?.name ?? `MetaID-User-${metaidPrefix}`}
+
+            <div
+              className='tooltip tooltip-secondary mt-0.5 z-50'
+              data-tip={
+                profileUserData?.data?.name ?? `MetaID-User-${metaidPrefix}`
+              }
+            >
+              <div
+                className='font-bold font-mono text-left w-[115px] truncate'
+                style={{ textWrap: 'nowrap' }}
+              >
+                {profileUserData?.data?.name ?? `MetaID-User-${metaidPrefix}`}
+              </div>
             </div>
-            <div className='flex gap-2 text-[10px]   '>
+            <div className='flex gap-2 text-[10px]'>
               <div className='text-main'>{`MetaID:  ${metaidPrefix}`}</div>
             </div>
           </div>

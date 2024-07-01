@@ -14,7 +14,7 @@ import ProfileCard from '../components/ProfileCard';
 // import BuzzCard from '../components/BuzzList/BuzzCard';
 
 const FollowDetail = () => {
-  const [showFollowed, setShowFollowed] = useState(true);
+  const [showFollowing, setShowFollowing] = useState(true);
   const { id: metaid } = useParams();
 
   const { data: followingListData } = useQuery({
@@ -36,7 +36,6 @@ const FollowDetail = () => {
         params: { cursor: '0', size: '100', followDetail: true },
       }),
   });
-  console.log('dd', followingListData, followerListData);
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex items-start'>
@@ -48,34 +47,34 @@ const FollowDetail = () => {
           className={cls(
             'btn w-[120px] h-[20px] md:w-[150px] md:h-[26px] cursor-pointer',
             {
-              'btn-primary rounded-full': showFollowed,
-              'btn-outline border-none': !showFollowed,
+              'btn-primary rounded-full': showFollowing,
+              'btn-outline border-none': !showFollowing,
             }
           )}
-          onClick={() => setShowFollowed(true)}
+          onClick={() => setShowFollowing(true)}
         >
-          Followed
+          Following
         </div>
         <div
           className={cls(
             'btn w-[120px] h-[20px] md:w-[150px] md:h-[26px] cursor-pointer',
             {
-              'btn-primary rounded-full': !showFollowed,
-              'btn-outline border-none': showFollowed,
+              'btn-primary rounded-full': !showFollowing,
+              'btn-outline border-none': showFollowing,
             }
           )}
-          onClick={() => setShowFollowed(false)}
+          onClick={() => setShowFollowing(false)}
         >
           Follower
         </div>
       </div>
 
-      {showFollowed ? (
+      {showFollowing ? (
         <div className='grid gird-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {isEmpty(followerListData?.list ?? []) ? (
-            <div>No Follower Data Founded</div>
+          {isEmpty(followingListData?.list ?? []) ? (
+            <div>No Following Data Founded</div>
           ) : (
-            (followerListData?.list ?? []).map((d: any, index: any) => (
+            (followingListData?.list ?? []).map((d: any, index: any) => (
               <ProfileCard
                 key={d?.metaid ?? index}
                 address={d?.address}
@@ -86,10 +85,10 @@ const FollowDetail = () => {
         </div>
       ) : (
         <div className='grid gird-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {isEmpty(followingListData?.list ?? []) ? (
-            <div>No Following Data Founded</div>
+          {isEmpty(followerListData?.list ?? []) ? (
+            <div>No Follower Data Founded</div>
           ) : (
-            (followingListData?.list ?? []).map((d: any, index: any) => (
+            (followerListData?.list ?? []).map((d: any, index: any) => (
               <ProfileCard
                 key={d?.metaid ?? index}
                 address={d?.address}
