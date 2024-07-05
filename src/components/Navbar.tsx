@@ -99,14 +99,25 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
             <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
 
             <PencilLine
-              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-12 h-12'
+              className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-9 h-9 md:w-12 md:h-12'
               // size={45}
               onClick={onBuzzStart}
             />
 
             {connected ? (
               <div className='dropdown dropdown-hover'>
-                <div tabIndex={0} role='button' className='cursor-pointer '>
+                <div
+                  tabIndex={0}
+                  role='button'
+                  className='cursor-pointer md:hidden block'
+                >
+                  <CustomAvatar userInfo={userInfo!} size='36px' />
+                </div>
+                <div
+                  tabIndex={0}
+                  role='button'
+                  className='cursor-pointer md:block hidden'
+                >
                   <CustomAvatar userInfo={userInfo!} />
                 </div>
                 <ul

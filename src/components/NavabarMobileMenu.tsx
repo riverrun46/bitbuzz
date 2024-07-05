@@ -4,7 +4,7 @@ const NavabarMobileMenu = () => {
       <div tabIndex={0} role='button' className='cursor-pointer'>
         <img
           src='/logo_navbar.png'
-          className='w-[100px] h-[26px] block md:hidden'
+          className='w-[80px] h-[20px] block md:hidden'
         />
       </div>
       <ul

@@ -282,7 +282,12 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
       <img src='/profile-bar.png' className='absolute top-0' />
       <div className='flex justify-between p-6'>
         <div className='flex flex-col gap-2 items-start '>
-          <CustomAvatar userInfo={profileUserData?.data} size='80px' />
+          <div className='md:block hidden'>
+            <CustomAvatar userInfo={profileUserData?.data} size='80px' />
+          </div>
+          <div className='md:hidden block'>
+            <CustomAvatar userInfo={profileUserData?.data} size='66px' />
+          </div>
           <div className='font-bold font-mono text-[12px] md:text-[24px] '>
             {profileUserData?.data?.name ?? `MetaID-User-${metaidPrefix}`}
           </div>
@@ -291,7 +296,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
           </div>
         </div>
 
-        <div className='flex flex-col gap-5 items-end self-end mb-2'>
+        <div className='flex flex-col gap-5 items-end self-end'>
           {btcConnector?.metaid !== profileUserData?.data?.metaid && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(
