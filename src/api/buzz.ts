@@ -1,7 +1,7 @@
 // import { BuzzItem } from '../types';
 import axios from 'axios';
 import { BtcNetwork, Pin } from './request';
-import { IBtcEntity } from '@metaid/metaid';
+import { IBtcConnector } from '@metaid/metaid';
 import { environment } from '../utils/environments';
 
 export type LikeRes = {
@@ -14,20 +14,27 @@ export type LikeRes = {
 };
 
 export async function fetchBuzzs({
-  buzzEntity,
+  btcConnector,
   page,
   limit,
   network,
+  path,
   address,
 }: {
-  buzzEntity: IBtcEntity;
+  btcConnector: IBtcConnector;
   page: number;
   limit: number;
   network: BtcNetwork;
+  path?: string[];
   address?: string;
 }): Promise<Pin[] | null> {
-  const response = await buzzEntity.list({ page, limit, network, address });
-
+  const response = await btcConnector.getAllpin({
+    page,
+    limit,
+    network,
+    path,
+    address,
+  });
   return response;
 }
 
@@ -47,6 +54,24 @@ export async function fetchMyFollowingBuzzs(params: {
     return null;
   }
 }
+
+export async function fetchMyFollowingTotal(params: {
+  page: number;
+  size: number;
+  path: string;
+  metaidList: string[];
+}): Promise<number | null> {
+  const url = `${environment.base_man_url}/api/getAllPinByPathAndMetaId`;
+
+  try {
+    const data = await axios.post(url, params).then((res) => res.data);
+    return data.data.total;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function fetchMyFollowingBuzzsWithTotal(params: {
   page: number;
   size: number;
