@@ -5,7 +5,12 @@ import { Send } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
 import dayjs from 'dayjs';
-import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   btcConnectorAtom,
   connectedAtom,
@@ -33,6 +38,8 @@ import { useNavigate } from 'react-router-dom';
 import BuzzFormWrap from '../BuzzFormWrap';
 import ProfileCard from '../ProfileCard';
 import ForwardBuzzCard from './ForwardBuzzCard';
+import { fetchTranlateResult, ResultArray } from '../../api/baidu-translate';
+import { useState } from 'react';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -47,6 +54,8 @@ const BuzzCard = ({
   innerRef,
   showFollowButton = true,
 }: IProps) => {
+  const [showTranslateResult, setShowTranslateResult] = useState(false);
+  const [translateResult, setTranslateResult] = useState<ResultArray>([]);
   const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
@@ -63,6 +72,12 @@ const BuzzCard = ({
   const parseSummary = isSummaryJson ? JSON.parse(summary) : {};
 
   summary = isSummaryJson ? parseSummary.content : summary;
+
+  const translateMutate = useMutation({
+    mutationKey: ['transDetail', buzzItem?.id],
+    mutationFn: (summary: string) =>
+      fetchTranlateResult({ sourceText: summary }),
+  });
 
   const attachPids =
     isSummaryJson && !isEmpty(parseSummary?.attachments ?? []) && isFromBtc
@@ -289,6 +304,20 @@ const BuzzCard = ({
     return summary;
   };
 
+  const renderTranslteResults = (results: ResultArray) => {
+    return (
+      <div>
+        {results.map((result, index) => (
+          <span key={index} className='break-all'>
+            <div>{result.dst}</div>
+
+            <br />
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   const renderBasicSummary = (summary: string) => {
     return (
       <div>
@@ -299,31 +328,7 @@ const BuzzCard = ({
                 __html: handleSpecial(detectUrl(line)),
               }}
             />
-            {/* {line.includes('</a>') ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: detectUrl(line),
-                }}
-              />
-            ) : (
-              <>
-                {sanitizeHtml(detectUrl(line), {
-                  allowedTags: [
-                    'metaid_flag',
-                    'operation',
-                    'path',
-                    'encryption',
-                    'version',
-                    'content-type',
-                    'payload',
-                    'a',
-                  ],
-                  allowedAttributes: {
-                    a: ['href', 'target', 'style'],
-                  },
-                })}
-              </>
-            )} */}
+
             <br />
           </span>
         ))}
@@ -525,6 +530,14 @@ const BuzzCard = ({
   //   'isUnfollowpending'
   // );
 
+  const handleTranslate = async () => {
+    if (isEmpty(translateResult)) {
+      const res = await translateMutate.mutateAsync(summary);
+      setTranslateResult(res?.trans_result ?? []);
+    }
+    setShowTranslateResult(!showTranslateResult);
+  };
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
     return <div>can't fetch this buzz</div>;
@@ -539,7 +552,7 @@ const BuzzCard = ({
         ref={innerRef}
       >
         <div className='flex items-center justify-between pt-4 px-4'>
-          <div className='dropdown dropdown-hover'>
+          <div className='dropdown dropdown-hover dropdown-right'>
             <div
               tabIndex={0}
               role='button'
@@ -599,7 +612,23 @@ const BuzzCard = ({
             className='flex flex-col gap-2'
             onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
           >
-            {renderSummary(summary, !isNil(onBuzzDetail))}
+            {showTranslateResult
+              ? renderTranslteResults(translateResult)
+              : renderSummary(summary, !isNil(onBuzzDetail))}
+            <div className='text-main mt-[-26px] mb-4 cursor-pointer'>
+              {translateMutate.isPending ? (
+                <div className='loading loading-dots'></div>
+              ) : (
+                <div
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    handleTranslate();
+                  }}
+                >
+                  {showTranslateResult ? 'show original content' : 'translate'}
+                </div>
+              )}
+            </div>
           </div>
           <div>
             {!attachData.pending &&
