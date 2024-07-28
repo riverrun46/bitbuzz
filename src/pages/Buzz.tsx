@@ -9,7 +9,7 @@ const Buzz = () => {
   const id = tempId ?? '';
 
   const { isLoading, data: buzzDetailData } = useQuery({
-    queryKey: ['protocol', id],
+    queryKey: ['buzzDetail', id],
     queryFn: () => getPinDetailByPid({ pid: id! }),
   });
 
