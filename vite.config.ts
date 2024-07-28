@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import wasm from 'vite-plugin-wasm';
 // import { resolve } from 'path';
+import { environment } from './src/utils/environments';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,12 +29,12 @@ export default defineConfig({
     // },
     minify: false,
   },
-  // server: {
-  //   proxy: {
-  //     '/api/trans/vip/translate': {
-  //       target: 'https://fanyi-api.baidu.com/api/trans/vip/translate',
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api/trans/vip/translate': {
+        target: 'https://fanyi-api.baidu.com/api/trans/vip/translate',
+        changeOrigin: true,
+      },
+    },
+  },
 });
