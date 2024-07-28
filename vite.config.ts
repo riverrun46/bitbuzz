@@ -28,12 +28,12 @@ export default defineConfig({
     // },
     minify: false,
   },
-  server: {
-    proxy: {
-      '/api/trans/vip/translate': {
-        target: 'https://fanyi-api.baidu.com/api/trans/vip/translate',
-        changeOrigin: false,
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     '/api/trans/vip/translate': {
+  //       target: 'https://fanyi-api.baidu.com/api/trans/vip/translate',
+  //       changeOrigin: true,
+  //     },
+  //   },
+  // },
 });
