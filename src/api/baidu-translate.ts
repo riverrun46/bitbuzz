@@ -43,7 +43,7 @@ export async function fetchTranlateResult({
     ),
   };
 
-  const url = `/api/trans/vip/translate`;
+  const url = `https://fanyi-api.baidu.com/api/trans/vip/translate`; // `/api/trans/vip/translate`;
 
   try {
     const data = await axios
