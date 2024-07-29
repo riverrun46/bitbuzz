@@ -64,7 +64,7 @@ const renderImages = (
   );
 };
 
-const BuzzForm = ({
+const CommentForm = ({
   onCreateSubmit,
   buzzFormHandle,
   onClearImageUploads,
@@ -205,4 +205,4 @@ const BuzzForm = ({
   );
 };
 
-export default BuzzForm;
+export default CommentForm;

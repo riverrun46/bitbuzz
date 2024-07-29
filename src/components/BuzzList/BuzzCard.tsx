@@ -708,7 +708,15 @@ const BuzzCard = ({
               />
             </div>
             {/* <div className='flex gap-1 items-center cursor-pointer'>
-              <MessageCircle />
+              <MessageCircle
+                onClick={async () => {
+                  await checkMetaletInstalled();
+                  await checkMetaletConnected(connected);
+                  (document.getElementById(
+                    'comment_buzz_modal_' + buzzItem.id
+                  ) as HTMLDialogElement)!.showModal();
+                }}
+              />
             </div> */}
           </div>
           <div className='btn btn-sm rounded-full hidden'>Want To Buy</div>
