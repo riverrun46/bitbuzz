@@ -54,16 +54,7 @@ function App() {
       }),
   });
 
-  // useEffect(() => {
-  //   if (!isEmpty(myFollowingListData?.list ?? [])) {
-  //     setMyFollowingList((d) => {
-  //       // need to handle data after following and unfollowing
-  //       const fetchList = myFollowingListData?.list ?? [];
-  //       return dropRepeats([...d, ...fetchList]);
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [myFollowingListData]);
+ 
 
   const onLogout = () => {
     setConnected(false);
