@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
 import { Heart, Link as LucideLink } from 'lucide-react';
-// import { Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
 import dayjs from 'dayjs';
-import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   btcConnectorAtom,
   connectedAtom,
@@ -30,9 +35,11 @@ import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
 import { useNavigate } from 'react-router-dom';
-import ForwardBuzzAlertModal from './ForwardBuzzAlertModal';
 import BuzzFormWrap from '../BuzzFormWrap';
 import ProfileCard from '../ProfileCard';
+import ForwardBuzzCard from './ForwardBuzzCard';
+import { fetchTranlateResult, ResultArray } from '../../api/baidu-translate';
+import { useState } from 'react';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -47,6 +54,8 @@ const BuzzCard = ({
   innerRef,
   showFollowButton = true,
 }: IProps) => {
+  const [showTranslateResult, setShowTranslateResult] = useState(false);
+  const [translateResult, setTranslateResult] = useState<ResultArray>([]);
   const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
@@ -54,7 +63,7 @@ const BuzzCard = ({
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // console.log("buzzitem", buzzItem);
+  // console.log('buzzitem', buzzItem);
   const isFromBtc = buzzItem?.chainName === 'btc';
   let summary = buzzItem!.contentSummary;
   const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
@@ -64,12 +73,28 @@ const BuzzCard = ({
 
   summary = isSummaryJson ? parseSummary.content : summary;
 
+  const translateMutate = useMutation({
+    mutationKey: ['transDetail', buzzItem?.id],
+    mutationFn: (summary: string) =>
+      fetchTranlateResult({ sourceText: summary }),
+  });
+
   const attachPids =
     isSummaryJson && !isEmpty(parseSummary?.attachments ?? []) && isFromBtc
       ? (parseSummary?.attachments ?? []).map(
           (d: string) => d.split('metafile://')[1]
         )
       : [];
+
+  const quotePinId =
+    isSummaryJson && !isEmpty(parseSummary?.quotePin ?? '')
+      ? parseSummary.quotePin
+      : '';
+  const { isLoading: isQuoteLoading, data: quoteDetailData } = useQuery({
+    enabled: !isEmpty(quotePinId),
+    queryKey: ['buzzDetail', quotePinId],
+    queryFn: () => getPinDetailByPid({ pid: quotePinId }),
+  });
 
   // const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
   // console.log("current address", buzzItem!.address);
@@ -279,6 +304,20 @@ const BuzzCard = ({
     return summary;
   };
 
+  const renderTranslteResults = (results: ResultArray) => {
+    return (
+      <div>
+        {results.map((result, index) => (
+          <span key={index} className='break-all'>
+            <div>{result.dst}</div>
+
+            <br />
+          </span>
+        ))}
+      </div>
+    );
+  };
+
   const renderBasicSummary = (summary: string) => {
     return (
       <div>
@@ -289,31 +328,7 @@ const BuzzCard = ({
                 __html: handleSpecial(detectUrl(line)),
               }}
             />
-            {/* {line.includes('</a>') ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: detectUrl(line),
-                }}
-              />
-            ) : (
-              <>
-                {sanitizeHtml(detectUrl(line), {
-                  allowedTags: [
-                    'metaid_flag',
-                    'operation',
-                    'path',
-                    'encryption',
-                    'version',
-                    'content-type',
-                    'payload',
-                    'a',
-                  ],
-                  allowedAttributes: {
-                    a: ['href', 'target', 'style'],
-                  },
-                })}
-              </>
-            )} */}
+
             <br />
           </span>
         ))}
@@ -515,6 +530,14 @@ const BuzzCard = ({
   //   'isUnfollowpending'
   // );
 
+  const handleTranslate = async () => {
+    if (isEmpty(translateResult)) {
+      const res = await translateMutate.mutateAsync(summary);
+      setTranslateResult(res?.trans_result ?? []);
+    }
+    setShowTranslateResult(!showTranslateResult);
+  };
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
     return <div>can't fetch this buzz</div>;
@@ -523,11 +546,13 @@ const BuzzCard = ({
   return (
     <>
       <div
-        className='w-full border border-white rounded-xl flex flex-col gap-4'
+        className={cls(
+          'w-full border border-white rounded-xl flex flex-col gap-4'
+        )}
         ref={innerRef}
       >
         <div className='flex items-center justify-between pt-4 px-4'>
-          <div className='dropdown dropdown-hover'>
+          <div className='dropdown dropdown-hover dropdown-right'>
             <div
               tabIndex={0}
               role='button'
@@ -579,7 +604,7 @@ const BuzzCard = ({
           )}
         </div>
         <div
-          className={cls('border-y border-white p-4', {
+          className={cls('border-y  border-white p-4', {
             'cursor-pointer': !isNil(onBuzzDetail),
           })}
         >
@@ -587,9 +612,25 @@ const BuzzCard = ({
             className='flex flex-col gap-2'
             onClick={() => onBuzzDetail && onBuzzDetail(buzzItem.id)}
           >
-            {renderSummary(summary, !isNil(onBuzzDetail))}
+            {showTranslateResult
+              ? renderTranslteResults(translateResult)
+              : renderSummary(summary, !isNil(onBuzzDetail))}
+            <div className='text-main mt-[-26px] mb-4 cursor-pointer'>
+              {translateMutate.isPending ? (
+                <div className='loading loading-dots'></div>
+              ) : (
+                <div
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    handleTranslate();
+                  }}
+                >
+                  {showTranslateResult ? 'show original content' : 'translate'}
+                </div>
+              )}
+            </div>
           </div>
-          <div className='mt-4'>
+          <div>
             {!attachData.pending &&
               !isEmpty(
                 (attachData?.data ?? []).filter((d: any) => !isNil(d))
@@ -597,6 +638,19 @@ const BuzzCard = ({
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               renderImages(attachPids)}
           </div>
+          {!isEmpty(quotePinId) && (
+            <div className='mb-8'>
+              {isQuoteLoading ? (
+                <div className='flex items-center gap-2 justify-center text-gray h-[150px]'>
+                  <div>Loading repost content...</div>
+                  <span className='loading loading-bars loading-md grid '></span>
+                </div>
+              ) : (
+                <ForwardBuzzCard buzzItem={quoteDetailData} />
+              )}
+            </div>
+          )}
+
           <div className='flex justify-between text-gray mt-2'>
             <div
               className='flex gap-2 items-center hover:text-slate-300 md:text-md text-xs'
@@ -642,27 +696,27 @@ const BuzzCard = ({
               />
               {!isNil(currentLikeData) ? currentLikeData.length : null}
             </div>
-            {/* <div className='flex gap-1 items-center'>
+            <div className='flex gap-1 items-center'>
               <Send
                 className={cls('cursor-pointer')}
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
                   (document.getElementById(
-                    'forward_buzz_alert_modal'
+                    'repost_buzz_modal_' + buzzItem.id
                   ) as HTMLDialogElement)!.showModal();
                 }}
               />
-            </div> */}
+            </div>
             {/* <div className='flex gap-1 items-center'>
               <MessageCircle />
             </div> */}
           </div>
-          {/* <div className="btn btn-sm rounded-full">Want To Buy</div> */}
+          <div className='btn btn-sm rounded-full hidden'>Want To Buy</div>
         </div>
       </div>
-      <ForwardBuzzAlertModal />
-      <dialog id='repost_buzz_modal' className='modal !z-20'>
+
+      <dialog id={'repost_buzz_modal_' + buzzItem.id} className='modal !z-20'>
         <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
           <form method='dialog'>
             {/* if there is a button in form, it will close the modal */}
@@ -673,7 +727,7 @@ const BuzzCard = ({
           <h3 className='font-medium text-white text-[16px] text-center'>
             Repost Buzz
           </h3>
-          <BuzzFormWrap btcConnector={btcConnector!} />
+          <BuzzFormWrap btcConnector={btcConnector!} quotePin={buzzItem} />
         </div>
         <form method='dialog' className='modal-backdrop'>
           <button>close</button>

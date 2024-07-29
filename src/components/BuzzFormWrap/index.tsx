@@ -17,12 +17,14 @@ import { image2Attach, removeFileFromList } from '../../utils/file';
 import useImagesPreview from '../../hooks/useImagesPreview';
 import { CreateOptions, IBtcConnector, IBtcEntity } from '@metaid/metaid';
 import { environment } from '../../utils/environments';
+import { Pin } from '../../api/request';
 
 type Iprops = {
   btcConnector: IBtcConnector;
+  quotePin?: Pin;
 };
 
-const BuzzFormWrap = ({ btcConnector }: Iprops) => {
+const BuzzFormWrap = ({ btcConnector, quotePin }: Iprops) => {
   const [isAdding, setIsAdding] = useState(false);
 
   const globalFeerate = useAtomValue(globalFeeRateAtom);
@@ -94,6 +96,9 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
       //   await sleep(5000);
 
       console.log('finalBody', finalBody);
+      if (!isNil(quotePin)) {
+        finalBody.quotePin = quotePin.id;
+      }
 
       const createRes = await buzzEntity!.create({
         dataArray: [
@@ -162,6 +167,7 @@ const BuzzFormWrap = ({ btcConnector }: Iprops) => {
         buzzFormHandle={buzzFormHandle}
         onClearImageUploads={onClearImageUploads}
         filesPreview={filesPreview}
+        quotePin={quotePin}
       />
     </LoadingOverlay>
   );

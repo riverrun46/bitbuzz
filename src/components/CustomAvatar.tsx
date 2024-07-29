@@ -20,7 +20,7 @@ const CustomAvatar = ({ userInfo, onProfileDetail, size = '48px' }: Iprops) => {
       onClick={() =>
         onProfileDetail && onProfileDetail(userInfo?.address ?? '')
       }
-      className='z-10'
+      className='z-50'
     >
       {hasAvatar ? (
         <img
