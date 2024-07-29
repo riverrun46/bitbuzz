@@ -309,7 +309,7 @@ const BuzzCard = ({
       <div>
         {results.map((result, index) => (
           <span key={index} className='break-all'>
-            <div>{result.dst}</div>
+            <div>{result.dst.replace('<br>', '')}</div>
 
             <br />
           </span>
