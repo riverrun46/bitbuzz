@@ -42,8 +42,9 @@ export async function fetchTranlateResult({
         environment.baidu_app_secret
     ),
   };
-
-  const url = `/api/trans/vip/translate`;
+  // const url = `https://fanyi-api.baidu.com/api/trans/vip/translate`;
+  const url = `https://api.metaid.io/baidufanyi/api/trans/vip/translate`;
+  // const url = `/api/trans/vip/translate`;
 
   try {
     const data = await axios
