@@ -696,9 +696,8 @@ const BuzzCard = ({
               />
               {!isNil(currentLikeData) ? currentLikeData.length : null}
             </div>
-            <div className='flex gap-1 items-center'>
+            <div className='flex gap-1 items-center cursor-pointer'>
               <Send
-                className={cls('cursor-pointer')}
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
@@ -708,7 +707,7 @@ const BuzzCard = ({
                 }}
               />
             </div>
-            {/* <div className='flex gap-1 items-center'>
+            {/* <div className='flex gap-1 items-center cursor-pointer'>
               <MessageCircle />
             </div> */}
           </div>

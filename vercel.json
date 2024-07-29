@@ -1,11 +1,5 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" },
-    {
-      "source": "/api/trans/vip/translate",
-      "destination": "https://fanyi-api.baidu.com/api/trans/vip/translate"
-    }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "headers": [
     {
       "source": "/(.*)",
