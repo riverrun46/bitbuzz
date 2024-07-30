@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import BackButton from '../components/Buttons/BackButton';
 import AllNewBuzzList from '../components/BuzzList/AllNewBuzzList';
 import { environment } from '../utils/environments';
-import ProfileCard from '../components/ProfileCard';
+import ProfileCard from '../components/Cards/ProfileCard';
 
 // import BuzzCard from '../components/BuzzList/BuzzCard';
 
@@ -19,7 +19,7 @@ const Profile = () => {
 
       <AllNewBuzzList
         address={address}
-        queryKey={['buzzes', environment.network, address]}
+        queryKey={['user-buzzes', environment.network, address]}
         showFollowButton={false}
       />
     </div>

@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import cls from 'classnames';
 import { useQuery } from '@tanstack/react-query';
-import { globalFeeRateAtom } from '../store/user';
 import { useAtom } from 'jotai';
-import { fetchFeeRate } from '../api/buzz';
-import { environment } from '../utils/environments';
+import { environment } from '../../utils/environments';
+import { fetchFeeRate } from '../../api/buzz';
+import { globalFeeRateAtom } from '../../store/user';
 
 const CustomFeerate = () => {
   const { data: feeRateData } = useQuery({
@@ -44,7 +44,7 @@ const CustomFeerate = () => {
   return (
     <div className='w-full flex flex-col lg:flex-row gap-6 items-center rounded border border-main/40 shadow p-4'>
       <div className='flex flex-col gap-4 w-[55%]'>
-        <div className='text-gray text-[20px]'>Fee Rate</div>
+        <div className='text-gray text-[14px] md:text-[20px]'>Fee Rate</div>
 
         <div className='flex items-center gap-2'>
           <input
@@ -56,7 +56,7 @@ const CustomFeerate = () => {
               appearance: 'none',
             }}
             aria-hidden
-            className='border-main  w-[150px] input input-md  bg-gray/40  shadow-inner !pr-0 focus:border-main text-main focus:outline-none [&::-webkit-inner-spin-button]:appearance-none'
+            className='border-main  w-[150px] input input-sm md:input-md  bg-gray/40  shadow-inner !pr-0 focus:border-main text-main focus:outline-none [&::-webkit-inner-spin-button]:appearance-none'
             step={1}
             value={globalFeerate}
             onChange={(e) => {
@@ -64,11 +64,11 @@ const CustomFeerate = () => {
               setGlobalFeerate(v); //
             }}
           />
-          <div className='text-main'>sat/vB</div>
+          <div className='text-main  text-xs md:text-sm'>sat/vB</div>
         </div>
       </div>
 
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 text-xs md:text-sm'>
         {feeRateOptions.map((d) => {
           return (
             <div

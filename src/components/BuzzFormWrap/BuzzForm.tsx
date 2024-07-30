@@ -5,9 +5,9 @@ import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import cls from 'classnames';
 import { IsEncrypt, mergeFileLists } from '../../utils/file';
 import { isNil } from 'ramda';
-import CustomFeerate from '../CustomFeerate';
 import { Pin } from '../../api/request';
-import ForwardBuzzCard from '../BuzzList/ForwardBuzzCard';
+import ForwardBuzzCard from '../Cards/ForwardBuzzCard';
+import CustomFeerate from '../Public/CustomFeerate';
 
 export interface AttachmentItem {
   fileName: string;

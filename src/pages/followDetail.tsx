@@ -9,7 +9,7 @@ import { fetchFollowerList, fetchFollowingList } from '../api/buzz';
 import { isEmpty } from 'ramda';
 import cls from 'classnames';
 import { useState } from 'react';
-import ProfileCard from '../components/ProfileCard';
+import ProfileCard from '../components/Cards/ProfileCard';
 
 // import BuzzCard from '../components/BuzzList/BuzzCard';
 

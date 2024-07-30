@@ -13,7 +13,7 @@ import {
   fetchMyFollowingTotal,
 } from '../../api/buzz';
 import { Pin } from '../../api/request';
-import BuzzCard from './BuzzCard';
+import BuzzCard from '../Cards/BuzzCard';
 import { btcConnectorAtom } from '../../store/user';
 
 const FollowingBuzzList = () => {

@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './components/Layout/Navbar';
 import Buzz from './pages/Buzz';
 import Home from './pages/Home';
 import EditBuzz from './pages/EditBuzz';
@@ -27,7 +27,7 @@ import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
 import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
 import { useCallback, useEffect, useRef } from 'react';
 import { BtcNetwork } from './api/request';
-import InsertMetaletAlertModal from './components/InsertMetaletAlertModal';
+import InsertMetaletAlertModal from './components/Modals/InsertMetaletAlertModal';
 import { environment } from './utils/environments';
 import { useMutation } from '@tanstack/react-query';
 import { fetchFollowingList } from './api/buzz';
@@ -53,8 +53,6 @@ function App() {
         params: { cursor: '0', size: '100', followDetail: false },
       }),
   });
-
- 
 
   const onLogout = () => {
     setConnected(false);

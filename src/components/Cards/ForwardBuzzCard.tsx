@@ -7,12 +7,12 @@ import dayjs from 'dayjs';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { btcConnectorAtom } from '../../store/user';
 import { useAtomValue } from 'jotai';
-import CustomAvatar from '../CustomAvatar';
+import CustomAvatar from '../Public/CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { getPinDetailByPid } from '../../api/buzz';
 import { environment } from '../../utils/environments';
 import { Pin } from '../../api/request';
-import ProfileCard from '../ProfileCard';
+import ProfileCard from './ProfileCard';
 
 type IProps = {
   buzzItem: Pin | undefined;

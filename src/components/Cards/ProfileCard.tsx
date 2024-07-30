@@ -5,18 +5,21 @@ import {
   connectedAtom,
   globalFeeRateAtom,
   myFollowingListAtom,
-} from '../store/user';
+} from '../../store/user';
 import { useAtom, useAtomValue } from 'jotai';
-import { environment } from '../utils/environments';
+import { environment } from '../../utils/environments';
 import { isEmpty, isNil } from 'ramda';
 import {
   fetchFollowDetailPin,
   fetchFollowerList,
   fetchFollowingList,
-} from '../api/buzz';
-import CustomAvatar from './CustomAvatar';
-import FollowButton from './Buttons/FollowButton';
-import { checkMetaletConnected, checkMetaletInstalled } from '../utils/wallet';
+} from '../../api/buzz';
+import CustomAvatar from '../Public/CustomAvatar';
+import FollowButton from '../Buttons/FollowButton';
+import {
+  checkMetaletConnected,
+  checkMetaletInstalled,
+} from '../../utils/wallet';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 

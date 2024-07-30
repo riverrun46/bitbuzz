@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
-import { Heart, Link as LucideLink } from 'lucide-react';
+import { Heart, Link as LucideLink, MessageCircle } from 'lucide-react';
 import { Send } from 'lucide-react';
 import { isEmpty, isNil } from 'ramda';
 import cls from 'classnames';
-import dayjs from 'dayjs';
 import {
   useMutation,
   useQueries,
@@ -18,7 +17,7 @@ import {
   myFollowingListAtom,
 } from '../../store/user';
 import { useAtom, useAtomValue } from 'jotai';
-import CustomAvatar from '../CustomAvatar';
+import CustomAvatar from '../Public/CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
 import {
@@ -35,11 +34,13 @@ import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
 import { Pin } from '../../api/request';
 import { useNavigate } from 'react-router-dom';
-import BuzzFormWrap from '../BuzzFormWrap';
-import ProfileCard from '../ProfileCard';
+import ProfileCard from './ProfileCard';
 import ForwardBuzzCard from './ForwardBuzzCard';
 import { fetchTranlateResult, ResultArray } from '../../api/baidu-translate';
 import { useState } from 'react';
+import dayjs from '../../utils/dayjsConfig';
+import CommentModal from '../Modals/CommentModal';
+import RepostModal from '../Modals/RepostModal';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -677,7 +678,10 @@ const BuzzCard = ({
               )}
 
               <div>
-                {dayjs.unix(buzzItem.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+                {dayjs
+                  .unix(buzzItem.timestamp)
+                  .tz(dayjs.tz.guess())
+                  .format('YYYY-MM-DD HH:mm:ss')}
               </div>
             </div>
           </div>
@@ -707,39 +711,33 @@ const BuzzCard = ({
                 }}
               />
             </div>
-            {/* <div className='flex gap-1 items-center cursor-pointer'>
+            <div
+              className='flex gap-1 items-center cursor-pointer'
+              title={'coming soon'}
+            >
               <MessageCircle
+                className=' text-gray'
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
-                  (document.getElementById(
-                    'comment_buzz_modal_' + buzzItem.id
-                  ) as HTMLDialogElement)!.showModal();
+                  // (document.getElementById(
+                  //   'comment_buzz_modal_' + buzzItem.id
+                  // ) as HTMLDialogElement)!.showModal();
                 }}
               />
-            </div> */}
+            </div>
           </div>
           <div className='btn btn-sm rounded-full hidden'>Want To Buy</div>
         </div>
       </div>
 
-      <dialog id={'repost_buzz_modal_' + buzzItem.id} className='modal !z-20'>
-        <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
-          <form method='dialog'>
-            {/* if there is a button in form, it will close the modal */}
-            <button className='border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5'>
-              ✕
-            </button>
-          </form>
-          <h3 className='font-medium text-white text-[16px] text-center'>
-            Repost Buzz
-          </h3>
-          <BuzzFormWrap btcConnector={btcConnector!} quotePin={buzzItem} />
-        </div>
-        <form method='dialog' className='modal-backdrop'>
-          <button>close</button>
-        </form>
-      </dialog>
+      <RepostModal quotePin={buzzItem} btcConnector={btcConnector!} />
+
+      <CommentModal
+        commentPin={buzzItem}
+        commentToUser={currentUserInfoData?.data}
+        btcConnector={btcConnector!}
+      />
     </>
   );
 };

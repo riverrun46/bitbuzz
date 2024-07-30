@@ -1,6 +1,6 @@
-import { UserInfo } from '../store/user';
+import { UserInfo } from '../../store/user';
 import { isEmpty, isNil } from 'ramda';
-import { environment } from '../utils/environments';
+import { environment } from '../../utils/environments';
 
 type Iprops = {
   userInfo?: UserInfo;

@@ -8,7 +8,7 @@ import { isNil } from 'ramda';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchBuzzs } from '../../api/buzz';
 import { Pin } from '../../api/request';
-import BuzzCard from './BuzzCard';
+import BuzzCard from '../Cards/BuzzCard';
 import { btcConnectorAtom } from '../../store/user';
 
 type Iprops = {
@@ -46,7 +46,7 @@ const AllNewBuzzList = ({
 
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
-      queryKey,
+      queryKey: [...queryKey],
       enabled: !isNil(btcConnector),
 
       queryFn: ({ pageParam }) =>
@@ -67,7 +67,6 @@ const AllNewBuzzList = ({
         return nextPage;
       },
     });
-
   const buzzes = data?.pages.map((pins: Pin[] | null) =>
     (pins ?? []).map((pin) => {
       return (

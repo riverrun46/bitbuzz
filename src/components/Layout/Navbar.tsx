@@ -2,15 +2,22 @@ import { useAtom, useAtomValue } from 'jotai';
 import { PencilLine } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { connectedAtom, globalFeeRateAtom, userInfoAtom } from '../store/user';
+import {
+  connectedAtom,
+  globalFeeRateAtom,
+  userInfoAtom,
+} from '../../store/user';
 
-import { checkMetaletConnected, checkMetaletInstalled } from '../utils/wallet';
-import BuzzFormWrap from './BuzzFormWrap';
-import CustomAvatar from './CustomAvatar';
+import {
+  checkMetaletConnected,
+  checkMetaletInstalled,
+} from '../../utils/wallet';
+import CustomAvatar from '../Public/CustomAvatar';
 
 import { IBtcConnector } from '@metaid/metaid';
-import AboutModal from './AboutModal';
+import AboutModal from '../Modals/AboutModal';
 import NavabarMobileMenu from './NavabarMobileMenu';
+import NewBuzzModal from '../Modals/NewBuzzModal';
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>;
@@ -174,23 +181,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
           </div>
         </div>
       </div>
-      <dialog id='new_buzz_modal' className='modal !z-20'>
-        <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
-          <form method='dialog'>
-            {/* if there is a button in form, it will close the modal */}
-            <button className='border border-white text-white btn btn-xs btn-circle absolute right-5 top-5.5'>
-              ✕
-            </button>
-          </form>
-          <h3 className='font-medium text-white text-[16px] text-center'>
-            New Buzz
-          </h3>
-          <BuzzFormWrap btcConnector={btcConnector} />
-        </div>
-        <form method='dialog' className='modal-backdrop'>
-          <button>close</button>
-        </form>
-      </dialog>
+      <NewBuzzModal btcConnector={btcConnector} />
     </>
   );
 };
