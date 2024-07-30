@@ -307,12 +307,12 @@ const BuzzCard = ({
 
   const renderTranslteResults = (results: ResultArray) => {
     return (
-      <div>
+      <div className='flex flex-col gap-2.5'>
         {results.map((result, index) => (
           <span key={index} className='break-all'>
             <div>{result.dst.replace('<br>', '')}</div>
 
-            <br />
+            {/* <br /> */}
           </span>
         ))}
       </div>
@@ -321,7 +321,7 @@ const BuzzCard = ({
 
   const renderBasicSummary = (summary: string) => {
     return (
-      <div>
+      <div className='flex flex-col gap-2.5'>
         {(summary ?? '').split('\n').map((line, index) => (
           <span key={index} className='break-all'>
             <div
@@ -330,7 +330,7 @@ const BuzzCard = ({
               }}
             />
 
-            <br />
+            {/* <br /> */}
           </span>
         ))}
       </div>
@@ -345,7 +345,7 @@ const BuzzCard = ({
             {summary.length < 800 ? (
               renderBasicSummary(summary)
             ) : (
-              <div className=''>
+              <div className='flex flex-col gap-0'>
                 {renderBasicSummary(summary.slice(0, 800) + '...')}
                 <span className=' text-main'>{' more >>'}</span>
               </div>
@@ -616,7 +616,7 @@ const BuzzCard = ({
             {showTranslateResult
               ? renderTranslteResults(translateResult)
               : renderSummary(summary, !isNil(onBuzzDetail))}
-            <div className='text-main mt-[-26px] mb-4 cursor-pointer'>
+            <div className='text-main mb-4 cursor-pointer'>
               {translateMutate.isPending ? (
                 <div className='loading loading-dots'></div>
               ) : (
