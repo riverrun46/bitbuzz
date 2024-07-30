@@ -25,6 +25,8 @@ type Iprops = {
 };
 
 const BuzzFormWrap = ({ btcConnector, quotePin }: Iprops) => {
+  const isQuoted = !isNil(quotePin);
+
   const [isAdding, setIsAdding] = useState(false);
 
   const globalFeerate = useAtomValue(globalFeeRateAtom);
@@ -121,12 +123,12 @@ const BuzzFormWrap = ({ btcConnector, quotePin }: Iprops) => {
       if (!isNil(createRes?.revealTxIds[0])) {
         // await sleep(5000);
         queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-        toast.success('create buzz successfully');
+        toast.success(`${isQuoted ? 'repost' : 'create'} buzz successfully`);
         buzzFormHandle.reset();
         onClearImageUploads();
 
         const doc_modal = document.getElementById(
-          'new_buzz_modal'
+          isQuoted ? 'repost_buzz_modal_' + quotePin.id : 'new_buzz_modal'
         ) as HTMLDialogElement;
         doc_modal.close();
       }
