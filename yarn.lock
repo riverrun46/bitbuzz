@@ -1330,7 +1330,7 @@
 
 "@metaid/metaid@^1.4.3":
   version "1.4.3"
-  resolved "https://registry.npmjs.org/@metaid/metaid/-/metaid-1.4.3.tgz#cdc254264e3964f7ad15ab4c6b08c69bbfd6f568"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.4.3.tgz#cdc254264e3964f7ad15ab4c6b08c69bbfd6f568"
   integrity sha512-P6V+Jtdt8BQTtLqt8wPHo19dk3GD8LiUGDNGKSyqzqk2Y7+E4tdDKs+hMBYT1PAYf9Ldz6JXc3dx8+MzLitKcA==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"

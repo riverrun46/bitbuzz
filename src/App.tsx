@@ -220,10 +220,10 @@ function App() {
         position='top-left'
         toastStyle={{
           position: 'absolute',
-          top: '80px',
+          top: '0px',
           left: '120px',
           width: '380px',
-          // zIndex: 9999,
+          zIndex: 9999,
         }}
         autoClose={5000}
         hideProgressBar={false}

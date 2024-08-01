@@ -124,6 +124,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
               address: environment.service_address,
               satoshis: environment.service_staoshi,
             },
+            // network: environment.network,
           },
         });
         if (!isNil(unfollowRes?.revealTxIds[0])) {
@@ -170,6 +171,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
               address: environment.service_address,
               satoshis: environment.service_staoshi,
             },
+            // network: environment.network,
           },
         });
         if (!isNil(followRes?.revealTxIds[0])) {

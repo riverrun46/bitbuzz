@@ -66,6 +66,7 @@ const CommentFormWrap = ({ btcConnector, commentPin, isReply }: Iprops) => {
             address: environment.service_address,
             satoshis: environment.service_staoshi,
           },
+          // network: environment.network,
         },
       });
 

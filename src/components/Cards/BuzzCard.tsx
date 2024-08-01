@@ -387,6 +387,7 @@ const BuzzCard = ({
             address: environment.service_address,
             satoshis: environment.service_staoshi,
           },
+          // network: environment.network,
         },
       });
       console.log('likeRes', likeRes);
@@ -442,6 +443,7 @@ const BuzzCard = ({
               address: environment.service_address,
               satoshis: environment.service_staoshi,
             },
+            // network: environment.network,
           },
         });
         if (!isNil(unfollowRes?.revealTxIds[0])) {
@@ -488,6 +490,7 @@ const BuzzCard = ({
               address: environment.service_address,
               satoshis: environment.service_staoshi,
             },
+            // network: environment.network,
           },
         });
         if (!isNil(followRes?.revealTxIds[0])) {
