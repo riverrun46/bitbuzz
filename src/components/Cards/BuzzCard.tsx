@@ -21,6 +21,7 @@ import CustomAvatar from '../Public/CustomAvatar';
 // import { sleep } from '../../utils/time';
 import { toast } from 'react-toastify';
 import {
+  fetchCurrentBuzzComments,
   fetchCurrentBuzzLikes,
   fetchFollowDetailPin,
   fetchFollowingList,
@@ -106,6 +107,12 @@ const BuzzCard = ({
       fetchCurrentBuzzLikes({
         pinId: buzzItem!.id,
       }),
+  });
+
+  const commentData = useQuery({
+    enabled: !isNil(buzzItem?.id),
+    queryKey: ['comment-detail', buzzItem!.id],
+    queryFn: () => fetchCurrentBuzzComments({ pinId: buzzItem!.id }),
   });
 
   const isLikeByCurrentUser = (currentLikeData ?? [])?.find(
@@ -714,20 +721,17 @@ const BuzzCard = ({
                 }}
               />
             </div>
-            <div
-              className='flex gap-1 items-center cursor-pointer'
-              title={'coming soon'}
-            >
+            <div className='flex gap-1 items-center cursor-pointer'>
               <MessageCircle
-                className=' text-gray'
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
-                  // (document.getElementById(
-                  //   'comment_buzz_modal_' + buzzItem.id
-                  // ) as HTMLDialogElement)!.showModal();
+                  (document.getElementById(
+                    'comment_buzz_modal_' + buzzItem.id
+                  ) as HTMLDialogElement)!.showModal();
                 }}
               />
+              {!isNil(commentData?.data) ? commentData?.data.length : null}
             </div>
           </div>
           <div className='btn btn-sm rounded-full hidden'>Want To Buy</div>

@@ -13,6 +13,18 @@ export type LikeRes = {
   pinNumber: number;
 };
 
+export type CommentRes = {
+  _id: string;
+  commentTo: string;
+  content: string;
+  pay: string;
+  payTo: string;
+  pinAddress: string;
+  pinId: string;
+  pinNumber: number;
+  replyTo: string;
+};
+
 export async function fetchBuzzs({
   btcConnector,
   page,
@@ -109,6 +121,39 @@ export async function fetchCurrentBuzzLikes({
     cursor: 0,
     limit: 99999,
     sort: [],
+  };
+
+  try {
+    const data = await axios
+      .post(`${environment.base_man_url}/api/generalQuery`, body)
+      .then((res) => res.data);
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function fetchCurrentBuzzComments({
+  pinId,
+}: {
+  pinId: string;
+}): Promise<CommentRes[] | null> {
+  const body = {
+    collection: 'paycomment',
+    action: 'get',
+    filterRelation: 'and',
+    field: [],
+    filter: [
+      {
+        operator: '=',
+        key: 'commentTo',
+        value: pinId,
+      },
+    ],
+    cursor: 0,
+    limit: 99999,
+    sort: ['number', 'desc'],
   };
 
   try {

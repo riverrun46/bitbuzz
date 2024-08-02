@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { getPinDetailByPid } from '../api/buzz';
+import { fetchCurrentBuzzComments, getPinDetailByPid } from '../api/buzz';
 import BackButton from '../components/Buttons/BackButton';
 import BuzzCard from '../components/Cards/BuzzCard';
 
 import CommentCard from '../components/Cards/CommentCard';
 import { useAtomValue } from 'jotai';
 import { btcConnectorAtom } from '../store/user';
-import { environment } from '../utils/environments';
 import { isNil } from 'ramda';
+import cls from 'classnames';
 
 const Buzz = () => {
   const { id: tempId } = useParams();
@@ -20,16 +20,14 @@ const Buzz = () => {
     queryFn: () => getPinDetailByPid({ pid: id! }),
   });
 
-  const currentUserInfoData = useQuery({
-    enabled: !isNil(buzzDetailData),
-    queryKey: ['userInfo', buzzDetailData?.address, environment.network],
-    queryFn: () =>
-      btcConnector?.getUser({
-        network: environment.network,
-        currentAddress: buzzDetailData!.creator,
-      }),
+  const commentData = useQuery({
+    enabled: !isNil(id),
+    queryKey: ['comment-detail', id],
+    queryFn: () => fetchCurrentBuzzComments({ pinId: id }),
   });
 
+  console.log('commentData', commentData);
+  const commentsNum = (commentData?.data ?? []).length;
   return (
     <>
       <div>
@@ -43,23 +41,25 @@ const Buzz = () => {
             <BuzzCard buzzItem={buzzDetailData} />
           )}
         </div>
-        <div className='hidden'>
-          <div className='my-6'>{`Comment (2)`}</div>
-          <div className='border border-white rounded-md p-4'>
-            <CommentCard
-              hasSubComment
-              commentPin={buzzDetailData!}
-              btcConnector={btcConnector!}
-              commentUserInfo={currentUserInfoData?.data}
-            />
-            <div className='  border-gray/20 !border-t-[0.1px] my-4'></div>
-            <CommentCard
-              hasSubComment
-              commentPin={buzzDetailData!}
-              btcConnector={btcConnector!}
-              commentUserInfo={currentUserInfoData?.data}
-            />
-          </div>
+        <div className='my-6'>{`Comment (${commentsNum})`}</div>
+        <div
+          className={cls({
+            'border border-white rounded-md p-4': commentsNum > 0,
+          })}
+        >
+          {(commentData?.data ?? []).map((comment, index) => {
+            return (
+              <div key={comment.pinId}>
+                <CommentCard
+                  commentRes={comment}
+                  btcConnector={btcConnector!}
+                />
+                {index + 1 !== commentsNum && commentsNum > 1 && (
+                  <div className='  border-gray/20 !border-t-[0.1px] my-4'></div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </>

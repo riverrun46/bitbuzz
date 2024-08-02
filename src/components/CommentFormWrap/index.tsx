@@ -52,8 +52,8 @@ const CommentFormWrap = ({ btcConnector, commentPin, isReply }: Iprops) => {
       const createRes = await btcConnector!.inscribe({
         inscribeDataArray: [
           {
-            operation: 'revoke',
-            path: '/protocols/payComment',
+            operation: 'create',
+            path: '/protocols/paycomment',
             body: JSON.stringify(finalBody),
             contentType: 'text/plain;utf-8',
             flag: environment.flag,
@@ -104,7 +104,7 @@ const CommentFormWrap = ({ btcConnector, commentPin, isReply }: Iprops) => {
     <LoadingOverlay
       active={isAdding}
       spinner
-      text={isReply ? 'Commenting...' : 'Replying..'}
+      text={isReply ? 'Replying..' : 'Commenting...'}
     >
       <CommentForm
         onCreateSubmit={onCreateSubmit}
