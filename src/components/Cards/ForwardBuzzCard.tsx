@@ -217,7 +217,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
 
   const renderBasicSummary = (summary: string) => {
     return (
-      <div>
+      <div className='flex flex-col gap-2.5'>
         {(summary ?? '').split('\n').map((line, index) => (
           <span key={index} className='break-all'>
             <div
@@ -225,8 +225,6 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
                 __html: handleSpecial(detectUrl(line)),
               }}
             />
-
-            <br />
           </span>
         ))}
       </div>

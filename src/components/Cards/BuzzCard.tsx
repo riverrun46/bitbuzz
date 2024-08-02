@@ -219,7 +219,7 @@ const BuzzCard = ({
             return (
               <div key={pinId}>
                 <img
-                  className='image !rounded-md'
+                  className='image !rounded-md self-center'
                   onClick={() => {
                     handleImagePreview(pinId);
                   }}
@@ -227,8 +227,8 @@ const BuzzCard = ({
                     objectFit: 'cover',
                     // objectPosition: 'center',
 
-                    width: '220px',
-                    height: '200px',
+                    width: '250px',
+                    height: '250px',
                   }}
                   src={`${environment.base_man_url}/content/${pinId}`}
                   alt=''
@@ -336,8 +336,6 @@ const BuzzCard = ({
                 __html: handleSpecial(detectUrl(line)),
               }}
             />
-
-            {/* <br /> */}
           </span>
         ))}
       </div>
