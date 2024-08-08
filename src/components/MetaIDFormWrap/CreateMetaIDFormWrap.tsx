@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 
 import { toast } from 'react-toastify';
 import CreateMetaIdInfoForm from './CreateMetaIdInfoForm';
-import { useAtomValue } from 'jotai';
-import { globalFeeRateAtom, walletAtom } from '../../store/user';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { globalFeeRateAtom, userInfoAtom, walletAtom } from '../../store/user';
 import { isNil } from 'ramda';
 import { IBtcConnector } from '@metaid/metaid';
 import { environment } from '../../utils/environments';
+import { useQueryClient } from '@tanstack/react-query';
 
 export type MetaidUserInfo = {
   name: string;
@@ -19,14 +20,17 @@ export type MetaidUserInfo = {
 
 const CreateMetaIDFormWrap = ({
   btcConnector,
-  onWalletConnectStart,
 }: {
   btcConnector: IBtcConnector;
-  onWalletConnectStart: () => void;
+  onWalletConnectStart?: () => void;
 }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [balance, setBalance] = useState('0');
+
+  const setUserInfo = useSetAtom(userInfoAtom);
+
   const wallet = useAtomValue(walletAtom);
+
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
 
   const getBtcBalance = async () => {
@@ -39,6 +43,7 @@ const CreateMetaIDFormWrap = ({
     getBtcBalance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
+  const queryClient = useQueryClient();
 
   const handleCreateMetaID = async (userInfo: MetaidUserInfo) => {
     // console.log("userInfo", userInfo);
@@ -78,6 +83,8 @@ const CreateMetaIDFormWrap = ({
       toast.error('Create Failed');
     } else {
       // toast.success("Successfully created!Now you can connect your wallet again!");
+      setUserInfo(await btcConnector.getUser({ network: environment.network }));
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
       const success_modal = document.getElementById(
         'create_metaid_success_modal'
       ) as HTMLDialogElement;
@@ -90,7 +97,7 @@ const CreateMetaIDFormWrap = ({
       'create_metaid_modal'
     ) as HTMLDialogElement;
     doc_modal.close();
-    await onWalletConnectStart();
+    // await onWalletConnectStart();
   };
 
   return (

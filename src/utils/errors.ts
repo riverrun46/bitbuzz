@@ -9,6 +9,8 @@ export const errors = {
     environment.network.charAt(0).toUpperCase() + environment.network.slice(1)
   } to go on.`,
   MAX_FILE_SIZE_LIMIT: 'File size cannot be greater than 200kb',
+  NO_USERNAME_ALERT:
+    'You need to set a username in order to post、repost and comment.',
   STILL_MEMPOOL_ALERT:
     "MetaID Init TX hasn't been confirmed yet. You can click the gray refresh button on the right to check the latest transaction confirmation status",
 };

@@ -11,6 +11,7 @@ import {
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
+  checkUserNameExisted,
 } from '../../utils/wallet';
 import CustomAvatar from '../Public/CustomAvatar';
 
@@ -34,6 +35,7 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
   const onBuzzStart = async () => {
     await checkMetaletInstalled();
     await checkMetaletConnected(connected);
+    await checkUserNameExisted(userInfo?.name ?? '');
 
     const doc_modal = document.getElementById(
       'new_buzz_modal'

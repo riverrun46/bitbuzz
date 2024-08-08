@@ -73,12 +73,7 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
       });
     console.log('update res', res);
     if (res) {
-      console.log(
-        'after create',
-        await btcConnector.getUser({ network: environment.network })
-      );
       setUserInfo(await btcConnector.getUser({ network: environment.network }));
-      setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ['userInfo'] });
       toast.success('Updating Your Profile Successfully!');
     }

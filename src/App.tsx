@@ -20,7 +20,7 @@ import {
 } from './store/user';
 import { buzzEntityAtom } from './store/buzz';
 import { errors } from './utils/errors';
-import { isEmpty, isNil } from 'ramda';
+import { isNil } from 'ramda';
 import { checkMetaletInstalled, confirmCurrentNetwork } from './utils/wallet';
 // import { conirmMetaletTestnet } from "./utils/wallet";
 import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
@@ -106,17 +106,10 @@ function App() {
     });
     console.log('user now', resUser);
 
-    if (isNil(resUser?.name) || isEmpty(resUser?.name)) {
-      const doc_modal = document.getElementById(
-        'create_metaid_modal'
-      ) as HTMLDialogElement;
-      doc_modal.showModal();
-    } else {
-      setUserInfo(resUser);
-      setConnected(true);
-      setBuzzEntity(await _btcConnector.use('buzz'));
-      console.log('your btc address: ', _btcConnector.address);
-    }
+    setUserInfo(resUser);
+    setConnected(true);
+    setBuzzEntity(await _btcConnector.use('buzz'));
+    console.log('your btc address: ', _btcConnector.address);
   };
 
   const getBuzzEntity = async () => {

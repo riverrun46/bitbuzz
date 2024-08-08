@@ -2,6 +2,7 @@ import CommentFormWrap from '../CommentFormWrap';
 import { Pin } from '../../api/request';
 import { UserInfo } from '../../store/user';
 import { IBtcConnector } from '@metaid/metaid';
+import { isEmpty } from 'ramda';
 
 type Iprops = {
   commentPin: Pin;
@@ -21,8 +22,9 @@ const CommentModal = ({ commentPin, commentToUser, btcConnector }: Iprops) => {
         </form>
         <h3 className='font-medium text-white text-[16px] text-center'>
           {`Comment to @${
-            commentToUser?.name ??
-            `MetaID-User-${commentToUser?.metaid.slice(0, 6)}`
+            !isEmpty(commentToUser?.name ?? '')
+              ? commentToUser?.name
+              : `MetaID-User-${commentToUser?.metaid.slice(0, 6)}`
           }`}
         </h3>
         <CommentFormWrap btcConnector={btcConnector!} commentPin={commentPin} />

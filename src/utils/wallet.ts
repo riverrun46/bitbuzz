@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import { errors } from './errors';
 import { UserInfo } from '../store/user';
 import { environment } from './environments';
+import { isEmpty } from 'ramda';
 
 export const checkMetaletInstalled = async () => {
   const metalet = window?.metaidwallet;
@@ -50,4 +51,18 @@ export const checkMetaidInitStillPool = (userInfo: UserInfo) => {
     });
   }
   return userInfo.unconfirmed.split(',').includes('number'); // true still mempool
+};
+
+export const checkUserNameExisted = (name: string) => {
+  if (isEmpty(name)) {
+    toast.error(errors.NO_USERNAME_ALERT, {
+      className:
+        '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+    });
+    const doc_modal = document.getElementById(
+      'create_metaid_modal'
+    ) as HTMLDialogElement;
+    doc_modal.showModal();
+    throw new Error(errors.NO_USERNAME_ALERT);
+  }
 };

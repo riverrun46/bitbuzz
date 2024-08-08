@@ -15,6 +15,7 @@ import {
   connectedAtom,
   globalFeeRateAtom,
   myFollowingListAtom,
+  userInfoAtom,
 } from '../../store/user';
 import { useAtom, useAtomValue } from 'jotai';
 import CustomAvatar from '../Public/CustomAvatar';
@@ -30,6 +31,7 @@ import {
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
+  checkUserNameExisted,
 } from '../../utils/wallet';
 import { environment } from '../../utils/environments';
 import FollowButton from '../Buttons/FollowButton';
@@ -62,6 +64,7 @@ const BuzzCard = ({
   const connected = useAtomValue(connectedAtom);
   const btcConnector = useAtomValue(btcConnectorAtom);
   const globalFeeRate = useAtomValue(globalFeeRateAtom);
+  const userInfo = useAtomValue(userInfoAtom);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -713,6 +716,8 @@ const BuzzCard = ({
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
+                  await checkUserNameExisted(userInfo?.name ?? '');
+
                   (document.getElementById(
                     'repost_buzz_modal_' + buzzItem.id
                   ) as HTMLDialogElement)!.showModal();
@@ -724,6 +729,8 @@ const BuzzCard = ({
                 onClick={async () => {
                   await checkMetaletInstalled();
                   await checkMetaletConnected(connected);
+                  await checkUserNameExisted(userInfo?.name ?? '');
+
                   (document.getElementById(
                     'comment_buzz_modal_' + buzzItem.id
                   ) as HTMLDialogElement)!.showModal();
