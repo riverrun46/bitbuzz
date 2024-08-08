@@ -52,10 +52,6 @@ const EditMetaIDFormWrap = ({ btcConnector }: Iprops) => {
         options: {
           feeRate: Number(globalFeeRate),
           network: environment.network,
-          service: {
-            address: environment.service_address,
-            satoshis: environment.service_staoshi,
-          },
         },
       })
       .catch((error: any) => {
