@@ -127,7 +127,7 @@ const BuzzCard = ({
     queryFn: () =>
       btcConnector?.getUser({
         network: environment.network,
-        currentAddress: buzzItem!.creator,
+        currentAddress: buzzItem!.address,
       }),
   });
   const metaid = currentUserInfoData?.data?.metaid;
