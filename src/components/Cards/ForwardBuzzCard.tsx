@@ -47,7 +47,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
     queryFn: () =>
       btcConnector?.getUser({
         network: environment.network,
-        currentAddress: buzzItem!.creator,
+        currentAddress: buzzItem!.address,
       }),
   });
   const metaid = currentUserInfoData?.data?.metaid;
