@@ -1,15 +1,15 @@
-import { Route, Routes } from 'react-router-dom';
-import Navbar from './components/Layout/Navbar';
-import Buzz from './pages/Buzz';
-import Home from './pages/Home';
-import EditBuzz from './pages/EditBuzz';
-import { ToastContainer, toast } from 'react-toastify';
-import './globals.css';
-import './react-toastify.css';
+import { Route, Routes } from 'react-router-dom'
+import Navbar from './components/Layout/Navbar'
+import Buzz from './pages/Buzz'
+import Home from './pages/Home'
+import EditBuzz from './pages/EditBuzz'
+import { ToastContainer, toast } from 'react-toastify'
+import './globals.css'
+import './react-toastify.css'
 // import "react-toastify/dist/ReactToastify.css";
-import { MetaletWalletForBtc, btcConnect } from '@metaid/metaid';
+import { MetaletWalletForBtc, MetaletWalletForMvc, btcConnect } from '@metaid/metaid'
 
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai'
 import {
   btcConnectorAtom,
   connectedAtom,
@@ -17,33 +17,33 @@ import {
   userInfoAtom,
   walletAtom,
   walletRestoreParamsAtom,
-} from './store/user';
-import { buzzEntityAtom } from './store/buzz';
-import { errors } from './utils/errors';
-import { isNil } from 'ramda';
-import { checkMetaletInstalled, confirmCurrentNetwork } from './utils/wallet';
+} from './store/user'
+import { buzzEntityAtom } from './store/buzz'
+import { errors } from './utils/errors'
+import { isNil } from 'ramda'
+import { checkMetaletInstalled, confirmCurrentNetwork } from './utils/wallet'
 // import { conirmMetaletTestnet } from "./utils/wallet";
-import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal';
-import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal';
-import { useCallback, useEffect, useRef } from 'react';
-import { BtcNetwork } from './api/request';
-import InsertMetaletAlertModal from './components/Modals/InsertMetaletAlertModal';
-import { environment } from './utils/environments';
-import { useMutation } from '@tanstack/react-query';
-import { fetchFollowingList } from './api/buzz';
-import Profile from './pages/Profile';
-import FollowDetail from './pages/followDetail';
+import CreateMetaIDModal from './components/MetaIDFormWrap/CreateMetaIDModal'
+import EditMetaIDModal from './components/MetaIDFormWrap/EditMetaIDModal'
+import { useCallback, useEffect, useRef } from 'react'
+import { BtcNetwork } from './api/request'
+import InsertMetaletAlertModal from './components/Modals/InsertMetaletAlertModal'
+import { environment } from './utils/environments'
+import { useMutation } from '@tanstack/react-query'
+import { fetchFollowingList } from './api/buzz'
+import Profile from './pages/Profile'
+import FollowDetail from './pages/followDetail'
 
 function App() {
-  const ref = useRef<null | HTMLDivElement>(null);
+  const ref = useRef<null | HTMLDivElement>(null)
 
-  const [connected, setConnected] = useAtom(connectedAtom);
-  const setWallet = useSetAtom(walletAtom);
-  const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom);
-  const setUserInfo = useSetAtom(userInfoAtom);
-  const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom);
-  const setMyFollowingList = useSetAtom(myFollowingListAtom);
-  const setBuzzEntity = useSetAtom(buzzEntityAtom);
+  const [connected, setConnected] = useAtom(connectedAtom)
+  const setWallet = useSetAtom(walletAtom)
+  const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom)
+  const setUserInfo = useSetAtom(userInfoAtom)
+  const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom)
+  const setMyFollowingList = useSetAtom(myFollowingListAtom)
+  const setBuzzEntity = useSetAtom(buzzEntityAtom)
 
   const mutateMyFollowing = useMutation({
     mutationKey: ['myFollowing', btcConnector?.metaid],
@@ -52,34 +52,34 @@ function App() {
         metaid: metaid,
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const onLogout = () => {
-    setConnected(false);
-    setBtcConnector(null);
-    setBuzzEntity(null);
-    setUserInfo(null);
-    setWalletParams(undefined);
-    setMyFollowingList([]);
-    window.metaidwallet.removeListener('accountsChanged');
-    window.metaidwallet.removeListener('networkChanged');
-  };
+    setConnected(false)
+    setBtcConnector(null)
+    setBuzzEntity(null)
+    setUserInfo(null)
+    setWalletParams(undefined)
+    setMyFollowingList([])
+    window.metaidwallet.removeListener('accountsChanged')
+    window.metaidwallet.removeListener('networkChanged')
+  }
 
   const onWalletConnectStart = async () => {
-    await checkMetaletInstalled();
-    const _wallet = await MetaletWalletForBtc.create();
-    await confirmCurrentNetwork();
-    setWallet(_wallet);
+    await checkMetaletInstalled()
+    const _wallet = await MetaletWalletForBtc.create()
+    await confirmCurrentNetwork()
+    setWallet(_wallet)
     setWalletParams({
       address: _wallet.address,
       pub: _wallet.pub,
-    });
+    })
     if (isNil(_wallet?.address)) {
       toast.error(errors.NO_METALET_LOGIN, {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-      throw new Error(errors.NO_METALET_LOGIN);
+      })
+      throw new Error(errors.NO_METALET_LOGIN)
     }
 
     //////////////////////////
@@ -87,14 +87,14 @@ function App() {
     const _btcConnector = await btcConnect({
       network: environment.network,
       wallet: _wallet,
-    });
+    })
 
-    setBtcConnector(_btcConnector);
+    setBtcConnector(_btcConnector)
 
     const myFollowingListData = await mutateMyFollowing.mutateAsync(
-      _btcConnector?.metaid ?? ''
-    );
-    setMyFollowingList(myFollowingListData?.list ?? []);
+      _btcConnector?.metaid ?? '',
+    )
+    setMyFollowingList(myFollowingListData?.list ?? [])
     // const doc_modal = document.getElementById(
     //   'create_metaid_modal'
     // ) as HTMLDialogElement;
@@ -103,98 +103,148 @@ function App() {
 
     const resUser = await _btcConnector.getUser({
       network: environment.network,
-    });
-    console.log('user now', resUser);
+    })
+    console.log('user now', resUser)
 
-    setUserInfo(resUser);
-    setConnected(true);
-    setBuzzEntity(await _btcConnector.use('buzz'));
-    console.log('your btc address: ', _btcConnector.address);
-  };
+    setUserInfo(resUser)
+    setConnected(true)
+    setBuzzEntity(await _btcConnector.use('buzz'))
+    console.log('your btc address: ', _btcConnector.address)
+  }
+
+  const onWalletConnectMVCStart = async () => {
+    await checkMetaletInstalled()
+    const _wallet = await MetaletWalletForMvc.create()
+    await confirmCurrentNetwork()
+    // @ts-ignore
+    setWallet(_wallet)
+    const pub = await _wallet.getPublicKey()
+    setWalletParams({
+      address: _wallet.address,
+      pub,
+    })
+    if (isNil(_wallet?.address)) {
+      toast.error(errors.NO_METALET_LOGIN, {
+        className:
+          '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
+      })
+      throw new Error(errors.NO_METALET_LOGIN)
+    }
+
+    //////////////////////////
+
+    const _btcConnector = await btcConnect({
+      network: environment.network,
+      wallet: _wallet,
+    })
+
+    setBtcConnector(_btcConnector)
+
+    const myFollowingListData = await mutateMyFollowing.mutateAsync(
+      _btcConnector?.metaid ?? '',
+    )
+    setMyFollowingList(myFollowingListData?.list ?? [])
+    // const doc_modal = document.getElementById(
+    //   'create_metaid_modal'
+    // ) as HTMLDialogElement;
+    // doc_modal.showModal();
+    // console.log("getUser", await _btcConnector.getUser());
+
+    const resUser = await _btcConnector.getUser({
+      network: environment.network,
+    })
+    console.log('user now', resUser)
+
+    setUserInfo(resUser)
+    setConnected(true)
+    setBuzzEntity(await _btcConnector.use('buzz'))
+    console.log('your btc address: ', _btcConnector.address)
+  }
 
   const getBuzzEntity = async () => {
     // await conirmMetaletMainnet();
-    const _btcConnector = await btcConnect({ network: environment.network });
-    setBtcConnector(_btcConnector);
-    const _buzzEntity = await _btcConnector.use('buzz');
-    setBuzzEntity(_buzzEntity);
-  };
+    const _btcConnector = await btcConnect({ network: environment.network })
+    setBtcConnector(_btcConnector)
+    const _buzzEntity = await _btcConnector.use('buzz')
+    setBuzzEntity(_buzzEntity)
+  }
 
   useEffect(() => {
-    getBuzzEntity();
-  }, []);
+    getBuzzEntity()
+  }, [])
   const handleBeforeUnload = async () => {
     if (!isNil(walletParams)) {
       const _wallet = MetaletWalletForBtc.restore({
         ...walletParams,
         internal: window.metaidwallet,
-      });
-      setWallet(_wallet);
+      })
+      setWallet(_wallet)
       const _btcConnector = await btcConnect({
         wallet: _wallet,
         network: environment.network,
-      });
-      setBtcConnector(_btcConnector);
-      setUserInfo(_btcConnector.user);
+      })
+      setBtcConnector(_btcConnector)
+      setUserInfo(_btcConnector.user)
       // setConnected(true);
       // console.log('refetch user', _btcConnector.user);
     }
-  };
+  }
 
   const wrapHandleBeforeUnload = useCallback(handleBeforeUnload, [
     walletParams,
     setUserInfo,
-  ]);
+  ])
 
   useEffect(() => {
     setTimeout(() => {
-      wrapHandleBeforeUnload();
-    }, 1000);
-  }, [wrapHandleBeforeUnload]);
+      wrapHandleBeforeUnload()
+    }, 1000)
+  }, [wrapHandleBeforeUnload])
 
   const handleAcccountsChanged = () => {
-    onLogout();
-    toast.error('Wallet Account Changed ----Please login again...');
-  };
+    onLogout()
+    toast.error('Wallet Account Changed ----Please login again...')
+  }
 
   const handleNetworkChanged = async (network: BtcNetwork) => {
     if (connected) {
-      onLogout();
+      onLogout()
     }
-    toast.error('Wallet Network Changed  ');
+    toast.error('Wallet Network Changed  ')
     if (network !== environment.network) {
       toast.error(errors.SWITCH_NETWORK_ALERT, {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-      await window.metaidwallet.switchNetwork({ network: environment.network });
+      })
+      await window.metaidwallet.switchNetwork({ network: environment.network })
 
-      throw new Error(errors.SWITCH_NETWORK_ALERT);
+      throw new Error(errors.SWITCH_NETWORK_ALERT)
     }
-  };
+  }
 
   useEffect(() => {
     setTimeout(() => {
       if (!isNil(window?.metaidwallet)) {
         if (connected) {
-          window.metaidwallet.on('accountsChanged', handleAcccountsChanged);
+          window.metaidwallet.on('accountsChanged', handleAcccountsChanged)
         }
 
-        window.metaidwallet.on('networkChanged', handleNetworkChanged);
+        window.metaidwallet.on('networkChanged', handleNetworkChanged)
       }
-    }, 1000);
+    }, 1000)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected, window?.metaidwallet]);
+  }, [connected, window?.metaidwallet])
 
   const onScrollToTop = () => {
-    ref.current!.scrollIntoView({ behavior: 'smooth' });
-  };
+    ref.current!.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <div className='relative overflow-auto'>
       <div ref={ref}>
         <Navbar
           onWalletConnectStart={onWalletConnectStart}
+          onWalletConnectMVCStart={onWalletConnectMVCStart}
           onLogout={onLogout}
           btcConnector={btcConnector!}
         />
@@ -237,7 +287,7 @@ function App() {
       <EditMetaIDModal btcConnector={btcConnector!} />
       <InsertMetaletAlertModal />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

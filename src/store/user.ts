@@ -1,5 +1,9 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { IBtcConnector, IMetaletWalletForBtc } from '@metaid/metaid';
+import {
+  IBtcConnector,
+  IMetaletWalletForBtc,
+  MetaletWalletForMvc,
+} from '@metaid/metaid'
 
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
@@ -21,9 +25,12 @@ export type UserInfo = {
 
 export const connectedAtom = atomWithStorage<boolean>('connectedAtom', false);
 export const btcConnectorAtom = atom<IBtcConnector | null>(null);
+export const mvcConnectorAtom = atom<MvcConnector | null>(null);
 export const userInfoAtom = atom<UserInfo | null>(null);
 
-export const walletAtom = atom<IMetaletWalletForBtc | undefined>(undefined);
+export const walletAtom = atom<IMetaletWalletForBtc | MetaletWalletForMvc | undefined>(
+  undefined,
+)
 
 // export const userInfoAtom = atom<UserInfo | null>(null);
 /**

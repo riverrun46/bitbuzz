@@ -1328,10 +1328,10 @@
     ramda "^0.29.1"
     uuid "^9.0.1"
 
-"@metaid/metaid@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.4.3.tgz#cdc254264e3964f7ad15ab4c6b08c69bbfd6f568"
-  integrity sha512-P6V+Jtdt8BQTtLqt8wPHo19dk3GD8LiUGDNGKSyqzqk2Y7+E4tdDKs+hMBYT1PAYf9Ldz6JXc3dx8+MzLitKcA==
+"@metaid/metaid@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.5.2.tgz#3be6bd05560cdf1dbaa8c75119935f516c267133"
+  integrity sha512-hpRg2EWIgh8YX0AadMQZlLbU169XRgWbTFPVqcGnuaRGPzWryq0mE5G9i2K6lWb4ZxxamyZI3rCnvPN1R3xbrQ==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid" "^1.2.7"
@@ -5242,6 +5242,11 @@ prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmmirror.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
   integrity sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==
+
+prettier@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.3.3.tgz#30c54fe0be0d8d12e6ae61dbb10109ea00d53105"
+  integrity sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==
 
 pretty-bytes@^5.3.0:
   version "5.6.0"

@@ -1,54 +1,55 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { PencilLine } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useAtom, useAtomValue } from 'jotai'
+import { BookCheck, PencilLine } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import {
   connectedAtom,
   globalFeeRateAtom,
   userInfoAtom,
-} from '../../store/user';
+} from '../../store/user'
 
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
   checkUserNameExisted,
-} from '../../utils/wallet';
-import CustomAvatar from '../Public/CustomAvatar';
+} from '../../utils/wallet'
+import CustomAvatar from '../Public/CustomAvatar'
 
-import { IBtcConnector } from '@metaid/metaid';
-import AboutModal from '../Modals/AboutModal';
-import NavabarMobileMenu from './NavabarMobileMenu';
-import NewBuzzModal from '../Modals/NewBuzzModal';
+import { IBtcConnector } from '@metaid/metaid'
+import AboutModal from '../Modals/AboutModal'
+import NavabarMobileMenu from './NavabarMobileMenu'
+import NewBuzzModal from '../Modals/NewBuzzModal'
 
 type IProps = {
-  onWalletConnectStart: () => Promise<void>;
-  onLogout: () => void;
-  btcConnector: IBtcConnector;
-};
+  onWalletConnectStart: () => Promise<void>
+  onWalletConnectMVCStart: () => Promise<void>
+  onLogout: () => void
+  btcConnector: IBtcConnector
+}
 
-const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
-  const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom);
+const Navbar = ({ onWalletConnectStart, onWalletConnectMVCStart, onLogout, btcConnector }: IProps) => {
+  const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom)
 
-  const connected = useAtomValue(connectedAtom);
-  const userInfo = useAtomValue(userInfoAtom);
+  const connected = useAtomValue(connectedAtom)
+  const userInfo = useAtomValue(userInfoAtom)
 
   const onBuzzStart = async () => {
-    await checkMetaletInstalled();
-    await checkMetaletConnected(connected);
-    await checkUserNameExisted(userInfo?.name ?? '');
+    await checkMetaletInstalled()
+    await checkMetaletConnected(connected)
+    await checkUserNameExisted(userInfo?.name ?? '')
 
     const doc_modal = document.getElementById(
-      'new_buzz_modal'
-    ) as HTMLDialogElement;
-    doc_modal.showModal();
-  };
+      'new_buzz_modal',
+    ) as HTMLDialogElement
+    doc_modal.showModal()
+  }
 
   const onEditProfileStart = async () => {
     const doc_modal = document.getElementById(
-      'edit_metaid_modal'
-    ) as HTMLDialogElement;
-    doc_modal.showModal();
-  };
+      'edit_metaid_modal',
+    ) as HTMLDialogElement
+    doc_modal.showModal()
+  }
 
   return (
     <>
@@ -74,9 +75,9 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
                 className='text-lime-900 font-bold hover:underline hover:text-lime-700'
                 onClick={() => {
                   const doc_modal = document.getElementById(
-                    'about_modal'
-                  ) as HTMLDialogElement;
-                  doc_modal.showModal();
+                    'about_modal',
+                  ) as HTMLDialogElement
+                  doc_modal.showModal()
                 }}
               >
                 About
@@ -101,8 +102,8 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
               step={1}
               value={globalFeeRate}
               onChange={(e) => {
-                const v = e.currentTarget.value;
-                setGlobalFeeRate(v);
+                const v = e.currentTarget.value
+                setGlobalFeeRate(v)
               }}
             />
             <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
@@ -173,19 +174,53 @@ const Navbar = ({ onWalletConnectStart, onLogout, btcConnector }: IProps) => {
                 </ul>
               </div>
             ) : (
-              <div
+              <button
                 className='btn-sm w-[120px] text-[12px] md:text-[14px] md:btn-md md:w-[180px] btn btn-outline hover:bg-[black] hover:text-main rounded-full font-medium'
-                onClick={onWalletConnectStart}
+                onClick={() =>
+                  // @ts-ignore
+                  document.getElementById('connect_modal').showModal()
+                }
               >
                 Connect Wallet
-              </div>
+              </button>
+
+              // <div
+              //   className='btn-sm w-[120px] text-[12px] md:text-[14px] md:btn-md md:w-[180px] btn btn-outline hover:bg-[black] hover:text-main rounded-full font-medium'
+              //   onClick={onWalletConnectStart}
+              // >
+              //   Connect Wallet
+              // </div>
             )}
+
+            <dialog id='connect_modal' className='modal'>
+              <div className='modal-box bg-[#191C20] py-5 w-[90%] lg:w-auto'>
+                <div className='flex flex-col relative items-start'>
+                  <h3 className='text-white text-xl mb-8'>Connect Wallet</h3>
+
+                  <div className='flex gap-4 flex-col justify-center items-center self-stretch'>
+                    <button
+                      className='btn-sm w-[70vw] text-[12px] md:text-[14px] md:btn-md md:w-[300px] btn btn-outline hover:bg-[black] hover:text-main text-main rounded-full font-medium py-4 h-auto'
+                      onClick={onWalletConnectStart}
+                    >
+                      BTC Network
+                    </button>
+
+                    <button
+                      className='btn-sm w-[70vw] text-[12px] md:text-[14px] md:btn-md md:w-[300px] btn btn-outline hover:bg-[black] hover:text-main text-main rounded-full font-medium py-4 h-auto'
+                      onClick={onWalletConnectMVCStart}
+                    >
+                      MVC Network
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>
       <NewBuzzModal btcConnector={btcConnector} />
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
