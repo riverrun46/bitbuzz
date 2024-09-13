@@ -13,6 +13,7 @@ import { getPinDetailByPid } from '../../api/buzz';
 import { environment } from '../../utils/environments';
 import { Pin } from '../../api/request';
 import ProfileCard from './ProfileCard';
+import { toBrowser } from '../../utils/link';
 
 type IProps = {
   buzzItem: Pin | undefined;
@@ -23,7 +24,6 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
 
   const btcConnector = useAtomValue(btcConnectorAtom);
 
-  const isFromBtc = buzzItem?.chainName === 'btc';
   let summary = buzzItem!.contentSummary;
   const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
   // console.log("isjson", isSummaryJson);
@@ -33,7 +33,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
   summary = isSummaryJson ? parseSummary.content : summary;
 
   const attachPids =
-    isSummaryJson && !isEmpty(parseSummary?.attachments ?? []) && isFromBtc
+    isSummaryJson && !isEmpty(parseSummary?.attachments ?? [])
       ? (parseSummary?.attachments ?? []).map(
           (d: string) => d.split('metafile://')[1]
         )
@@ -321,14 +321,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           <div className='flex justify-between text-gray mt-2'>
             <div
               className='flex gap-2 items-center hover:text-slate-300 md:text-md text-xs'
-              onClick={() => {
-                window.open(
-                  `https://mempool.space/${
-                    environment.network === 'mainnet' ? '' : 'testnet/'
-                  }tx/${buzzItem.genesisTransaction}`,
-                  '_blank'
-                );
-              }}
+              onClick={() => toBrowser(buzzItem.genesisTransaction, buzzItem.chainName)}
             >
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>

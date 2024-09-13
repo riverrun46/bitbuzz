@@ -1,3 +1,5 @@
+import { IBtcConnector, IMvcConnector } from "@metaid/metaid";
+
 export type BuzzItem = {
 	user: string;
 	isFollowed: boolean;
@@ -6,3 +8,7 @@ export type BuzzItem = {
 	id: string;
 	createTime: string;
 };
+
+export type Chain = 'btc' | 'mvc'
+
+export type Connector = IBtcConnector | IMvcConnector

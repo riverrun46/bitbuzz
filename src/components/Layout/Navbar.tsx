@@ -21,12 +21,13 @@ import AboutModal from '../Modals/AboutModal'
 import NavabarMobileMenu from './NavabarMobileMenu'
 import NewBuzzModal from '../Modals/NewBuzzModal'
 import classNames from 'classnames'
+import { Connector } from '../../types'
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>
   onWalletConnectMVCStart: () => Promise<void>
   onLogout: () => void
-  connector: IBtcConnector | IMvcConnector
+  connector: Connector
 }
 
 const Navbar = ({
@@ -145,10 +146,10 @@ const Navbar = ({
                   <CustomAvatar userInfo={userInfo!} />
                   <span
                     className={classNames(
-                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 text-white px-2 text-xs rounded leading-none py-1',
-                      connectedNetwork === 'btc'
-                        ? 'bg-orange-500'
-                        : 'bg-sky-500',
+                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 text-white px-2 text-xs rounded leading-none py-1 uppercase',
+                      connectedNetwork === 'mvc'
+                        ?'bg-sky-950 text-sky-400' 
+                        : 'bg-main/10 text-main',
                     )}
                   >
                     {connectedNetwork}

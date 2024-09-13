@@ -56,6 +56,8 @@ function App() {
   const setMyFollowingList = useSetAtom(myFollowingListAtom)
   const setBuzzEntity = useSetAtom(buzzEntityAtom)
 
+  console.log('connector', connector)
+
   const mutateMyFollowing = useMutation({
     mutationKey: ['myFollowing', btcConnector?.metaid],
     mutationFn: (metaid: string) =>
@@ -138,9 +140,11 @@ function App() {
     // @ts-ignore
     setWallet(_wallet)
     const pub = await _wallet.getPublicKey()
+    const xpub = _wallet.xpub
     setWalletParams({
       address: _wallet.address,
       pub,
+      xpub,
     })
     if (isNil(_wallet?.address)) {
       toast.error(errors.NO_METALET_LOGIN, {
@@ -184,31 +188,65 @@ function App() {
   }
 
   const getBuzzEntity = async () => {
-    // await conirmMetaletMainnet();
-    const _btcConnector = await btcConnect({ network: environment.network })
-    setBtcConnector(_btcConnector)
+    if (connectedNetwork === 'mvc') {
+      const _mvcConnector = await mvcConnect({ network: environment.network })
+      setMvcConnector(_mvcConnector)
+      setConnector(_mvcConnector)
+
+    const _buzzEntity = await _mvcConnector.use('buzz')
+    setBuzzEntity(_buzzEntity)
+
+    } else {
+      const _btcConnector = await btcConnect({ network: environment.network })
+      setBtcConnector(_btcConnector)
+      setConnector(_btcConnector)
+      console.log('btc connector', _btcConnector)
+
+
     const _buzzEntity = await _btcConnector.use('buzz')
     setBuzzEntity(_buzzEntity)
+    }
   }
 
   useEffect(() => {
     getBuzzEntity()
-  }, [])
+  }, [connectedNetwork])
+
   const handleBeforeUnload = async () => {
     if (!isNil(walletParams)) {
-      const _wallet = MetaletWalletForBtc.restore({
-        ...walletParams,
-        internal: window.metaidwallet,
-      })
-      setWallet(_wallet)
-      const _btcConnector = await btcConnect({
-        wallet: _wallet,
-        network: environment.network,
-      })
-      setBtcConnector(_btcConnector)
-      setUserInfo(_btcConnector.user)
-      // setConnected(true);
-      // console.log('refetch user', _btcConnector.user);
+      if (connectedNetwork === 'mvc') {
+        if (!isNil(walletParams.xpub)) {
+          const _wallet = MetaletWalletForMvc.restore({
+            address: walletParams.address,
+            xpub: walletParams.xpub,
+          })
+          // @ts-ignore
+          setWallet(_wallet)
+          const connector = await mvcConnect({
+            wallet: _wallet,
+            network: environment.network,
+          })
+          setMvcConnector(connector)
+          setConnector(connector)
+          setUserInfo(connector.user)
+        } else {
+          // logout
+          onLogout()
+        }
+      } else {
+        const _wallet = MetaletWalletForBtc.restore({
+          ...walletParams,
+          internal: window.metaidwallet,
+        })
+        setWallet(_wallet)
+        const _btcConnector = await btcConnect({
+          wallet: _wallet,
+          network: environment.network,
+        })
+        setBtcConnector(_btcConnector)
+        setConnector(_btcConnector)
+        setUserInfo(_btcConnector.user)
+      }
     }
   }
 

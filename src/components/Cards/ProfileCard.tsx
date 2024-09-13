@@ -1,50 +1,54 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  btcConnectorAtom,
   connectedAtom,
+  connectedNetworkAtom,
+  connectorAtom,
   globalFeeRateAtom,
   myFollowingListAtom,
-} from '../../store/user';
-import { useAtom, useAtomValue } from 'jotai';
-import { environment } from '../../utils/environments';
-import { isEmpty, isNil } from 'ramda';
+} from '../../store/user'
+import { useAtom, useAtomValue } from 'jotai'
+import { environment } from '../../utils/environments'
+import { isEmpty, isNil } from 'ramda'
 import {
   fetchFollowDetailPin,
   fetchFollowerList,
   fetchFollowingList,
-} from '../../api/buzz';
-import CustomAvatar from '../Public/CustomAvatar';
-import FollowButton from '../Buttons/FollowButton';
+} from '../../api/buzz'
+import CustomAvatar from '../Public/CustomAvatar'
+import FollowButton from '../Buttons/FollowButton'
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
-} from '../../utils/wallet';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+} from '../../utils/wallet'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import { IBtcConnector, IMvcConnector } from '@metaid/metaid'
+import followEntitySchema from '../../entities/follow'
 
 type Iprops = {
-  address: string;
-  isDropdown?: boolean;
-};
+  address: string
+  isDropdown?: boolean
+}
 
 const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
-  const queryClient = useQueryClient();
-  const btcConnector = useAtomValue(btcConnectorAtom);
-  const connected = useAtomValue(connectedAtom);
-  const globalFeeRate = useAtomValue(globalFeeRateAtom);
-  const navigate = useNavigate();
+  const queryClient = useQueryClient()
+  const connector = useAtomValue(connectorAtom)
+  const connectedNetwork = useAtomValue(connectedNetworkAtom)
+  const connected = useAtomValue(connectedAtom)
+  const globalFeeRate = useAtomValue(globalFeeRateAtom)
+  const navigate = useNavigate()
 
-  const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
+  const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom)
 
   const profileUserData = useQuery({
     queryKey: ['userInfo', address, environment.network],
     queryFn: () =>
-      btcConnector?.getUser({
+      connector?.getUser({
         network: environment.network,
         currentAddress: address,
       }),
-  });
+  })
 
   const { data: followingListData } = useQuery({
     queryKey: ['following', profileUserData?.data?.metaid],
@@ -54,7 +58,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
         metaid: profileUserData?.data?.metaid ?? '',
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const { data: followerListData } = useQuery({
     queryKey: ['follower', profileUserData?.data?.metaid],
@@ -64,39 +68,39 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
         metaid: profileUserData?.data?.metaid ?? '',
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const { data: myFollowingListData } = useQuery({
-    queryKey: ['myFollowing', btcConnector?.metaid],
-    enabled: !isEmpty(btcConnector?.metaid ?? ''),
+    queryKey: ['myFollowing', connector?.metaid],
+    enabled: !isEmpty(connector?.metaid ?? ''),
     queryFn: () =>
       fetchFollowingList({
-        metaid: btcConnector?.metaid ?? '',
+        metaid: connector?.metaid ?? '',
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const { data: followDetailData } = useQuery({
     queryKey: [
       'followDetail',
-      btcConnector?.metaid,
+      connector?.metaid,
       profileUserData?.data?.metaid,
     ],
     enabled:
-      !isEmpty(btcConnector?.metaid ?? '') &&
+      !isEmpty(connector?.metaid ?? '') &&
       !isEmpty(profileUserData?.data?.metaid),
     queryFn: () =>
       fetchFollowDetailPin({
         metaId: profileUserData?.data?.metaid ?? '',
-        followerMetaId: btcConnector?.metaid ?? '',
+        followerMetaId: connector?.metaid ?? '',
       }),
-  });
+  })
 
-  const metaidPrefix = (profileUserData?.data?.metaid ?? '').slice(0, 6);
+  const metaidPrefix = (profileUserData?.data?.metaid ?? '').slice(0, 6)
 
   const handleFollow = async () => {
-    await checkMetaletInstalled();
-    await checkMetaletConnected(connected);
+    await checkMetaletInstalled()
+    await checkMetaletConnected(connected)
 
     // const doc_modal = document.getElementById(
     //   'confirm_follow_modal'
@@ -108,101 +112,132 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
       (myFollowingListData?.list ?? []).includes(profileUserData?.data?.metaid)
     ) {
       try {
-        const unfollowRes = await btcConnector!.inscribe({
-          inscribeDataArray: [
-            {
-              operation: 'revoke',
-              path: `@${followDetailData.followPinId}`,
-              contentType: 'text/plain;utf-8',
-              flag: environment.flag,
+        if (connectedNetwork === 'btc') {
+          const btcConnector = connector as IBtcConnector
+          const unfollowRes = await btcConnector!.inscribe({
+            inscribeDataArray: [
+              {
+                operation: 'revoke',
+                path: `@${followDetailData.followPinId}`,
+                contentType: 'text/plain;utf-8',
+                flag: environment.flag,
+              },
+            ],
+            options: {
+              noBroadcast: 'no',
+              feeRate: Number(globalFeeRate),
+              service: {
+                address: environment.service_address,
+                satoshis: environment.service_satoshi,
+              },
+              // network: environment.network,
             },
-          ],
-          options: {
-            noBroadcast: 'no',
-            feeRate: Number(globalFeeRate),
-            service: {
-              address: environment.service_address,
-              satoshis: environment.service_staoshi,
-            },
-            // network: environment.network,
-          },
-        });
-        if (!isNil(unfollowRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-          setMyFollowingList((d) => {
-            return d.filter((i) => i !== profileUserData?.data?.metaid);
-          });
-          // await sleep(5000);
-          toast.success(
-            'Unfollowing successfully!Please wait for the transaction to be confirmed.'
-          );
+          })
+          if (!isNil(unfollowRes?.revealTxIds[0])) {
+            queryClient.invalidateQueries({
+              queryKey: ['buzzes'],
+            })
+            setMyFollowingList((d) => {
+              return d.filter((i) => i !== profileUserData?.data?.metaid)
+            })
+            // await sleep(5000);
+            toast.success(
+              'Unfollowing successfully!Please wait for the transaction to be confirmed.',
+            )
+          }
+        } else if (connectedNetwork === 'mvc') {
+                    // const mvcConnector = connector as IMvcConnector
+                    // const Follow = await mvcConnector.load(followEntitySchema)
         }
       } catch (error) {
-        console.log('error', error);
-        const errorMessage = (error as any)?.message ?? error;
+        console.log('error', error)
+        const errorMessage = (error as any)?.message ?? error
         const toastMessage = errorMessage?.includes(
-          'Cannot read properties of undefined'
+          'Cannot read properties of undefined',
         )
           ? 'User Canceled'
-          : errorMessage;
+          : errorMessage
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         toast.error(toastMessage, {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-        });
+        })
       }
     } else {
       try {
-        const followRes = await btcConnector!.inscribe({
-          inscribeDataArray: [
-            {
-              operation: 'create',
-              path: '/follow',
-              body: profileUserData?.data?.metaid,
-              contentType: 'text/plain;utf-8',
+        if (connectedNetwork === 'btc') {
+          const btcConnector = connector as IBtcConnector
+          const followRes = await btcConnector!.inscribe({
+            inscribeDataArray: [
+              {
+                operation: 'create',
+                path: '/follow',
+                body: profileUserData?.data?.metaid,
+                contentType: 'text/plain;utf-8',
 
-              flag: environment.flag,
+                flag: environment.flag,
+              },
+            ],
+            options: {
+              noBroadcast: 'no',
+              feeRate: Number(globalFeeRate),
+              service: {
+                address: environment.service_address,
+                satoshis: environment.service_satoshi,
+              },
+              // network: environment.network,
             },
-          ],
-          options: {
-            noBroadcast: 'no',
-            feeRate: Number(globalFeeRate),
-            service: {
-              address: environment.service_address,
-              satoshis: environment.service_staoshi,
+          })
+          if (!isNil(followRes?.revealTxIds[0])) {
+            queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+            setMyFollowingList((d: string[]) => {
+              return [...d, profileUserData!.data!.metaid]
+            })
+
+            toast.success(
+              'Follow successfully! Please wait for the transaction to be confirmed!',
+            )
+          }
+        } else if (connectedNetwork === 'mvc') {
+          const mvcConnector = connector as IMvcConnector
+          const Follow = await mvcConnector.load(followEntitySchema)
+
+          const res = await Follow.create({
+            data: { body: JSON.stringify(profileUserData?.data?.metaid) },
+            options: {
+              network: environment.network,
+              signMessage: 'follow user',
             },
-            // network: environment.network,
-          },
-        });
-        if (!isNil(followRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-          setMyFollowingList((d: string[]) => {
-            return [...d, profileUserData!.data!.metaid];
-          });
-          // queryClient.invalidateQueries({
-          //   queryKey: ['payLike', buzzItem!.id],
-          // });
-          // await sleep(5000);
-          toast.success(
-            'Follow successfully! Please wait for the transaction to be confirmed!'
-          );
+          })
+          console.log('create res for inscribe', res)
+
+          if (!isNil(res?.txid)) {
+            queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+            setMyFollowingList((d: string[]) => {
+              return [...d, profileUserData!.data!.metaid]
+            })
+
+            toast.success(
+              'Follow successfully! Please wait for the transaction to be confirmed!',
+            )
+          }
         }
       } catch (error) {
-        console.log('error', error);
-        const errorMessage = (error as any)?.message ?? error;
+        console.log('error', error)
+        const errorMessage = (error as any)?.message ?? error
         const toastMessage = errorMessage?.includes(
-          'Cannot read properties of undefined'
+          'Cannot read properties of undefined',
         )
           ? 'User Canceled'
-          : errorMessage;
+          : errorMessage
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         toast.error(toastMessage, {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-        });
+        })
       }
     }
-  };
+  }
   if (isDropdown) {
     return (
       <div
@@ -237,25 +272,25 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
               <div className='text-main'>{`MetaID:  ${metaidPrefix}`}</div>
             </div>
           </div>
-          {btcConnector?.metaid !== profileUserData?.data?.metaid && (
+          {connector?.metaid !== profileUserData?.data?.metaid && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(
-                profileUserData?.data?.metaid
+                profileUserData?.data?.metaid,
               )}
               isFollowingPending={
                 (myFollowingList ?? []).includes(
-                  profileUserData?.data?.metaid ?? ''
+                  profileUserData?.data?.metaid ?? '',
                 ) &&
                 !(myFollowingListData?.list ?? []).includes(
-                  profileUserData?.data?.metaid
+                  profileUserData?.data?.metaid,
                 )
               }
               isUnfollowingPending={
                 !(myFollowingList ?? []).includes(
-                  profileUserData?.data?.metaid ?? ''
+                  profileUserData?.data?.metaid ?? '',
                 ) &&
                 (myFollowingListData?.list ?? []).includes(
-                  profileUserData?.data?.metaid
+                  profileUserData?.data?.metaid,
                 )
               }
               handleFollow={handleFollow}
@@ -280,7 +315,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
           </div>
         </div>
       </div>
-    );
+    )
   }
   return (
     <div className='border w-full border-white rounded-xl relative pt-[100px] md:pt-[170px]'>
@@ -302,25 +337,25 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
         </div>
 
         <div className='flex flex-col gap-5 items-end self-end'>
-          {btcConnector?.metaid !== profileUserData?.data?.metaid && (
+          {connector?.metaid !== profileUserData?.data?.metaid && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(
-                profileUserData?.data?.metaid
+                profileUserData?.data?.metaid,
               )}
               isFollowingPending={
                 (myFollowingList ?? []).includes(
-                  profileUserData?.data?.metaid ?? ''
+                  profileUserData?.data?.metaid ?? '',
                 ) &&
                 !(myFollowingListData?.list ?? []).includes(
-                  profileUserData?.data?.metaid
+                  profileUserData?.data?.metaid,
                 )
               }
               isUnfollowingPending={
                 !(myFollowingList ?? []).includes(
-                  profileUserData?.data?.metaid ?? ''
+                  profileUserData?.data?.metaid ?? '',
                 ) &&
                 (myFollowingListData?.list ?? []).includes(
-                  profileUserData?.data?.metaid
+                  profileUserData?.data?.metaid,
                 )
               }
               handleFollow={handleFollow}
@@ -346,7 +381,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileCard;
+export default ProfileCard

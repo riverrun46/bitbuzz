@@ -43,33 +43,9 @@ const CommentCard = ({ commentRes, btcConnector }: Iprops) => {
                   .format('YYYY-MM-DD HH:mm:ss')}
               </div>
             </div>
-            {/* <div
-              className='hover:text-slate-300 cursor-pointer'
-              onClick={async () => {
-                await checkMetaletInstalled();
-                await checkMetaletConnected(connected);
-                (document.getElementById(
-                  'reply_buzz_modal_' + commentPin.id
-                ) as HTMLDialogElement)!.showModal();
-              }}
-            >
-              Reply
-            </div> */}
           </div>
-          {/* {hasSubComment && (
-            <SubCommentCard
-              commentPin={commentPin}
-              btcConnector={btcConnector!}
-              commentUserInfo={commentUserInfo}
-            />
-          )} */}
         </div>
       </div>
-      {/* <ReplyModal
-        commentPin={commentPin}
-        btcConnector={btcConnector!}
-        commentToUser={commentUserInfo}
-      /> */}
     </>
   );
 };

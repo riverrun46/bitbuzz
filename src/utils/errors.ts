@@ -13,4 +13,5 @@ export const errors = {
     'You need to set a username in order to post、repost and comment.',
   STILL_MEMPOOL_ALERT:
     "MetaID Init TX hasn't been confirmed yet. You can click the gray refresh button on the right to check the latest transaction confirmation status",
+  CONNECT_FAILED: 'Failed to connect wallet',
 };

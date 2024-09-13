@@ -7,20 +7,20 @@ import {
 } from '../../utils/wallet';
 import { useAtomValue } from 'jotai';
 import { connectedAtom, UserInfo } from '../../store/user';
-import { IBtcConnector } from '@metaid/metaid';
 import { Pin } from '../../api/request';
 
 import ReplyModal from '../Modals/ReplyModal';
+import { Connector } from '../../types';
 
 type Iprops = {
-  commentPin: Pin;
-  btcConnector: IBtcConnector;
-  commentUserInfo: UserInfo | undefined;
-};
+  commentPin: Pin
+  connector: Connector
+  commentUserInfo: UserInfo | undefined
+}
 
 const SubCommentCard = ({
   commentPin,
-  btcConnector,
+  connector,
   commentUserInfo,
 }: Iprops) => {
   const connected = useAtomValue(connectedAtom);
@@ -75,7 +75,7 @@ const SubCommentCard = ({
       </div>
       <ReplyModal
         commentPin={commentPin}
-        btcConnector={btcConnector!}
+        connector={connector}
         commentToUser={commentUserInfo}
       />{' '}
     </>

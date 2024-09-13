@@ -8,6 +8,7 @@ import {
 
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import { Chain, Connector } from '../types'
 
 export type UserInfo = {
   number: number
@@ -25,14 +26,14 @@ export type UserInfo = {
 }
 
 export const connectedAtom = atomWithStorage<boolean>('connectedAtom', false)
-export const connectedNetworkAtom = atomWithStorage<'btc' | 'mvc'>(
+export const connectedNetworkAtom = atomWithStorage<Chain>(
   'connectedNetworkAtom',
   'btc',
 )
 
 export const btcConnectorAtom = atom<IBtcConnector | null>(null)
 export const mvcConnectorAtom = atom<IMvcConnector | null>(null)
-export const connectorAtom = atom<IBtcConnector | IMvcConnector | null>(null)
+export const connectorAtom = atom<Connector | null>(null)
 export const userInfoAtom = atom<UserInfo | null>(null)
 
 export const walletAtom = atom<
@@ -59,6 +60,7 @@ export const walletRestoreParamsAtom = atomWithStorage<
   | {
       address: string
       pub: string
+      xpub?: string
     }
   | undefined
 >('walletRestoreParamsAtom', undefined)

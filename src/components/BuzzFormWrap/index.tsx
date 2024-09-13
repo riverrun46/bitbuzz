@@ -25,9 +25,10 @@ import {
 } from '@metaid/metaid'
 import { environment } from '../../utils/environments'
 import { Pin } from '../../api/request'
+import { Connector } from '../../types'
 
 type Iprops = {
-  connector: IBtcConnector | IMvcConnector
+  connector: Connector
   quotePin?: Pin
 }
 
@@ -96,7 +97,7 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
               feeRate: Number(globalFeerate),
               service: {
                 address: environment.service_address,
-                satoshis: environment.service_staoshi,
+                satoshis: environment.service_satoshi,
               },
               // network: environment.network,
             },
@@ -161,7 +162,7 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
             feeRate: Number(globalFeerate),
             service: {
               address: environment.service_address,
-              satoshis: environment.service_staoshi,
+              satoshis: environment.service_satoshi,
             },
             // network: environment.network,
           },
@@ -184,7 +185,6 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
         console.log('buzzEntity', buzzEntity)
         console.log('connector', connector)
 
-        console.log(123)
         const createRes = await buzzEntity!.create({
           data: { body: JSON.stringify(finalBody) },
           options: {

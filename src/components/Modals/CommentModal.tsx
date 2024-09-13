@@ -1,16 +1,16 @@
 import CommentFormWrap from '../CommentFormWrap';
 import { Pin } from '../../api/request';
 import { UserInfo } from '../../store/user';
-import { IBtcConnector } from '@metaid/metaid';
 import { isEmpty } from 'ramda';
+import { Connector } from '../../types';
 
 type Iprops = {
   commentPin: Pin;
   commentToUser: UserInfo | undefined;
-  btcConnector: IBtcConnector;
+  connector: Connector;
 };
 
-const CommentModal = ({ commentPin, commentToUser, btcConnector }: Iprops) => {
+const CommentModal = ({ commentPin, commentToUser, connector }: Iprops) => {
   return (
     <dialog id={'comment_buzz_modal_' + commentPin.id} className='modal !z-20'>
       <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
@@ -27,13 +27,13 @@ const CommentModal = ({ commentPin, commentToUser, btcConnector }: Iprops) => {
               : `MetaID-User-${commentToUser?.metaid.slice(0, 6)}`
           }`}
         </h3>
-        <CommentFormWrap btcConnector={btcConnector!} commentPin={commentPin} />
+        <CommentFormWrap connector={connector!} commentPin={commentPin} />
       </div>
       <form method='dialog' className='modal-backdrop'>
         <button>close</button>
       </form>
     </dialog>
-  );
-};
+  )
+}
 
 export default CommentModal;

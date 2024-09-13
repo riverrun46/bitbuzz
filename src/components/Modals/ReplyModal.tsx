@@ -1,15 +1,15 @@
 import CommentFormWrap from '../CommentFormWrap';
 import { Pin } from '../../api/request';
 import { UserInfo } from '../../store/user';
-import { IBtcConnector } from '@metaid/metaid';
+import { Connector } from '../../types';
 
 type Iprops = {
-  commentPin: Pin;
-  commentToUser: UserInfo | undefined;
-  btcConnector: IBtcConnector;
-};
+  commentPin: Pin
+  commentToUser: UserInfo | undefined
+  connector: Connector
+}
 
-const ReplyModal = ({ commentPin, commentToUser, btcConnector }: Iprops) => {
+const ReplyModal = ({ commentPin, commentToUser, connector }: Iprops) => {
   return (
     <dialog id={'reply_buzz_modal_' + commentPin?.id} className='modal !z-20'>
       <div className='modal-box bg-[#191C20] !z-20 py-5 w-[90%] lg:w-[50%]'>
@@ -26,7 +26,7 @@ const ReplyModal = ({ commentPin, commentToUser, btcConnector }: Iprops) => {
           }`}
         </h3>
         <CommentFormWrap
-          btcConnector={btcConnector!}
+          connector={connector}
           commentPin={commentPin}
           isReply
         />

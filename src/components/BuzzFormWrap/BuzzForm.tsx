@@ -44,7 +44,7 @@ const renderImages = (
     <div className='grid grid-cols-3 gap-2 place-items-center'>
       {data.map((image, index) => {
         return (
-          <div className='relative'>
+          <div className='relative' key={index}>
             <img
               src='/icon_close.png'
               className='absolute top-1 right-1 cursor-pointer  w-[24px] h-[24px]'
@@ -83,6 +83,9 @@ const BuzzForm = ({
   const isQuoted = !isNil(quotePin)
 
   const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
+  // console.log('files in inner', filesPreview)
+  const randomId = Math.random().toString(36).substring(7)
+  const addImageElementId = 'addImage-' + randomId
 
   return (
     <form
@@ -123,16 +126,18 @@ const BuzzForm = ({
         </div>
         <div className='flex items-center self-end gap-2'>
           {!isNil(filesPreview) && filesPreview.length !== 0 && (
-            <div
-              className='btn btn-xs btn-outline font-normal text-white'
-              onClick={onClearImageUploads}
-            >
-              clear current uploads
-            </div>
+            <>
+              <div
+                className='btn btn-xs btn-outline font-normal text-white'
+                onClick={onClearImageUploads}
+              >
+                clear current uploads
+              </div>
+            </>
           )}
           <div
             onClick={() => {
-              document.getElementById('addImage')!.click()
+              document.getElementById(addImageElementId)!.click()
             }}
             className='btn btn-xs btn-outline font-normal text-white '
           >
@@ -148,7 +153,7 @@ const BuzzForm = ({
               type='file'
               accept='.gif,.jpg,.jpeg,.png,.webp'
               multiple
-              id='addImage'
+              id={addImageElementId}
               className='hidden'
               {...register('images')}
               onChange={(e) => {

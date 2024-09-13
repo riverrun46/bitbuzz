@@ -1,9 +1,9 @@
-import { IBtcConnector, IMvcConnector } from '@metaid/metaid'
 import { Pin } from '../../api/request'
 import BuzzFormWrap from '../BuzzFormWrap'
+import { Connector } from '../../types'
 
 type Iprops = {
-  connector: IBtcConnector | IMvcConnector
+  connector: Connector
   quotePin: Pin
 }
 const RepostModal = ({ connector, quotePin }: Iprops) => {

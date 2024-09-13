@@ -1,29 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { FileEdit } from "lucide-react";
-import { SubmitHandler, UseFormReturn } from 'react-hook-form';
-import cls from 'classnames';
-import { IsEncrypt } from '../../utils/file';
-import CustomFeerate from '../Public/CustomFeerate';
+import { SubmitHandler, UseFormReturn } from 'react-hook-form'
+import cls from 'classnames'
+import { IsEncrypt } from '../../utils/file'
+import CustomFeerate from '../Public/CustomFeerate'
+import { useAtom } from 'jotai'
+import { connectedNetworkAtom } from '../../store/user'
 
 export interface AttachmentItem {
-  fileName: string;
-  fileType: string;
-  data: string;
-  encrypt: IsEncrypt;
-  sha256: string;
-  size: number;
-  url: string;
+  fileName: string
+  fileType: string
+  data: string
+  encrypt: IsEncrypt
+  sha256: string
+  size: number
+  url: string
 }
 
 type IProps = {
-  onCreateSubmit: SubmitHandler<CommentData>;
-  commentFormHandle: UseFormReturn<CommentData, any, CommentData>;
-  isReply?: boolean;
-};
+  onCreateSubmit: SubmitHandler<CommentData>
+  commentFormHandle: UseFormReturn<CommentData, any, CommentData>
+  isReply?: boolean
+}
 
 export type CommentData = {
-  content: string;
-};
+  content: string
+}
 
 const CommentForm = ({
   onCreateSubmit,
@@ -34,7 +36,9 @@ const CommentForm = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = commentFormHandle;
+  } = commentFormHandle
+
+  const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
 
   return (
     <form
@@ -48,7 +52,7 @@ const CommentForm = ({
               'textarea textarea-bordered focus:outline-none border-none  text-white bg-[black] textarea-sm h-[160px] w-full ',
               {
                 'textarea-error': errors.content,
-              }
+              },
             )}
             {...register('content', { required: true })}
           />
@@ -61,7 +65,7 @@ const CommentForm = ({
         </div>
       </div>
 
-      <CustomFeerate />
+      {connectedNetwork === 'btc' && <CustomFeerate />}
 
       <button
         className='btn btn-primary btn-sm rounded-full font-medium w-[80px] flex self-center'
@@ -70,7 +74,7 @@ const CommentForm = ({
         {isReply ? 'Reply' : 'Comment'}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default CommentForm;
+export default CommentForm

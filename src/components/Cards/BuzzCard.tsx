@@ -1,56 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
-import { Heart, Link as LucideLink, MessageCircle } from 'lucide-react';
-import { Send } from 'lucide-react';
-import { isEmpty, isNil } from 'ramda';
-import cls from 'classnames';
+import { Heart, Link as LucideLink, MessageCircle } from 'lucide-react'
+import { Send } from 'lucide-react'
+import { isEmpty, isNil } from 'ramda'
+import cls from 'classnames'
 import {
   useMutation,
   useQueries,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
+} from '@tanstack/react-query'
 import {
-  btcConnectorAtom,
   connectedAtom,
+  connectedNetworkAtom,
+  connectorAtom,
   globalFeeRateAtom,
   myFollowingListAtom,
   userInfoAtom,
-} from '../../store/user';
-import { useAtom, useAtomValue } from 'jotai';
-import CustomAvatar from '../Public/CustomAvatar';
+} from '../../store/user'
+import { useAtom, useAtomValue } from 'jotai'
+import CustomAvatar from '../Public/CustomAvatar'
 // import { sleep } from '../../utils/time';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import {
   fetchCurrentBuzzComments,
   fetchCurrentBuzzLikes,
   fetchFollowDetailPin,
   fetchFollowingList,
   getPinDetailByPid,
-} from '../../api/buzz';
+} from '../../api/buzz'
 import {
   checkMetaletConnected,
   checkMetaletInstalled,
   checkUserNameExisted,
-} from '../../utils/wallet';
-import { environment } from '../../utils/environments';
-import FollowButton from '../Buttons/FollowButton';
-import { Pin } from '../../api/request';
-import { useNavigate } from 'react-router-dom';
-import ProfileCard from './ProfileCard';
-import ForwardBuzzCard from './ForwardBuzzCard';
-import { fetchTranlateResult, ResultArray } from '../../api/baidu-translate';
-import { useState } from 'react';
-import dayjs from '../../utils/dayjsConfig';
-import CommentModal from '../Modals/CommentModal';
-import RepostModal from '../Modals/RepostModal';
+} from '../../utils/wallet'
+import { environment } from '../../utils/environments'
+import FollowButton from '../Buttons/FollowButton'
+import { Pin } from '../../api/request'
+import { useNavigate } from 'react-router-dom'
+import ProfileCard from './ProfileCard'
+import ForwardBuzzCard from './ForwardBuzzCard'
+import { fetchTranlateResult, ResultArray } from '../../api/baidu-translate'
+import { useState } from 'react'
+import dayjs from '../../utils/dayjsConfig'
+import CommentModal from '../Modals/CommentModal'
+import RepostModal from '../Modals/RepostModal'
+import { toBrowser } from '../../utils/link'
+import classNames from 'classnames'
+import { IBtcEntity, IMvcEntity } from '@metaid/metaid'
 
 type IProps = {
-  buzzItem: Pin | undefined;
-  onBuzzDetail?: (txid: string) => void;
-  innerRef?: React.Ref<HTMLDivElement>;
-  showFollowButton?: boolean;
-};
+  buzzItem: Pin | undefined
+  onBuzzDetail?: (txid: string) => void
+  innerRef?: React.Ref<HTMLDivElement>
+  showFollowButton?: boolean
+}
 
 const BuzzCard = ({
   buzzItem,
@@ -58,48 +62,47 @@ const BuzzCard = ({
   innerRef,
   showFollowButton = true,
 }: IProps) => {
-  const [showTranslateResult, setShowTranslateResult] = useState(false);
-  const [translateResult, setTranslateResult] = useState<ResultArray>([]);
-  const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom);
-  const connected = useAtomValue(connectedAtom);
-  const btcConnector = useAtomValue(btcConnectorAtom);
-  const globalFeeRate = useAtomValue(globalFeeRateAtom);
-  const userInfo = useAtomValue(userInfoAtom);
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const [showTranslateResult, setShowTranslateResult] = useState(false)
+  const [translateResult, setTranslateResult] = useState<ResultArray>([])
+  const [myFollowingList, setMyFollowingList] = useAtom(myFollowingListAtom)
+  const connected = useAtomValue(connectedAtom)
+  const connectedNetwork = useAtomValue(connectedNetworkAtom)
+  const connector = useAtomValue(connectorAtom)
+  const globalFeeRate = useAtomValue(globalFeeRateAtom)
+  const userInfo = useAtomValue(userInfoAtom)
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
-  // console.log('buzzitem', buzzItem);
-  const isFromBtc = buzzItem?.chainName === 'btc';
-  let summary = buzzItem!.contentSummary;
-  const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
+  let summary = buzzItem!.contentSummary
+  const isSummaryJson = summary.startsWith('{') && summary.endsWith('}')
   // console.log("isjson", isSummaryJson);
   // console.log("summary", summary);
-  const parseSummary = isSummaryJson ? JSON.parse(summary) : {};
+  const parseSummary = isSummaryJson ? JSON.parse(summary) : {}
 
-  summary = isSummaryJson ? parseSummary.content : summary;
+  summary = isSummaryJson ? parseSummary.content : summary
 
   const translateMutate = useMutation({
     mutationKey: ['transDetail', buzzItem?.id],
     mutationFn: (summary: string) =>
       fetchTranlateResult({ sourceText: summary }),
-  });
+  })
 
   const attachPids =
-    isSummaryJson && !isEmpty(parseSummary?.attachments ?? []) && isFromBtc
+    isSummaryJson && !isEmpty(parseSummary?.attachments ?? [])
       ? (parseSummary?.attachments ?? []).map(
-          (d: string) => d.split('metafile://')[1]
+          (d: string) => d.split('metafile://')[1],
         )
-      : [];
+      : []
 
   const quotePinId =
     isSummaryJson && !isEmpty(parseSummary?.quotePin ?? '')
       ? parseSummary.quotePin
-      : '';
+      : ''
   const { isLoading: isQuoteLoading, data: quoteDetailData } = useQuery({
     enabled: !isEmpty(quotePinId),
     queryKey: ['buzzDetail', quotePinId],
     queryFn: () => getPinDetailByPid({ pid: quotePinId }),
-  });
+  })
 
   // const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
   // console.log("current address", buzzItem!.address);
@@ -110,62 +113,62 @@ const BuzzCard = ({
       fetchCurrentBuzzLikes({
         pinId: buzzItem!.id,
       }),
-  });
+  })
 
   const commentData = useQuery({
     enabled: !isNil(buzzItem?.id),
     queryKey: ['comment-detail', buzzItem!.id],
     queryFn: () => fetchCurrentBuzzComments({ pinId: buzzItem!.id }),
-  });
+  })
 
   const isLikeByCurrentUser = (currentLikeData ?? [])?.find(
-    (d) => d?.pinAddress === btcConnector?.address
-  );
+    (d) => d?.pinAddress === connector?.address,
+  )
 
   const currentUserInfoData = useQuery({
     queryKey: ['userInfo', buzzItem!.address, environment.network],
     queryFn: () =>
-      btcConnector?.getUser({
+      connector?.getUser({
         network: environment.network,
         currentAddress: buzzItem!.address,
       }),
-  });
-  const metaid = currentUserInfoData?.data?.metaid;
+  })
+  const metaid = currentUserInfoData?.data?.metaid
 
   const attachData = useQueries({
     queries: attachPids.map((id: string) => {
       return {
         queryKey: ['post', id],
         queryFn: () => getPinDetailByPid({ pid: id }),
-      };
+      }
     }),
     combine: (results: any) => {
       return {
         data: results.map((result: any) => result.data),
         pending: results.some((result: any) => result.isPending),
-      };
+      }
     },
-  });
+  })
 
   const { data: myFollowingListData } = useQuery({
-    queryKey: ['myFollowing', btcConnector?.metaid],
-    enabled: !isEmpty(btcConnector?.metaid ?? ''),
+    queryKey: ['myFollowing', connector?.metaid],
+    enabled: !isEmpty(connector?.metaid ?? ''),
     queryFn: () =>
       fetchFollowingList({
-        metaid: btcConnector?.metaid ?? '',
+        metaid: connector?.metaid ?? '',
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const { data: followDetailData } = useQuery({
-    queryKey: ['followDetail', btcConnector?.metaid, metaid],
-    enabled: !isEmpty(btcConnector?.metaid ?? '') && !isEmpty(metaid),
+    queryKey: ['followDetail', connector?.metaid, metaid],
+    enabled: !isEmpty(connector?.metaid ?? '') && !isEmpty(metaid),
     queryFn: () =>
       fetchFollowDetailPin({
         metaId: metaid ?? '',
-        followerMetaId: btcConnector?.metaid ?? '',
+        followerMetaId: connector?.metaid ?? '',
       }),
-  });
+  })
 
   const renderImages = (pinIds: string[]) => {
     if (pinIds.length === 1) {
@@ -173,7 +176,7 @@ const BuzzCard = ({
         <>
           <img
             onClick={() => {
-              handleImagePreview(pinIds[0]);
+              handleImagePreview(pinIds[0])
             }}
             className='image h-[60%] w-[60%] !rounded-md'
             style={{
@@ -213,7 +216,7 @@ const BuzzCard = ({
             </form>
           </dialog>
         </>
-      );
+      )
     }
     return (
       <>
@@ -224,7 +227,7 @@ const BuzzCard = ({
                 <img
                   className='image !rounded-md self-center'
                   onClick={() => {
-                    handleImagePreview(pinId);
+                    handleImagePreview(pinId)
                   }}
                   style={{
                     objectFit: 'cover',
@@ -265,24 +268,24 @@ const BuzzCard = ({
                   </form>
                 </dialog>
               </div>
-            );
+            )
           })}
         </div>
       </>
-    );
-  };
+    )
+  }
 
   const handleImagePreview = (pinId: string) => {
     const preview_modal = document.getElementById(
-      `preview_modal_${pinId}`
-    ) as HTMLDialogElement;
-    preview_modal.showModal();
-  };
+      `preview_modal_${pinId}`,
+    ) as HTMLDialogElement
+    preview_modal.showModal()
+  }
 
   const detectUrl = (summary: string) => {
-    const urlReg = /(https?:\/\/[^\s]+)/g;
+    const urlReg = /(https?:\/\/[^\s]+)/g
 
-    const urls = summary.match(urlReg);
+    const urls = summary.match(urlReg)
 
     if (urls) {
       urls.forEach(function (url) {
@@ -295,13 +298,13 @@ const BuzzCard = ({
         // );
         summary = summary.replace(
           url,
-          `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`
-        );
-      });
+          `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`,
+        )
+      })
     }
 
-    return summary;
-  };
+    return summary
+  }
 
   const handleSpecial = (summary: string) => {
     summary = summary
@@ -311,9 +314,9 @@ const BuzzCard = ({
       .replace('<encryption>', 'encryption')
       .replace('<version>', 'version')
       .replace('<content-type>', 'content-type')
-      .replace('<payload>', 'payload');
-    return summary;
-  };
+      .replace('<payload>', 'payload')
+    return summary
+  }
 
   const renderTranslteResults = (results: ResultArray) => {
     return (
@@ -326,8 +329,8 @@ const BuzzCard = ({
           </span>
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   const renderBasicSummary = (summary: string) => {
     return (
@@ -342,8 +345,8 @@ const BuzzCard = ({
           </span>
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   const renderSummary = (summary: string, showDetail: boolean) => {
     return (
@@ -363,67 +366,98 @@ const BuzzCard = ({
           renderBasicSummary(summary)
         )}
       </>
-    );
-  };
+    )
+  }
 
   const handleLike = async (pinId: string) => {
-    await checkMetaletInstalled();
-    await checkMetaletConnected(connected);
+    await checkMetaletInstalled()
+    await checkMetaletConnected(connected)
 
     if (isLikeByCurrentUser) {
       toast.error('You have already liked that buzz...', {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
-      return;
+      })
+      return
     }
 
-    const likeEntity = await btcConnector!.use('like');
     try {
-      const likeRes = await likeEntity.create({
-        dataArray: [
-          {
-            body: JSON.stringify({ isLike: '1', likeTo: pinId }),
-            flag: environment.flag,
-            contentType: 'text/plain;utf-8',
+      if (connectedNetwork === 'btc') {
+        const likeEntity = (await connector!.use('like')) as IBtcEntity
+        console.log('likeEntity', likeEntity)
+        const likeRes = await likeEntity.create({
+          dataArray: [
+            {
+              body: JSON.stringify({
+                isLike: '1',
+                likeTo: pinId,
+              }),
+              flag: environment.flag,
+              contentType: 'text/plain;utf-8',
+            },
+          ],
+          options: {
+            noBroadcast: 'no',
+            feeRate: Number(globalFeeRate),
+            service: {
+              address: environment.service_address,
+              satoshis: environment.service_satoshi,
+            },
+            // network: environment.network,
           },
-        ],
-        options: {
-          noBroadcast: 'no',
-          feeRate: Number(globalFeeRate),
-          service: {
-            address: environment.service_address,
-            satoshis: environment.service_staoshi,
+        })
+        console.log('likeRes', likeRes)
+        if (!isNil(likeRes?.revealTxIds[0])) {
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+          queryClient.invalidateQueries({
+            queryKey: ['payLike', buzzItem!.id],
+          })
+          // await sleep(5000);
+          toast.success('like buzz successfully')
+        }
+      } else if (connectedNetwork === 'mvc') {
+        const likeEntity = (await connector!.use('like')) as IMvcEntity
+        const likeRes = await likeEntity.create({
+          data: {
+            body: JSON.stringify({
+              isLike: '1',
+              likeTo: pinId,
+            }),
           },
-          // network: environment.network,
-        },
-      });
-      console.log('likeRes', likeRes);
-      if (!isNil(likeRes?.revealTxIds[0])) {
-        queryClient.invalidateQueries({ queryKey: ['buzzes'] });
-        queryClient.invalidateQueries({ queryKey: ['payLike', buzzItem!.id] });
-        // await sleep(5000);
-        toast.success('like buzz successfully');
+          options: {
+            network: environment.network,
+            signMessage: 'like buzz',
+          },
+        })
+        console.log('likeRes', likeRes)
+        if (!isNil(likeRes?.txid)) {
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+          queryClient.invalidateQueries({
+            queryKey: ['payLike', buzzItem!.id],
+          })
+          // await sleep(5000);
+          toast.success('like buzz successfully')
+        }
       }
     } catch (error) {
-      console.log('error', error);
-      const errorMessage = (error as any)?.message ?? error;
+      console.log('error', error)
+      const errorMessage = (error as any)?.message ?? error
       const toastMessage = errorMessage?.includes(
-        'Cannot read properties of undefined'
+        'Cannot read properties of undefined',
       )
         ? 'User Canceled'
-        : errorMessage;
+        : errorMessage
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error(toastMessage, {
         className:
           '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-      });
+      })
     }
-  };
+  }
 
   const handleFollow = async () => {
-    await checkMetaletInstalled();
-    await checkMetaletConnected(connected);
+    await checkMetaletInstalled()
+    await checkMetaletConnected(connected)
 
     // const doc_modal = document.getElementById(
     //   'confirm_follow_modal'
@@ -435,7 +469,7 @@ const BuzzCard = ({
       (myFollowingListData?.list ?? []).includes(metaid)
     ) {
       try {
-        const unfollowRes = await btcConnector!.inscribe({
+        const unfollowRes = await connector!.inscribe({
           inscribeDataArray: [
             {
               operation: 'revoke',
@@ -449,38 +483,38 @@ const BuzzCard = ({
             feeRate: Number(globalFeeRate),
             service: {
               address: environment.service_address,
-              satoshis: environment.service_staoshi,
+              satoshis: environment.service_satoshi,
             },
             // network: environment.network,
           },
-        });
+        })
         if (!isNil(unfollowRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
           setMyFollowingList((d) => {
-            return d.filter((i) => i !== metaid);
-          });
+            return d.filter((i) => i !== metaid)
+          })
           // await sleep(5000);
           toast.success(
-            'Unfollowing successfully!Please wait for the transaction to be confirmed.'
-          );
+            'Unfollowing successfully!Please wait for the transaction to be confirmed.',
+          )
         }
       } catch (error) {
-        console.log('error', error);
-        const errorMessage = (error as any)?.message ?? error;
+        console.log('error', error)
+        const errorMessage = (error as any)?.message ?? error
         const toastMessage = errorMessage?.includes(
-          'Cannot read properties of undefined'
+          'Cannot read properties of undefined',
         )
           ? 'User Canceled'
-          : errorMessage;
+          : errorMessage
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         toast.error(toastMessage, {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-        });
+        })
       }
     } else {
       try {
-        const followRes = await btcConnector!.inscribe({
+        const followRes = await connector!.inscribe({
           inscribeDataArray: [
             {
               operation: 'create',
@@ -496,44 +530,44 @@ const BuzzCard = ({
             feeRate: Number(globalFeeRate),
             service: {
               address: environment.service_address,
-              satoshis: environment.service_staoshi,
+              satoshis: environment.service_satoshi,
             },
             // network: environment.network,
           },
-        });
+        })
         if (!isNil(followRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] });
+          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
           setMyFollowingList((d: string[]) => {
-            return [...d, metaid!];
-          });
+            return [...d, metaid!]
+          })
           // queryClient.invalidateQueries({
           //   queryKey: ['payLike', buzzItem!.id],
           // });
           // await sleep(5000);
           toast.success(
-            'Follow successfully! Please wait for the transaction to be confirmed!'
-          );
+            'Follow successfully! Please wait for the transaction to be confirmed!',
+          )
         }
       } catch (error) {
-        console.log('error', error);
-        const errorMessage = (error as any)?.message ?? error;
+        console.log('error', error)
+        const errorMessage = (error as any)?.message ?? error
         const toastMessage = errorMessage?.includes(
-          'Cannot read properties of undefined'
+          'Cannot read properties of undefined',
         )
           ? 'User Canceled'
-          : errorMessage;
+          : errorMessage
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         toast.error(toastMessage, {
           className:
             '!text-[#DE613F] !bg-[black] border border-[#DE613f] !rounded-lg',
-        });
+        })
       }
     }
-  };
+  }
 
   const onProfileDetail = (address: string) => {
-    navigate(`/profile/${address}`);
-  };
+    navigate(`/profile/${address}`)
+  }
 
   // console.log(
   //   currentUserInfoData.data?.name,
@@ -544,22 +578,22 @@ const BuzzCard = ({
 
   const handleTranslate = async () => {
     if (isEmpty(translateResult)) {
-      const res = await translateMutate.mutateAsync(summary);
-      setTranslateResult(res?.trans_result ?? []);
+      const res = await translateMutate.mutateAsync(summary)
+      setTranslateResult(res?.trans_result ?? [])
     }
-    setShowTranslateResult(!showTranslateResult);
-  };
+    setShowTranslateResult(!showTranslateResult)
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
-    return <div>can't fetch this buzz</div>;
+    return <div>can't fetch this buzz</div>
   }
 
   return (
     <>
       <div
         className={cls(
-          'w-full border border-white rounded-xl flex flex-col gap-4'
+          'w-full border border-white rounded-xl flex flex-col gap-4',
         )}
         ref={innerRef}
       >
@@ -600,7 +634,7 @@ const BuzzCard = ({
             </div>
           </div>
 
-          {btcConnector?.metaid !== metaid && showFollowButton && (
+          {connector?.metaid !== metaid && showFollowButton && (
             <FollowButton
               isFollowed={(myFollowingListData?.list ?? []).includes(metaid)}
               isFollowingPending={
@@ -633,8 +667,8 @@ const BuzzCard = ({
               ) : (
                 <div
                   onClick={async (e) => {
-                    e.stopPropagation();
-                    handleTranslate();
+                    e.stopPropagation()
+                    handleTranslate()
                   }}
                 >
                   {showTranslateResult ? 'show original content' : 'translate'}
@@ -645,13 +679,13 @@ const BuzzCard = ({
           <div>
             {!attachData.pending &&
               !isEmpty(
-                (attachData?.data ?? []).filter((d: any) => !isNil(d))
+                (attachData?.data ?? []).filter((d: any) => !isNil(d)),
               ) &&
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               renderImages(attachPids)}
           </div>
           {!isEmpty(quotePinId) && (
-            <div className='mb-8'>
+            <div className='mb-8 mt-4'>
               {isQuoteLoading ? (
                 <div className='flex items-center gap-2 justify-center text-gray h-[150px]'>
                   <div>Loading repost content...</div>
@@ -666,18 +700,27 @@ const BuzzCard = ({
           <div className='flex justify-between text-gray mt-2'>
             <div
               className='flex gap-2 items-center hover:text-slate-300 md:text-md text-xs'
-              onClick={() => {
-                window.open(
-                  `https://mempool.space/${
-                    environment.network === 'mainnet' ? '' : 'testnet/'
-                  }tx/${buzzItem.genesisTransaction}`,
-                  '_blank'
-                );
-              }}
+              onClick={() =>
+                toBrowser(buzzItem.genesisTransaction, buzzItem?.chainName)
+              }
             >
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
+
+              {!!buzzItem.chainName && (
+                <span
+                  className={classNames(
+                    'text-sm px-2 py-px rounded uppercase',
+                    buzzItem.chainName === 'mvc'
+                      ? 'bg-sky-950 text-sky-400'
+                      : 'bg-main/10 text-main',
+                  )}
+                >
+                  {buzzItem.chainName}
+                </span>
+              )}
             </div>
+
             <div className='flex gap-2 md:text-md text-xs items-center'>
               {buzzItem?.number === -1 && (
                 <div
@@ -704,7 +747,7 @@ const BuzzCard = ({
               <Heart
                 className={cls(
                   { 'text-[red]': isLikeByCurrentUser },
-                  'cursor-pointer'
+                  'cursor-pointer',
                 )}
                 fill={isLikeByCurrentUser && 'red'}
                 onClick={() => handleLike(buzzItem!.id)}
@@ -714,26 +757,24 @@ const BuzzCard = ({
             <div className='flex gap-1 items-center cursor-pointer'>
               <Send
                 onClick={async () => {
-                  await checkMetaletInstalled();
-                  await checkMetaletConnected(connected);
-                  await checkUserNameExisted(userInfo?.name ?? '');
-
-                  (document.getElementById(
-                    'repost_buzz_modal_' + buzzItem.id
-                  ) as HTMLDialogElement)!.showModal();
+                  await checkMetaletInstalled()
+                  await checkMetaletConnected(connected)
+                  await checkUserNameExisted(userInfo?.name ?? '')
+                  ;(document.getElementById(
+                    'repost_buzz_modal_' + buzzItem.id,
+                  ) as HTMLDialogElement)!.showModal()
                 }}
               />
             </div>
             <div className='flex gap-1 items-center cursor-pointer'>
               <MessageCircle
                 onClick={async () => {
-                  await checkMetaletInstalled();
-                  await checkMetaletConnected(connected);
-                  await checkUserNameExisted(userInfo?.name ?? '');
-
-                  (document.getElementById(
-                    'comment_buzz_modal_' + buzzItem.id
-                  ) as HTMLDialogElement)!.showModal();
+                  await checkMetaletInstalled()
+                  await checkMetaletConnected(connected)
+                  await checkUserNameExisted(userInfo?.name ?? '')
+                  ;(document.getElementById(
+                    'comment_buzz_modal_' + buzzItem.id,
+                  ) as HTMLDialogElement)!.showModal()
                 }}
               />
               {!isNil(commentData?.data) ? commentData?.data.length : null}
@@ -743,15 +784,15 @@ const BuzzCard = ({
         </div>
       </div>
 
-      <RepostModal quotePin={buzzItem} btcConnector={btcConnector!} />
+      <RepostModal quotePin={buzzItem} connector={connector} />
 
       <CommentModal
         commentPin={buzzItem}
         commentToUser={currentUserInfoData?.data}
-        btcConnector={btcConnector!}
+        connector={connector!}
       />
     </>
-  );
-};
+  )
+}
 
-export default BuzzCard;
+export default BuzzCard
