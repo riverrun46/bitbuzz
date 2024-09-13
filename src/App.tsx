@@ -7,12 +7,20 @@ import { ToastContainer, toast } from 'react-toastify'
 import './globals.css'
 import './react-toastify.css'
 // import "react-toastify/dist/ReactToastify.css";
-import { MetaletWalletForBtc, MetaletWalletForMvc, btcConnect } from '@metaid/metaid'
+import {
+  MetaletWalletForBtc,
+  MetaletWalletForMvc,
+  btcConnect,
+  mvcConnect,
+} from '@metaid/metaid'
 
 import { useAtom, useSetAtom } from 'jotai'
 import {
   btcConnectorAtom,
   connectedAtom,
+  connectedNetworkAtom,
+  connectorAtom,
+  mvcConnectorAtom,
   myFollowingListAtom,
   userInfoAtom,
   walletAtom,
@@ -38,8 +46,11 @@ function App() {
   const ref = useRef<null | HTMLDivElement>(null)
 
   const [connected, setConnected] = useAtom(connectedAtom)
+  const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
   const setWallet = useSetAtom(walletAtom)
   const [btcConnector, setBtcConnector] = useAtom(btcConnectorAtom)
+  const [mvcConnector, setMvcConnector] = useAtom(mvcConnectorAtom)
+  const [connector, setConnector] = useAtom(connectorAtom)
   const setUserInfo = useSetAtom(userInfoAtom)
   const [walletParams, setWalletParams] = useAtom(walletRestoreParamsAtom)
   const setMyFollowingList = useSetAtom(myFollowingListAtom)
@@ -57,6 +68,9 @@ function App() {
   const onLogout = () => {
     setConnected(false)
     setBtcConnector(null)
+    setMvcConnector(null)
+    setConnector(null)
+    setConnectedNetwork('btc')
     setBuzzEntity(null)
     setUserInfo(null)
     setWalletParams(undefined)
@@ -90,6 +104,8 @@ function App() {
     })
 
     setBtcConnector(_btcConnector)
+    setConnector(_btcConnector)
+    setConnectedNetwork('btc')
 
     const myFollowingListData = await mutateMyFollowing.mutateAsync(
       _btcConnector?.metaid ?? '',
@@ -110,6 +126,9 @@ function App() {
     setConnected(true)
     setBuzzEntity(await _btcConnector.use('buzz'))
     console.log('your btc address: ', _btcConnector.address)
+
+    const closeBtn = document.getElementById('closeConnectModalBtn')
+    closeBtn?.click()
   }
 
   const onWalletConnectMVCStart = async () => {
@@ -133,32 +152,35 @@ function App() {
 
     //////////////////////////
 
-    const _btcConnector = await btcConnect({
+    const _connector = await mvcConnect({
       network: environment.network,
+      // @ts-ignore
       wallet: _wallet,
     })
+    console.log('mvc connector', _connector)
 
-    setBtcConnector(_btcConnector)
+    setMvcConnector(_connector)
+    setConnector(_connector)
+    setConnectedNetwork('mvc')
 
     const myFollowingListData = await mutateMyFollowing.mutateAsync(
-      _btcConnector?.metaid ?? '',
+      _connector?.metaid ?? '',
     )
     setMyFollowingList(myFollowingListData?.list ?? [])
-    // const doc_modal = document.getElementById(
-    //   'create_metaid_modal'
-    // ) as HTMLDialogElement;
-    // doc_modal.showModal();
-    // console.log("getUser", await _btcConnector.getUser());
 
-    const resUser = await _btcConnector.getUser({
+    const resUser = await _connector.getUser({
       network: environment.network,
     })
     console.log('user now', resUser)
 
     setUserInfo(resUser)
     setConnected(true)
-    setBuzzEntity(await _btcConnector.use('buzz'))
-    console.log('your btc address: ', _btcConnector.address)
+    const _buzzEntity = await _connector.use('buzz')
+    setBuzzEntity(_buzzEntity)
+    console.log('your mvc address: ', _connector.address)
+
+    const closeBtn = document.getElementById('closeConnectModalBtn')
+    closeBtn?.click()
   }
 
   const getBuzzEntity = async () => {
@@ -246,7 +268,7 @@ function App() {
           onWalletConnectStart={onWalletConnectStart}
           onWalletConnectMVCStart={onWalletConnectMVCStart}
           onLogout={onLogout}
-          btcConnector={btcConnector!}
+          connector={connector!}
         />
       </div>
 

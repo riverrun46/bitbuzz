@@ -1,42 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { FileEdit } from "lucide-react";
-import { Image } from 'lucide-react';
-import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form';
-import cls from 'classnames';
-import { IsEncrypt, mergeFileLists } from '../../utils/file';
-import { isNil } from 'ramda';
-import { Pin } from '../../api/request';
-import ForwardBuzzCard from '../Cards/ForwardBuzzCard';
-import CustomFeerate from '../Public/CustomFeerate';
+import { Image } from 'lucide-react'
+import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
+import cls from 'classnames'
+import { IsEncrypt, mergeFileLists } from '../../utils/file'
+import { isNil } from 'ramda'
+import { Pin } from '../../api/request'
+import ForwardBuzzCard from '../Cards/ForwardBuzzCard'
+import CustomFeerate from '../Public/CustomFeerate'
+import { useAtom } from 'jotai'
+import { connectedNetworkAtom } from '../../store/user'
 
 export interface AttachmentItem {
-  fileName: string;
-  fileType: string;
-  data: string;
-  encrypt: IsEncrypt;
-  sha256: string;
-  size: number;
-  url: string;
+  fileName: string
+  fileType: string
+  data: string
+  encrypt: IsEncrypt
+  sha256: string
+  size: number
+  url: string
 }
 
 type IProps = {
   // onSubmit: (buzz: { content: string; images: AttachmentItem[] }) => void;
-  onCreateSubmit: SubmitHandler<BuzzData>;
-  buzzFormHandle: UseFormReturn<BuzzData, any, BuzzData>;
-  onClearImageUploads: () => void;
-  filesPreview: string[];
-  handleRemoveImage: (index: number) => void;
-  quotePin?: Pin;
-};
+  onCreateSubmit: SubmitHandler<BuzzData>
+  buzzFormHandle: UseFormReturn<BuzzData, any, BuzzData>
+  onClearImageUploads: () => void
+  filesPreview: string[]
+  handleRemoveImage: (index: number) => void
+  quotePin?: Pin
+}
 
 export type BuzzData = {
-  content: string;
-  images: FileList;
-};
+  content: string
+  images: FileList
+}
 
 const renderImages = (
   data: string[],
-  handleRemoveImage: (index: number) => void
+  handleRemoveImage: (index: number) => void,
 ) => {
   return (
     <div className='grid grid-cols-3 gap-2 place-items-center'>
@@ -58,11 +60,11 @@ const renderImages = (
               key={image}
             />
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 const BuzzForm = ({
   onCreateSubmit,
@@ -77,8 +79,10 @@ const BuzzForm = ({
     handleSubmit,
     formState: { errors },
     getValues,
-  } = buzzFormHandle;
-  const isQuoted = !isNil(quotePin);
+  } = buzzFormHandle
+  const isQuoted = !isNil(quotePin)
+
+  const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
 
   return (
     <form
@@ -101,7 +105,7 @@ const BuzzForm = ({
               'textarea textarea-bordered focus:outline-none border-none  text-white bg-[black] textarea-sm h-[160px] w-full ',
               {
                 'textarea-error': errors.content,
-              }
+              },
             )}
             {...register('content', { required: !isQuoted })}
           />
@@ -128,7 +132,7 @@ const BuzzForm = ({
           )}
           <div
             onClick={() => {
-              document.getElementById('addImage')!.click();
+              document.getElementById('addImage')!.click()
             }}
             className='btn btn-xs btn-outline font-normal text-white '
           >
@@ -148,27 +152,24 @@ const BuzzForm = ({
               className='hidden'
               {...register('images')}
               onChange={(e) => {
-                const files = e.target.files;
-                console.log(e.target.files![0].type, 'file----type');
+                const files = e.target.files
+                console.log(e.target.files![0].type, 'file----type')
                 if (!isNil(files) && files.length > 0) {
                   for (const item of Array.from(files ?? [])) {
                     if (item.size > 200 * 1024) {
                       alert(
-                        `File size cannot be greater than 200kb (filename: ${item.name})`
-                      );
-                      e.target.value = ''; // clear file input value
-                      return;
+                        `File size cannot be greater than 200kb (filename: ${item.name})`,
+                      )
+                      e.target.value = '' // clear file input value
+                      return
                     }
                   }
                   if (getValues('images').length > 0) {
-                    const mergeRes = mergeFileLists(
-                      getValues('images'),
-                      files!
-                    );
+                    const mergeRes = mergeFileLists(getValues('images'), files!)
 
-                    onChange(mergeRes);
+                    onChange(mergeRes)
                   } else {
-                    onChange(files);
+                    onChange(files)
                   }
                 }
               }}
@@ -193,7 +194,7 @@ const BuzzForm = ({
 				</div>
 			</div> */}
 
-      <CustomFeerate />
+      {connectedNetwork === 'btc' && <CustomFeerate />}
 
       <button
         className='btn btn-primary btn-sm rounded-full font-medium w-[80px] flex self-center'
@@ -202,7 +203,7 @@ const BuzzForm = ({
         {isQuoted ? 'Repost' : 'Post'}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default BuzzForm;
+export default BuzzForm

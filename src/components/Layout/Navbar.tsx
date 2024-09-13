@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import {
   connectedAtom,
+  connectedNetworkAtom,
   globalFeeRateAtom,
   userInfoAtom,
 } from '../../store/user'
@@ -15,22 +16,29 @@ import {
 } from '../../utils/wallet'
 import CustomAvatar from '../Public/CustomAvatar'
 
-import { IBtcConnector } from '@metaid/metaid'
+import { IBtcConnector, IMvcConnector } from '@metaid/metaid'
 import AboutModal from '../Modals/AboutModal'
 import NavabarMobileMenu from './NavabarMobileMenu'
 import NewBuzzModal from '../Modals/NewBuzzModal'
+import classNames from 'classnames'
 
 type IProps = {
   onWalletConnectStart: () => Promise<void>
   onWalletConnectMVCStart: () => Promise<void>
   onLogout: () => void
-  btcConnector: IBtcConnector
+  connector: IBtcConnector | IMvcConnector
 }
 
-const Navbar = ({ onWalletConnectStart, onWalletConnectMVCStart, onLogout, btcConnector }: IProps) => {
+const Navbar = ({
+  onWalletConnectStart,
+  onWalletConnectMVCStart,
+  onLogout,
+  connector,
+}: IProps) => {
   const [globalFeeRate, setGlobalFeeRate] = useAtom(globalFeeRateAtom)
 
   const connected = useAtomValue(connectedAtom)
+  const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
   const userInfo = useAtomValue(userInfoAtom)
 
   const onBuzzStart = async () => {
@@ -85,28 +93,33 @@ const Navbar = ({ onWalletConnectStart, onWalletConnectMVCStart, onLogout, btcCo
               <div className='border-r border border-[#1D2F2F]/50 mr-2'></div>
             </div>
 
-            <img
-              src='/charging-pile.png'
-              className='w-[30px] h-[35px] hidden md:block'
-            />
-            <input
-              inputMode='numeric'
-              type='number'
-              min={0}
-              max={'100000'}
-              style={{
-                appearance: 'textfield',
-              }}
-              aria-hidden
-              className='w-[65px] h-[32px] input input-xs  bg-[black]  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none  hidden md:block'
-              step={1}
-              value={globalFeeRate}
-              onChange={(e) => {
-                const v = e.currentTarget.value
-                setGlobalFeeRate(v)
-              }}
-            />
-            <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
+            {/* feeb select */}
+            {connectedNetwork === 'btc' && (
+              <div className='inline-flex items-center gap-2'>
+                <img
+                  src='/charging-pile.png'
+                  className='w-[30px] h-[35px] hidden md:block'
+                />
+                <input
+                  inputMode='numeric'
+                  type='number'
+                  min={0}
+                  max={'100000'}
+                  style={{
+                    appearance: 'textfield',
+                  }}
+                  aria-hidden
+                  className='w-[65px] h-[32px] input input-xs  bg-[black]  shadow-inner !pr-0 border-none focus:border-main text-main focus:outline-none  hidden md:block'
+                  step={1}
+                  value={globalFeeRate}
+                  onChange={(e) => {
+                    const v = e.currentTarget.value
+                    setGlobalFeeRate(v)
+                  }}
+                />
+                <div className='text-[#1D2F2F] hidden md:block'>sat/vB</div>
+              </div>
+            )}
 
             <PencilLine
               className='border rounded-full text-main bg-[black] p-2 cursor-pointer ml-2 w-9 h-9 md:w-12 md:h-12'
@@ -123,12 +136,23 @@ const Navbar = ({ onWalletConnectStart, onWalletConnectMVCStart, onLogout, btcCo
                 >
                   <CustomAvatar userInfo={userInfo!} size='36px' />
                 </div>
+
                 <div
                   tabIndex={0}
                   role='button'
-                  className='cursor-pointer md:block hidden'
+                  className='cursor-pointer md:block hidden relative'
                 >
                   <CustomAvatar userInfo={userInfo!} />
+                  <span
+                    className={classNames(
+                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 text-white px-2 text-xs rounded leading-none py-1',
+                      connectedNetwork === 'btc'
+                        ? 'bg-orange-500'
+                        : 'bg-sky-500',
+                    )}
+                  >
+                    {connectedNetwork}
+                  </span>
                 </div>
                 <ul
                   tabIndex={0}
@@ -214,11 +238,15 @@ const Navbar = ({ onWalletConnectStart, onWalletConnectMVCStart, onLogout, btcCo
                   </div>
                 </div>
               </div>
+
+              <form method='dialog' className='modal-backdrop'>
+                <button id='closeConnectModalBtn'>close</button>
+              </form>
             </dialog>
           </div>
         </div>
       </div>
-      <NewBuzzModal btcConnector={btcConnector} />
+      <NewBuzzModal connector={connector} />
     </>
   )
 }
