@@ -1,43 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import FollowButton from "../Buttons/FollowButton";
-import { Link as LucideLink } from 'lucide-react';
-import { isEmpty, isNil } from 'ramda';
-import cls from 'classnames';
-import dayjs from 'dayjs';
-import { useQueries, useQuery } from '@tanstack/react-query';
-import { btcConnectorAtom } from '../../store/user';
-import { useAtomValue } from 'jotai';
-import CustomAvatar from '../Public/CustomAvatar';
+import { Link as LucideLink } from 'lucide-react'
+import { isEmpty, isNil } from 'ramda'
+import cls from 'classnames'
+import dayjs from 'dayjs'
+import { useQueries, useQuery } from '@tanstack/react-query'
+import { connectorAtom } from '../../store/user'
+import { useAtomValue } from 'jotai'
+import CustomAvatar from '../Public/CustomAvatar'
 // import { sleep } from '../../utils/time';
-import { getPinDetailByPid } from '../../api/buzz';
-import { environment } from '../../utils/environments';
-import { Pin } from '../../api/request';
-import ProfileCard from './ProfileCard';
-import { toBrowser } from '../../utils/link';
+import { getPinDetailByPid } from '../../api/buzz'
+import { environment } from '../../utils/environments'
+import { Pin } from '../../api/request'
+import ProfileCard from './ProfileCard'
+import { toBrowser } from '../../utils/link'
 
 type IProps = {
-  buzzItem: Pin | undefined;
-};
+  buzzItem: Pin | undefined
+}
 
 const ForwardBuzzCard = ({ buzzItem }: IProps) => {
-  const hideActionButtons = true;
+  const hideActionButtons = true
 
-  const btcConnector = useAtomValue(btcConnectorAtom);
+  const connector = useAtomValue(connectorAtom)
 
-  let summary = buzzItem!.contentSummary;
-  const isSummaryJson = summary.startsWith('{') && summary.endsWith('}');
+  let summary = buzzItem!.contentSummary
+  const isSummaryJson = summary.startsWith('{') && summary.endsWith('}')
   // console.log("isjson", isSummaryJson);
   // console.log("summary", summary);
-  const parseSummary = isSummaryJson ? JSON.parse(summary) : {};
+  const parseSummary = isSummaryJson ? JSON.parse(summary) : {}
 
-  summary = isSummaryJson ? parseSummary.content : summary;
+  summary = isSummaryJson ? parseSummary.content : summary
 
   const attachPids =
     isSummaryJson && !isEmpty(parseSummary?.attachments ?? [])
       ? (parseSummary?.attachments ?? []).map(
-          (d: string) => d.split('metafile://')[1]
+          (d: string) => d.split('metafile://')[1],
         )
-      : [];
+      : []
 
   // const attachPids = ["6950f69d7cb83a612fc773d95500a137888f157f1d377cc69c2dd703eebd84eei0"];
   // console.log("current address", buzzItem!.address);
@@ -45,27 +45,27 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
   const currentUserInfoData = useQuery({
     queryKey: ['userInfo', buzzItem!.address, environment.network],
     queryFn: () =>
-      btcConnector?.getUser({
+      connector?.getUser({
         network: environment.network,
         currentAddress: buzzItem!.address,
       }),
-  });
-  const metaid = currentUserInfoData?.data?.metaid;
+  })
+  const metaid = currentUserInfoData?.data?.metaid
 
   const attachData = useQueries({
     queries: attachPids.map((id: string) => {
       return {
         queryKey: ['post', id],
         queryFn: () => getPinDetailByPid({ pid: id }),
-      };
+      }
     }),
     combine: (results: any) => {
       return {
         data: results.map((result: any) => result.data),
         pending: results.some((result: any) => result.isPending),
-      };
+      }
     },
-  });
+  })
 
   const renderImages = (pinIds: string[]) => {
     if (pinIds.length === 1) {
@@ -73,7 +73,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
         <>
           <img
             onClick={() => {
-              handleImagePreview(pinIds[0]);
+              handleImagePreview(pinIds[0])
             }}
             className='image h-[60%] w-[60%] !rounded-md'
             style={{
@@ -113,7 +113,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
             </form>
           </dialog>
         </>
-      );
+      )
     }
     return (
       <>
@@ -124,7 +124,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
                 <img
                   className='image !rounded-md'
                   onClick={() => {
-                    handleImagePreview(pinId);
+                    handleImagePreview(pinId)
                   }}
                   style={{
                     objectFit: 'cover',
@@ -165,24 +165,24 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
                   </form>
                 </dialog>
               </div>
-            );
+            )
           })}
         </div>
       </>
-    );
-  };
+    )
+  }
 
   const handleImagePreview = (pinId: string) => {
     const preview_modal = document.getElementById(
-      `preview_modal_${pinId}`
-    ) as HTMLDialogElement;
-    preview_modal.showModal();
-  };
+      `preview_modal_${pinId}`,
+    ) as HTMLDialogElement
+    preview_modal.showModal()
+  }
 
   const detectUrl = (summary: string) => {
-    const urlReg = /(https?:\/\/[^\s]+)/g;
+    const urlReg = /(https?:\/\/[^\s]+)/g
 
-    const urls = summary.match(urlReg);
+    const urls = summary.match(urlReg)
 
     if (urls) {
       urls.forEach(function (url) {
@@ -195,13 +195,13 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
         // );
         summary = summary.replace(
           url,
-          `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`
-        );
-      });
+          `<a href="${url}" target="_blank" style="text-decoration: underline;">${url}</a>`,
+        )
+      })
     }
 
-    return summary;
-  };
+    return summary
+  }
 
   const handleSpecial = (summary: string) => {
     summary = summary
@@ -211,9 +211,9 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
       .replace('<encryption>', 'encryption')
       .replace('<version>', 'version')
       .replace('<content-type>', 'content-type')
-      .replace('<payload>', 'payload');
-    return summary;
-  };
+      .replace('<payload>', 'payload')
+    return summary
+  }
 
   const renderBasicSummary = (summary: string) => {
     return (
@@ -228,8 +228,8 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           </span>
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   const renderSummary = (summary: string, showDetail: boolean) => {
     return (
@@ -249,12 +249,12 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           renderBasicSummary(summary)
         )}
       </>
-    );
-  };
+    )
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (isNil(buzzItem)) {
-    return <div>can't fetch this buzz</div>;
+    return <div>can't fetch this buzz</div>
   }
 
   return (
@@ -264,7 +264,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           'w-full border border-white rounded-xl flex flex-col gap-4',
           {
             'border-white/20  bg-[#000000cb]': hideActionButtons,
-          }
+          },
         )}
       >
         <div className='flex items-center justify-between pt-4 px-4'>
@@ -312,7 +312,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           <div className='mt-4'>
             {!attachData.pending &&
               !isEmpty(
-                (attachData?.data ?? []).filter((d: any) => !isNil(d))
+                (attachData?.data ?? []).filter((d: any) => !isNil(d)),
               ) &&
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               renderImages(attachPids)}
@@ -321,7 +321,9 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
           <div className='flex justify-between text-gray mt-2'>
             <div
               className='flex gap-2 items-center hover:text-slate-300 md:text-md text-xs'
-              onClick={() => toBrowser(buzzItem.genesisTransaction, buzzItem.chainName)}
+              onClick={() =>
+                toBrowser(buzzItem.genesisTransaction, buzzItem.chainName)
+              }
             >
               <LucideLink size={12} />
               <div>{buzzItem.genesisTransaction.slice(0, 8) + '...'}</div>
@@ -344,7 +346,7 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ForwardBuzzCard;
+export default ForwardBuzzCard

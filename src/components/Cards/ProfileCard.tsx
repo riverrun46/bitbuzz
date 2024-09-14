@@ -8,7 +8,7 @@ import {
   myFollowingListAtom,
 } from '../../store/user'
 import { useAtom, useAtomValue } from 'jotai'
-import { environment } from '../../utils/environments'
+import { environment, getServiceAddress } from '../../utils/environments'
 import { isEmpty, isNil } from 'ramda'
 import {
   fetchFollowDetailPin,
@@ -127,7 +127,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
               noBroadcast: 'no',
               feeRate: Number(globalFeeRate),
               service: {
-                address: environment.service_address,
+                address: getServiceAddress(),
                 satoshis: environment.service_satoshi,
               },
               // network: environment.network,
@@ -182,7 +182,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
               noBroadcast: 'no',
               feeRate: Number(globalFeeRate),
               service: {
-                address: environment.service_address,
+                address: getServiceAddress(),
                 satoshis: environment.service_satoshi,
               },
               // network: environment.network,

@@ -41,6 +41,7 @@ import { useMutation } from '@tanstack/react-query'
 import { fetchFollowingList } from './api/buzz'
 import Profile from './pages/Profile'
 import FollowDetail from './pages/followDetail'
+import { sleep } from './utils/time'
 
 function App() {
   const ref = useRef<null | HTMLDivElement>(null)
@@ -166,8 +167,6 @@ function App() {
       throw new Error(errors.NO_METALET_LOGIN)
     }
 
-    //////////////////////////
-
     const _connector = await mvcConnect({
       network: environment.network,
       // @ts-ignore
@@ -175,28 +174,33 @@ function App() {
     })
     console.log('mvc connector', _connector)
 
+    setConnectedNetwork('mvc')
     setMvcConnector(_connector)
     setConnector(_connector)
-    setConnectedNetwork('mvc')
-
-    const myFollowingListData = await mutateMyFollowing.mutateAsync(
-      _connector?.metaid ?? '',
-    )
-    setMyFollowingList(myFollowingListData?.list ?? [])
-
-    const resUser = await _connector.getUser({
-      network: environment.network,
-    })
-    console.log('user now', resUser)
-
-    setUserInfo(resUser)
     setConnected(true)
-    const _buzzEntity = await _connector.use('buzz')
-    setBuzzEntity(_buzzEntity)
-    console.log('your mvc address: ', _connector.address)
 
-    const closeBtn = document.getElementById('closeConnectModalBtn')
-    closeBtn?.click()
+    await sleep(500)
+    // reload page
+    window.location.reload()
+
+    // const myFollowingListData = await mutateMyFollowing.mutateAsync(
+    //   _connector?.metaid ?? '',
+    // )
+    // setMyFollowingList(myFollowingListData?.list ?? [])
+
+    // const resUser = await _connector.getUser({
+    //   network: environment.network,
+    // })
+    // console.log('user now', resUser)
+
+    // setUserInfo(resUser)
+
+    // const _buzzEntity = await _connector.use('buzz')
+    // setBuzzEntity(_buzzEntity)
+    // console.log('your mvc address: ', _connector.address)
+
+    // const closeBtn = document.getElementById('closeConnectModalBtn')
+    // closeBtn?.click()
   }
 
   const getBuzzEntity = async () => {
@@ -223,6 +227,11 @@ function App() {
   }, [connectedNetwork])
 
   const handleBeforeUnload = async () => {
+    console.log(
+      '++++++wait what?, walletParams',
+      walletParams,
+      connectedNetwork,
+    )
     if (!isNil(walletParams)) {
       if (connectedNetwork === 'mvc') {
         if (!isNil(walletParams.xpub)) {

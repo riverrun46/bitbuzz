@@ -34,7 +34,7 @@ import {
   checkMetaletInstalled,
   checkUserNameExisted,
 } from '../../utils/wallet'
-import { environment } from '../../utils/environments'
+import { environment, getServiceAddress } from '../../utils/environments'
 import FollowButton from '../Buttons/FollowButton'
 import { Pin } from '../../api/request'
 import { useNavigate } from 'react-router-dom'
@@ -406,7 +406,7 @@ const BuzzCard = ({
             noBroadcast: 'no',
             feeRate: Number(globalFeeRate),
             service: {
-              address: environment.service_address,
+              address: getServiceAddress(),
               satoshis: environment.service_satoshi,
             },
             // network: environment.network,
@@ -490,7 +490,7 @@ const BuzzCard = ({
               noBroadcast: 'no',
               feeRate: Number(globalFeeRate),
               service: {
-                address: environment.service_address,
+                address: getServiceAddress(),
                 satoshis: environment.service_satoshi,
               },
               // network: environment.network,
@@ -545,7 +545,7 @@ const BuzzCard = ({
               noBroadcast: 'no',
               feeRate: Number(globalFeeRate),
               service: {
-                address: environment.service_address,
+                address: getServiceAddress(),
                 satoshis: environment.service_satoshi,
               },
               // network: environment.network,

@@ -1,27 +1,28 @@
-import { LucideLink } from 'lucide-react';
-import CustomAvatar from '../Public/CustomAvatar';
-import dayjs from '../../utils/dayjsConfig';
-import { IBtcConnector } from '@metaid/metaid';
-import { CommentRes } from '../../api/buzz';
-import { environment } from '../../utils/environments';
-import { isNil } from 'ramda';
-import { useQuery } from '@tanstack/react-query';
+import { LucideLink } from 'lucide-react'
+import CustomAvatar from '../Public/CustomAvatar'
+import dayjs from '../../utils/dayjsConfig'
+import { IBtcConnector } from '@metaid/metaid'
+import { CommentRes } from '../../api/buzz'
+import { environment } from '../../utils/environments'
+import { isNil } from 'ramda'
+import { useQuery } from '@tanstack/react-query'
+import { Connector } from '../../types'
 
 type Iprops = {
-  commentRes: CommentRes;
-  btcConnector: IBtcConnector;
-};
+  commentRes: CommentRes
+  connector: Connector
+}
 
-const CommentCard = ({ commentRes, btcConnector }: Iprops) => {
+const CommentCard = ({ commentRes, connector }: Iprops) => {
   const currentUserInfoData = useQuery({
     enabled: !isNil(commentRes?.pinAddress),
     queryKey: ['userInfo', commentRes?.pinAddress, environment.network],
     queryFn: () =>
-      btcConnector?.getUser({
+      connector?.getUser({
         network: environment.network,
         currentAddress: commentRes?.pinAddress,
       }),
-  });
+  })
 
   return (
     <>
@@ -47,7 +48,7 @@ const CommentCard = ({ commentRes, btcConnector }: Iprops) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CommentCard;
+export default CommentCard

@@ -1,38 +1,38 @@
-import { useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
+import { useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { useNavigate } from 'react-router-dom'
 // import { buzzEntityAtom } from '../../store/buzz';
 // import { IBtcEntity } from '@metaid/metaid';
 // import { environment } from '../../utils/environments';
-import { isEmpty } from 'ramda';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { isEmpty } from 'ramda'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
   fetchFollowingList,
   fetchMyFollowingBuzzs,
   fetchMyFollowingTotal,
-} from '../../api/buzz';
-import { Pin } from '../../api/request';
-import BuzzCard from '../Cards/BuzzCard';
-import { btcConnectorAtom } from '../../store/user';
+} from '../../api/buzz'
+import { Pin } from '../../api/request'
+import BuzzCard from '../Cards/BuzzCard'
+import { connectorAtom } from '../../store/user'
 
 const FollowingBuzzList = () => {
-  const [total, setTotal] = useState<null | number>(null);
+  const [total, setTotal] = useState<null | number>(null)
 
-  const navigate = useNavigate();
-  const { ref, inView } = useInView();
-  const btcConnector = useAtomValue(btcConnectorAtom);
+  const navigate = useNavigate()
+  const { ref, inView } = useInView()
+  const connector = useAtomValue(connectorAtom)
   // const buzzEntity = useAtomValue(buzzEntityAtom);
 
   const { data: myFollowingListData } = useQuery({
-    queryKey: ['myFollowing', btcConnector?.metaid],
-    enabled: !isEmpty(btcConnector?.metaid ?? ''),
+    queryKey: ['myFollowing', connector?.metaid],
+    enabled: !isEmpty(connector?.metaid ?? ''),
     queryFn: () =>
       fetchFollowingList({
-        metaid: btcConnector?.metaid ?? '',
+        metaid: connector?.metaid ?? '',
         params: { cursor: '0', size: '100', followDetail: false },
       }),
-  });
+  })
 
   const getTotal = async () => {
     setTotal(
@@ -41,17 +41,17 @@ const FollowingBuzzList = () => {
         size: 1,
         path: '/protocols/simplebuzz,/protocols/banana',
         metaidList: myFollowingListData?.list ?? [],
-      })
-    );
-  };
-  console.log(total);
+      }),
+    )
+  }
+  console.log(total)
 
   useEffect(() => {
     if (!isEmpty(myFollowingListData?.list ?? [])) {
-      getTotal();
+      getTotal()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery({
@@ -67,13 +67,13 @@ const FollowingBuzzList = () => {
         }),
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        const nextPage = lastPage?.length ? allPages.length + 1 : undefined;
+        const nextPage = lastPage?.length ? allPages.length + 1 : undefined
         if (allPages.length * 5 >= (total ?? 0)) {
-          return;
+          return
         }
-        return nextPage;
+        return nextPage
       },
-    });
+    })
 
   const buzzes = data?.pages.map((pins: Pin[] | null) =>
     (pins ?? []).map((pin) => {
@@ -83,15 +83,15 @@ const FollowingBuzzList = () => {
           buzzItem={pin}
           onBuzzDetail={(txid) => navigate(`/buzz/${txid}`)}
         />
-      );
-    })
-  );
+      )
+    }),
+  )
 
   useEffect(() => {
     if (inView && hasNextPage) {
-      fetchNextPage();
+      fetchNextPage()
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, fetchNextPage])
   return (
     <>
       {isLoading ? (
@@ -126,7 +126,7 @@ const FollowingBuzzList = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default FollowingBuzzList;
+export default FollowingBuzzList

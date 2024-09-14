@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { connectedNetworkAtom, globalFeeRateAtom } from '../../store/user'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { environment } from '../../utils/environments'
+import { environment, getServiceAddress } from '../../utils/environments'
 import CommentForm from './CommentForm'
 import { Pin } from '../../api/request'
 import { Connector } from '../../types'
@@ -64,7 +64,7 @@ const CommentFormWrap = ({ connector, commentPin, isReply }: Iprops) => {
             noBroadcast: 'no',
             feeRate: Number(globalFeerate),
             service: {
-              address: environment.service_address,
+              address: getServiceAddress(),
               satoshis: environment.service_satoshi,
             },
             // network: environment.network,

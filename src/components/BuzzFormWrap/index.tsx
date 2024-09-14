@@ -23,7 +23,7 @@ import {
   IMvcEntity,
   MvcTransaction,
 } from '@metaid/metaid'
-import { environment } from '../../utils/environments'
+import { environment, getServiceAddress } from '../../utils/environments'
 import { Pin } from '../../api/request'
 import { Connector } from '../../types'
 
@@ -67,6 +67,8 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
     images: AttachmentItem[]
   }) => {
     setIsAdding(true)
+    console.log('connectedNetwork', connectedNetwork)
+    console.log('connector', connector)
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -96,7 +98,7 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
               noBroadcast: 'no',
               feeRate: Number(globalFeerate),
               service: {
-                address: environment.service_address,
+                address: getServiceAddress(),
                 satoshis: environment.service_satoshi,
               },
               // network: environment.network,
@@ -161,7 +163,7 @@ const BuzzFormWrap = ({ connector, quotePin }: Iprops) => {
             noBroadcast: 'no',
             feeRate: Number(globalFeerate),
             service: {
-              address: environment.service_address,
+              address: getServiceAddress(),
               satoshis: environment.service_satoshi,
             },
             // network: environment.network,
