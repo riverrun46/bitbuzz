@@ -528,7 +528,6 @@ const BuzzCard = ({
       }
     } else {
       try {
-              body: currentUserInfoData.data?.metaid,
         if (connectedNetwork === 'btc') {
           const btcConnector = connector as IBtcConnector
           const followRes = await btcConnector!.inscribe({
