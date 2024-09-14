@@ -1,5 +1,10 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { BookCheck, PencilLine } from 'lucide-react'
+import {
+  ArrowLeftRightIcon,
+  ArrowRightLeft,
+  BookCheck,
+  PencilLine,
+} from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import {
@@ -16,7 +21,6 @@ import {
 } from '../../utils/wallet'
 import CustomAvatar from '../Public/CustomAvatar'
 
-import { IBtcConnector, IMvcConnector } from '@metaid/metaid'
 import AboutModal from '../Modals/AboutModal'
 import NavabarMobileMenu from './NavabarMobileMenu'
 import NewBuzzModal from '../Modals/NewBuzzModal'
@@ -26,6 +30,7 @@ import { Connector } from '../../types'
 type IProps = {
   onWalletConnectStart: () => Promise<void>
   onWalletConnectMVCStart: () => Promise<void>
+  onSwitchToAnotherNetwork: () => void
   onLogout: () => void
   connector: Connector
 }
@@ -33,6 +38,7 @@ type IProps = {
 const Navbar = ({
   onWalletConnectStart,
   onWalletConnectMVCStart,
+  onSwitchToAnotherNetwork,
   onLogout,
   connector,
 }: IProps) => {
@@ -136,6 +142,16 @@ const Navbar = ({
                   className='cursor-pointer md:hidden block'
                 >
                   <CustomAvatar userInfo={userInfo!} size='36px' />
+                  <span
+                    className={classNames(
+                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 px-2 text-xs rounded leading-none py-1 uppercase',
+                      connectedNetwork === 'mvc'
+                        ? 'bg-sky-950 text-sky-400'
+                        : 'bg-orange-950 text-orange-300',
+                    )}
+                  >
+                    {connectedNetwork}
+                  </span>
                 </div>
 
                 <div
@@ -146,10 +162,10 @@ const Navbar = ({
                   <CustomAvatar userInfo={userInfo!} />
                   <span
                     className={classNames(
-                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 text-white px-2 text-xs rounded leading-none py-1 uppercase',
+                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 px-2 text-xs rounded leading-none py-1 uppercase',
                       connectedNetwork === 'mvc'
-                        ?'bg-sky-950 text-sky-400' 
-                        : 'bg-main/10 text-main',
+                        ? 'bg-sky-950 text-sky-400'
+                        : 'bg-orange-950 text-orange-300',
                     )}
                   >
                     {connectedNetwork}
@@ -157,7 +173,7 @@ const Navbar = ({
                 </div>
                 <ul
                   tabIndex={0}
-                  className='dropdown-content z-[1] menu px-4 py-4 gap-3 shadow bg-main rounded-box w-[170px] border border-[#131519] right-0'
+                  className='dropdown-content z-[1] menu px-4 py-4 gap-3 shadow bg-main rounded-box w-[240px] border border-[#131519] right-0'
                   style={{
                     borderRadius: '12px',
                     boxShadow: '0px 4px 10px 0px rgba(169, 211, 18, 0.5)',
@@ -178,6 +194,25 @@ const Navbar = ({
                       style={{ textIndent: '2.2em' }}
                     >{`Edit Profile`}</a>
                   </li>
+
+                  <div className='border border-[#1D2F2F]/50 w-[80%] mx-auto'></div>
+
+                  <li
+                    className='hover:bg-[rgba(219, 243, 136, 0.5)] rounded-box relative'
+                    onClick={onSwitchToAnotherNetwork}
+                  >
+                    <img
+                      src='/profile-icon.png'
+                      width={55}
+                      height={55}
+                      className='absolute left-0 top-0'
+                    />
+                    <a
+                      className='text-[#1D2F2F] text-[14px]'
+                      style={{ textIndent: '2.2em' }}
+                    >{`Switch to ${connectedNetwork === 'btc' ? 'MVC' : 'BTC'}`}</a>
+                  </li>
+
                   <div className='border border-[#1D2F2F]/50 w-[80%] mx-auto'></div>
                   <li
                     className='hover:bg-[rgba(219, 243, 136, 0.5)] rounded-box relative'

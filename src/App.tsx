@@ -81,6 +81,18 @@ function App() {
     window.metaidwallet.removeListener('networkChanged')
   }
 
+  const onSwitchToAnotherNetwork = async () => {
+    const switchTo = connectedNetwork === 'btc' ? 'mvc' : 'btc'
+
+    onLogout()
+
+    if (switchTo === 'mvc') {
+      await onWalletConnectMVCStart()
+    } else {
+      await onWalletConnectStart()
+    }
+  }
+
   const onWalletConnectStart = async () => {
     await checkMetaletInstalled()
     const _wallet = await MetaletWalletForBtc.create()
@@ -193,18 +205,16 @@ function App() {
       setMvcConnector(_mvcConnector)
       setConnector(_mvcConnector)
 
-    const _buzzEntity = await _mvcConnector.use('buzz')
-    setBuzzEntity(_buzzEntity)
-
+      const _buzzEntity = await _mvcConnector.use('buzz')
+      setBuzzEntity(_buzzEntity)
     } else {
       const _btcConnector = await btcConnect({ network: environment.network })
       setBtcConnector(_btcConnector)
       setConnector(_btcConnector)
       console.log('btc connector', _btcConnector)
 
-
-    const _buzzEntity = await _btcConnector.use('buzz')
-    setBuzzEntity(_buzzEntity)
+      const _buzzEntity = await _btcConnector.use('buzz')
+      setBuzzEntity(_buzzEntity)
     }
   }
 
@@ -305,6 +315,7 @@ function App() {
         <Navbar
           onWalletConnectStart={onWalletConnectStart}
           onWalletConnectMVCStart={onWalletConnectMVCStart}
+          onSwitchToAnotherNetwork={onSwitchToAnotherNetwork}
           onLogout={onLogout}
           connector={connector!}
         />
