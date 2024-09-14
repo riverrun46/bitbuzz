@@ -72,10 +72,25 @@ const Navbar = ({
 
       <div className='z-10 navbar py-3 px-0 bg-main absolute top-0'>
         <div className='container flex justify-between'>
-          <Link to={'/'} className='md:block hidden'>
-            <img src='/logo_navbar.png' className='w-[100px] h-[26px]' />
-          </Link>
-          <NavabarMobileMenu />
+          <div className='flex justify-start'>
+            <Link to={'/'} className='md:block hidden'>
+              <img src='/logo_navbar.png' className='w-[100px] h-[26px]' />
+            </Link>
+
+            <div className='text-sm sm:inline-flex self-end ml-2 hidden text-lime-800 items-center'>
+              on{'  '}
+              {connectedNetwork === 'btc' ? (
+                <img src='/btc.png' className='h-4 w-4 shrink-0 ml-1' />
+              ) : (
+                <img src='/mvc.png' className='h-4 w-4 shrink-0 ml-1' />
+              )}
+              <span className='font-bold'>
+                {connectedNetwork === 'btc' ? 'BTC' : 'MVC'}
+              </span>
+            </div>
+
+            <NavabarMobileMenu />
+          </div>
 
           <div className='flex items-center gap-2'>
             <div className='gap-4 hidden md:flex'>
@@ -142,16 +157,6 @@ const Navbar = ({
                   className='cursor-pointer md:hidden block'
                 >
                   <CustomAvatar userInfo={userInfo!} size='36px' />
-                  <span
-                    className={classNames(
-                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 px-2 text-xs rounded leading-none py-1 uppercase',
-                      connectedNetwork === 'mvc'
-                        ? 'bg-sky-950 text-sky-400'
-                        : 'bg-orange-950 text-orange-300',
-                    )}
-                  >
-                    {connectedNetwork}
-                  </span>
                 </div>
 
                 <div
@@ -160,16 +165,6 @@ const Navbar = ({
                   className='cursor-pointer md:block hidden relative'
                 >
                   <CustomAvatar userInfo={userInfo!} />
-                  <span
-                    className={classNames(
-                      'absolute right-0 bottom-0 translate-x-4 translate-y-1 px-2 text-xs rounded leading-none py-1 uppercase',
-                      connectedNetwork === 'mvc'
-                        ? 'bg-sky-950 text-sky-400'
-                        : 'bg-orange-950 text-orange-300',
-                    )}
-                  >
-                    {connectedNetwork}
-                  </span>
                 </div>
                 <ul
                   tabIndex={0}
@@ -210,7 +205,14 @@ const Navbar = ({
                     <a
                       className='text-[#1D2F2F] text-[14px]'
                       style={{ textIndent: '2.2em' }}
-                    >{`Switch to ${connectedNetwork === 'btc' ? 'MVC' : 'BTC'}`}</a>
+                    >
+                      {`Switch to ${connectedNetwork === 'btc' ? 'MVC' : 'BTC'}`}
+                      {connectedNetwork === 'btc' ? (
+                        <img src='/mvc.png' className='h-6 w-6 shrink-0' />
+                      ) : (
+                        <img src='/btc.png' className='h-6 w-6 shrink-0' />
+                      )}
+                    </a>
                   </li>
 
                   <div className='border border-[#1D2F2F]/50 w-[80%] mx-auto'></div>
