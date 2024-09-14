@@ -4,7 +4,7 @@ import { environment } from './environments'
 export function toBrowser(txid: string, chain?: Chain) {
   if (chain === 'mvc') {
     window.open(
-      `https://${environment.network === 'testnet' && 'test.'}mvcscan.com/tx/${txid}`,
+      `https://${environment.network === 'testnet' ? 'test.' : ''}mvcscan.com/tx/${txid}`,
       '_blank',
     )
 
