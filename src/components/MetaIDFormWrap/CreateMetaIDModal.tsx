@@ -1,19 +1,19 @@
-import { IBtcConnector } from '@metaid/metaid';
-import CreateMetaIDFormWrap from './CreateMetaIDFormWrap';
-// import CreateMetaIDSuccessModal from './CreateMetaIDSuccessModal';
+import { IBtcConnector } from '@metaid/metaid'
+import CreateMetaIDFormWrap from './CreateMetaIDFormWrap'
+import { Connector } from '../../types'
 
 type Iprops = {
-  btcConnector: IBtcConnector;
-  onWalletConnectStart: () => void;
-};
+  connector: Connector
+  onWalletConnectStart: () => void
+}
 
-const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
+const CreateMetaIDModal = ({ connector, onWalletConnectStart }: Iprops) => {
   const onCloseSuccessModal = () => {
     const doc_modal = document.getElementById(
-      'create_metaid_success_modal'
-    ) as HTMLDialogElement;
-    doc_modal.close();
-  };
+      'create_metaid_success_modal',
+    ) as HTMLDialogElement
+    doc_modal.close()
+  }
 
   return (
     <>
@@ -29,7 +29,7 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
             MetaID Profile
           </h3>
           <CreateMetaIDFormWrap
-            btcConnector={btcConnector!}
+            connector={connector!}
             onWalletConnectStart={onWalletConnectStart}
           />
         </div>
@@ -80,7 +80,7 @@ const CreateMetaIDModal = ({ btcConnector, onWalletConnectStart }: Iprops) => {
 				</form> */}
       </dialog>
     </>
-  );
-};
+  )
+}
 
-export default CreateMetaIDModal;
+export default CreateMetaIDModal

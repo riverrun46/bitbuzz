@@ -1,31 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import cls from 'classnames';
-import { Image } from 'lucide-react';
-import useImagesPreview from '../../hooks/useImagesPreview';
-import { isEmpty, isNil } from 'ramda';
-import { image2Attach } from '../../utils/file';
-import { MetaidUserInfo } from './CreateMetaIDFormWrap';
-import { useEffect } from 'react';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import cls from 'classnames'
+import { Image } from 'lucide-react'
+import useImagesPreview from '../../hooks/useImagesPreview'
+import { isEmpty, isNil } from 'ramda'
+import { image2Attach } from '../../utils/file'
+import { MetaidUserInfo } from './CreateMetaIDFormWrap'
+import { useEffect } from 'react'
 
-import { useAtomValue } from 'jotai';
-import { globalFeeRateAtom } from '../../store/user';
-import { environment } from '../../utils/environments';
-import CustomFeerate from '../Public/CustomFeerate';
+import { useAtom, useAtomValue } from 'jotai'
+import { connectedNetworkAtom, globalFeeRateAtom } from '../../store/user'
+import { environment } from '../../utils/environments'
+import CustomFeerate from '../Public/CustomFeerate'
 
 export type FormUserInfo = {
-  name: string;
-  avatar: FileList;
-  bio?: string;
-};
+  name: string
+  avatar: FileList
+  bio?: string
+}
 
 type IProps = {
-  onSubmit: (userInfo: MetaidUserInfo) => void;
-  initialValues?: MetaidUserInfo;
-};
+  onSubmit: (userInfo: MetaidUserInfo) => void
+  initialValues?: MetaidUserInfo
+}
 
 const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
-  const globalFeerate = useAtomValue(globalFeeRateAtom);
+  const [connectedNetwork, setConnectedNetwork] = useAtom(connectedNetworkAtom)
+
+  const globalFeerate = useAtomValue(globalFeeRateAtom)
   const {
     register,
     handleSubmit,
@@ -39,22 +41,22 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
       name: initialValues?.name ?? '',
       bio: initialValues?.bio ?? '',
     },
-  });
+  })
   useEffect(() => {
     if (initialValues) {
-      setValue('name', initialValues?.name ?? '');
-      setValue('bio', initialValues?.bio ?? '');
+      setValue('name', initialValues?.name ?? '')
+      setValue('bio', initialValues?.bio ?? '')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues]);
+  }, [initialValues])
 
-  const avatar = watch('avatar');
-  const [filesPreview, setFilesPreview] = useImagesPreview(avatar);
+  const avatar = watch('avatar')
+  const [filesPreview, setFilesPreview] = useImagesPreview(avatar)
   const onCreateSubmit: SubmitHandler<FormUserInfo> = async (data) => {
     const submitAvatar =
       !isNil(data?.avatar) && data.avatar.length !== 0
         ? await image2Attach(data.avatar)
-        : [];
+        : []
     const submitData = {
       ...data,
       avatar: !isEmpty(submitAvatar)
@@ -62,10 +64,10 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
         : undefined,
       bio: isEmpty(data?.bio ?? '') ? undefined : data?.bio,
       feeRate: Number(globalFeerate),
-    };
-    console.log('submit profile data', submitData);
-    onSubmit(submitData);
-  };
+    }
+    console.log('submit profile data', submitData)
+    onSubmit(submitData)
+  }
   // console.log('avatar', avatar, !isNil(avatar) && avatar.length !== 0);
 
   return (
@@ -82,7 +84,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
               'input input-bordered border-white text-white bg-[black] flex items-center gap-2 relative',
               {
                 'input-error': errors.name,
-              }
+              },
             )}
           >
             <svg
@@ -126,8 +128,8 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
               <div
                 className='btn btn-xs btn-outline font-normal text-white'
                 onClick={() => {
-                  setFilesPreview([]);
-                  setValue('avatar', [] as any);
+                  setFilesPreview([])
+                  setValue('avatar', [] as any)
                 }}
               >
                 clear current uploads
@@ -146,16 +148,16 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
                 className='hidden'
                 {...register('avatar')}
                 onChange={(e) => {
-                  const maxFileSize = 200 * 1024; // max file size 200kb
-                  const files = e.target.files;
+                  const maxFileSize = 200 * 1024 // max file size 200kb
+                  const files = e.target.files
                   if (!isNil(files) && files[0].size > maxFileSize) {
-                    alert('File size cannot be greater than 200kb');
+                    alert('File size cannot be greater than 200kb')
 
-                    setValue('avatar', [] as any); // clear file input value
-                    e.target.value = ''; // clear file input value
-                    return;
+                    setValue('avatar', [] as any) // clear file input value
+                    e.target.value = '' // clear file input value
+                    return
                   }
-                  onChange(files);
+                  onChange(files)
                 }}
               />
             )}
@@ -177,7 +179,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
           ) : (
             <div
               onClick={() => {
-                document.getElementById('addPFP2')!.click();
+                document.getElementById('addPFP2')!.click()
               }}
               className='btn btn-outline font-normal text-white bg-[black]'
             >
@@ -187,7 +189,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
           )}
         </div>
 
-        <CustomFeerate />
+        {connectedNetwork === 'btc' && <CustomFeerate />}
 
         {/* <div className="flex flex-col gap-2">
 					<div className="text-white">Your Bio</div>
@@ -208,7 +210,7 @@ const EditMetaIdInfoForm = ({ onSubmit, initialValues }: IProps) => {
         Submit
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default EditMetaIdInfoForm;
+export default EditMetaIdInfoForm

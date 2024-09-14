@@ -60,7 +60,7 @@ function App() {
   console.log('connector', connector)
 
   const mutateMyFollowing = useMutation({
-    mutationKey: ['myFollowing', btcConnector?.metaid],
+    mutationKey: ['myFollowing', connector?.metaid],
     mutationFn: (metaid: string) =>
       fetchFollowingList({
         metaid: metaid,
@@ -361,10 +361,10 @@ function App() {
       />
 
       <CreateMetaIDModal
-        btcConnector={btcConnector!}
+        connector={connector!}
         onWalletConnectStart={onWalletConnectStart}
       />
-      <EditMetaIDModal btcConnector={btcConnector!} />
+      <EditMetaIDModal connector={connector!} />
       <InsertMetaletAlertModal />
     </div>
   )
