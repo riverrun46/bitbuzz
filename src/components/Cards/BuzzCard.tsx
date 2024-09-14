@@ -47,7 +47,13 @@ import CommentModal from '../Modals/CommentModal'
 import RepostModal from '../Modals/RepostModal'
 import { toBrowser } from '../../utils/link'
 import classNames from 'classnames'
-import { IBtcEntity, IMvcEntity } from '@metaid/metaid'
+import {
+  IBtcConnector,
+  IBtcEntity,
+  IMvcConnector,
+  IMvcEntity,
+} from '@metaid/metaid'
+import followEntitySchema from '../../entities/follow'
 
 type IProps = {
   buzzItem: Pin | undefined
@@ -469,34 +475,42 @@ const BuzzCard = ({
       (myFollowingListData?.list ?? []).includes(metaid)
     ) {
       try {
-        const unfollowRes = await connector!.inscribe({
-          inscribeDataArray: [
-            {
-              operation: 'revoke',
-              path: `@${followDetailData.followPinId}`,
-              contentType: 'text/plain;utf-8',
-              flag: environment.flag,
+        if (connectedNetwork === 'btc') {
+          const btcConnector = connector as IBtcConnector
+          const unfollowRes = await btcConnector!.inscribe({
+            inscribeDataArray: [
+              {
+                operation: 'revoke',
+                path: `@${followDetailData.followPinId}`,
+                contentType: 'text/plain;utf-8',
+                flag: environment.flag,
+              },
+            ],
+            options: {
+              noBroadcast: 'no',
+              feeRate: Number(globalFeeRate),
+              service: {
+                address: environment.service_address,
+                satoshis: environment.service_satoshi,
+              },
+              // network: environment.network,
             },
-          ],
-          options: {
-            noBroadcast: 'no',
-            feeRate: Number(globalFeeRate),
-            service: {
-              address: environment.service_address,
-              satoshis: environment.service_satoshi,
-            },
-            // network: environment.network,
-          },
-        })
-        if (!isNil(unfollowRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
-          setMyFollowingList((d) => {
-            return d.filter((i) => i !== metaid)
           })
-          // await sleep(5000);
-          toast.success(
-            'Unfollowing successfully!Please wait for the transaction to be confirmed.',
-          )
+          if (!isNil(unfollowRes?.revealTxIds[0])) {
+            queryClient.invalidateQueries({
+              queryKey: ['buzzes'],
+            })
+            setMyFollowingList((d) => {
+              return d.filter((i) => i !== currentUserInfoData?.data?.metaid)
+            })
+            // await sleep(5000);
+            toast.success(
+              'Unfollow successful! Please wait for the transaction to be confirmed.',
+            )
+          }
+        } else if (connectedNetwork === 'mvc') {
+          // const mvcConnector = connector as IMvcConnector
+          // const Follow = await mvcConnector.load(followEntitySchema)
         }
       } catch (error) {
         console.log('error', error)
@@ -514,39 +528,63 @@ const BuzzCard = ({
       }
     } else {
       try {
-        const followRes = await connector!.inscribe({
-          inscribeDataArray: [
-            {
-              operation: 'create',
-              path: '/follow',
               body: currentUserInfoData.data?.metaid,
-              contentType: 'text/plain;utf-8',
+        if (connectedNetwork === 'btc') {
+          const btcConnector = connector as IBtcConnector
+          const followRes = await btcConnector!.inscribe({
+            inscribeDataArray: [
+              {
+                operation: 'create',
+                path: '/follow',
+                body: currentUserInfoData?.data?.metaid,
+                contentType: 'text/plain;utf-8',
 
-              flag: environment.flag,
+                flag: environment.flag,
+              },
+            ],
+            options: {
+              noBroadcast: 'no',
+              feeRate: Number(globalFeeRate),
+              service: {
+                address: environment.service_address,
+                satoshis: environment.service_satoshi,
+              },
+              // network: environment.network,
             },
-          ],
-          options: {
-            noBroadcast: 'no',
-            feeRate: Number(globalFeeRate),
-            service: {
-              address: environment.service_address,
-              satoshis: environment.service_satoshi,
-            },
-            // network: environment.network,
-          },
-        })
-        if (!isNil(followRes?.revealTxIds[0])) {
-          queryClient.invalidateQueries({ queryKey: ['buzzes'] })
-          setMyFollowingList((d: string[]) => {
-            return [...d, metaid!]
           })
-          // queryClient.invalidateQueries({
-          //   queryKey: ['payLike', buzzItem!.id],
-          // });
-          // await sleep(5000);
-          toast.success(
-            'Follow successfully! Please wait for the transaction to be confirmed!',
-          )
+          if (!isNil(followRes?.revealTxIds[0])) {
+            queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+            setMyFollowingList((d: string[]) => {
+              return [...d, currentUserInfoData!.data!.metaid]
+            })
+
+            toast.success(
+              'Follow successfully! Please wait for the transaction to be confirmed!',
+            )
+          }
+        } else if (connectedNetwork === 'mvc') {
+          const mvcConnector = connector as IMvcConnector
+          const Follow = await mvcConnector.load(followEntitySchema)
+
+          const res = await Follow.create({
+            data: { body: JSON.stringify(currentUserInfoData?.data?.metaid) },
+            options: {
+              network: environment.network,
+              signMessage: 'follow user',
+            },
+          })
+          console.log('create res for inscribe', res)
+
+          if (!isNil(res?.txid)) {
+            queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+            setMyFollowingList((d: string[]) => {
+              return [...d, currentUserInfoData!.data!.metaid]
+            })
+
+            toast.success(
+              'Follow successfully! Please wait for the transaction to be confirmed!',
+            )
+          }
         }
       } catch (error) {
         console.log('error', error)
@@ -784,7 +822,7 @@ const BuzzCard = ({
         </div>
       </div>
 
-      <RepostModal quotePin={buzzItem} connector={connector} />
+      <RepostModal quotePin={buzzItem} connector={connector!} />
 
       <CommentModal
         commentPin={buzzItem}

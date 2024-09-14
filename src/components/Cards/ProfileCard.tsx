@@ -142,12 +142,12 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
             })
             // await sleep(5000);
             toast.success(
-              'Unfollowing successfully!Please wait for the transaction to be confirmed.',
+              'Unfollow successful! Please wait for the transaction to be confirmed.',
             )
           }
         } else if (connectedNetwork === 'mvc') {
-                    // const mvcConnector = connector as IMvcConnector
-                    // const Follow = await mvcConnector.load(followEntitySchema)
+          // const mvcConnector = connector as IMvcConnector
+          // const Follow = await mvcConnector.load(followEntitySchema)
         }
       } catch (error) {
         console.log('error', error)
