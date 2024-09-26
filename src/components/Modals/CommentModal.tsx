@@ -6,7 +6,7 @@ import { Connector } from '../../types';
 
 type Iprops = {
   commentPin: Pin;
-  commentToUser: UserInfo | undefined;
+  commentToUser: UserInfo | undefined | null;
   connector: Connector;
 };
 

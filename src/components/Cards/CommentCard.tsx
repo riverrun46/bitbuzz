@@ -7,6 +7,7 @@ import { environment } from '../../utils/environments'
 import { isNil } from 'ramda'
 import { useQuery } from '@tanstack/react-query'
 import { Connector } from '../../types'
+import { getUser } from '../../api/get-user'
 
 type Iprops = {
   commentRes: CommentRes
@@ -17,11 +18,7 @@ const CommentCard = ({ commentRes, connector }: Iprops) => {
   const currentUserInfoData = useQuery({
     enabled: !isNil(commentRes?.pinAddress),
     queryKey: ['userInfo', commentRes?.pinAddress, environment.network],
-    queryFn: () =>
-      connector?.getUser({
-        network: environment.network,
-        currentAddress: commentRes?.pinAddress,
-      }),
+    queryFn: () => getUser(connector!, commentRes?.pinAddress),
   })
 
   return (

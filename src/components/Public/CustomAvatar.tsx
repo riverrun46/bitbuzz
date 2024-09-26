@@ -3,7 +3,7 @@ import { isEmpty, isNil } from 'ramda';
 import { environment } from '../../utils/environments';
 
 type Iprops = {
-  userInfo?: UserInfo;
+  userInfo?: UserInfo | null;
   onProfileDetail?: (address: string) => void;
   size?: string;
 };

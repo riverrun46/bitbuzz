@@ -68,7 +68,8 @@ const AllNewBuzzList = ({
       },
     });
   const buzzes = data?.pages.map((pins: Pin[] | null) =>
-    (pins ?? []).map((pin) => {
+    (pins ?? [])
+  .map((pin) => {
       return (
         <BuzzCard
           key={pin.id}

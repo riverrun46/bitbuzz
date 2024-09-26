@@ -54,6 +54,7 @@ import {
   IMvcEntity,
 } from '@metaid/metaid'
 import followEntitySchema from '../../entities/follow'
+import { getUser } from '../../api/get-user'
 
 type IProps = {
   buzzItem: Pin | undefined
@@ -133,11 +134,8 @@ const BuzzCard = ({
 
   const currentUserInfoData = useQuery({
     queryKey: ['userInfo', buzzItem!.address, environment.network],
-    queryFn: () =>
-      connector?.getUser({
-        network: environment.network,
-        currentAddress: buzzItem!.address,
-      }),
+    queryFn: () => getUser(connector!, buzzItem?.address),
+    enabled: !!buzzItem?.address,
   })
   const metaid = currentUserInfoData?.data?.metaid
 

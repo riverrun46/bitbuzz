@@ -25,6 +25,7 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { IBtcConnector, IMvcConnector } from '@metaid/metaid'
 import followEntitySchema from '../../entities/follow'
+import { getUser } from '../../api/get-user'
 
 type Iprops = {
   address: string
@@ -43,11 +44,8 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
 
   const profileUserData = useQuery({
     queryKey: ['userInfo', address, environment.network],
-    queryFn: () =>
-      connector?.getUser({
-        network: environment.network,
-        currentAddress: address,
-      }),
+    queryFn: () => getUser(connector!, address),
+    enabled: !!address,
   })
 
   const { data: followingListData } = useQuery({

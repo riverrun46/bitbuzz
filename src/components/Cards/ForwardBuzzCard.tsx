@@ -14,6 +14,7 @@ import { environment } from '../../utils/environments'
 import { Pin } from '../../api/request'
 import ProfileCard from './ProfileCard'
 import { toBrowser } from '../../utils/link'
+import { getUser } from '../../api/get-user'
 
 type IProps = {
   buzzItem: Pin | undefined
@@ -44,11 +45,8 @@ const ForwardBuzzCard = ({ buzzItem }: IProps) => {
 
   const currentUserInfoData = useQuery({
     queryKey: ['userInfo', buzzItem!.address, environment.network],
-    queryFn: () =>
-      connector?.getUser({
-        network: environment.network,
-        currentAddress: buzzItem!.address,
-      }),
+    queryFn: () => getUser(connector!, buzzItem?.address),
+    enabled: !isNil(buzzItem?.address),
   })
   const metaid = currentUserInfoData?.data?.metaid
 
