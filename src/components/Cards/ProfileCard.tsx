@@ -225,7 +225,7 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
           const Follow = await mvcConnector.load(followEntitySchema)
 
           const res = await Follow.create({
-            data: { body: JSON.stringify(profileUserData?.data?.metaid) },
+            data: { body: profileUserData?.data?.metaid },
             options: {
               network: environment.network,
               signMessage: 'follow user',

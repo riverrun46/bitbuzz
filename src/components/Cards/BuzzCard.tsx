@@ -588,7 +588,7 @@ const BuzzCard = ({
           const Follow = await mvcConnector.load(followEntitySchema)
 
           const res = await Follow.create({
-            data: { body: JSON.stringify(currentUserInfoData?.data?.metaid) },
+            data: { body: currentUserInfoData?.data?.metaid },
             options: {
               network: environment.network,
               signMessage: 'Follow user',
