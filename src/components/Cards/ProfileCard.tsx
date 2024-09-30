@@ -144,8 +144,32 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
             )
           }
         } else if (connectedNetwork === 'mvc') {
-          // const mvcConnector = connector as IMvcConnector
-          // const Follow = await mvcConnector.load(followEntitySchema)
+          const mvcConnector = connector as IMvcConnector
+          const Follow = await mvcConnector.load(followEntitySchema)
+
+          const res = await Follow.create({
+            data: {
+              // @ts-ignore
+              path: `@${followDetailData.followPinId}`,
+              contentType: 'text/plain;utf-8',
+              operation: 'revoke',
+            },
+            options: {
+              network: environment.network,
+              signMessage: 'Unfollow user',
+            },
+          })
+
+          if (!isNil(res?.txid)) {
+            queryClient.invalidateQueries({ queryKey: ['buzzes'] })
+            setMyFollowingList((d) => {
+              return d.filter((i) => i !== profileUserData?.data?.metaid)
+            })
+
+            toast.success(
+              'Unfollow successful! Please wait for the transaction to be confirmed.',
+            )
+          }
         }
       } catch (error) {
         console.log('error', error)
