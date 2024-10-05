@@ -1328,10 +1328,10 @@
     ramda "^0.29.1"
     uuid "^9.0.1"
 
-"@metaid/metaid@^1.5.7":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.5.7.tgz#044fdca94f98683b5d4263919bf763ef09a929ff"
-  integrity sha512-hZpUsZsw/vauaGDB4Dn/dPVsz1qTRSexB+YjSSe37BTpJsJQUoJfkJp5HRYRxcAqe/ZYvjmRbvS29KtKjcE3XA==
+"@metaid/metaid@^1.5.8":
+  version "1.5.8"
+  resolved "https://registry.yarnpkg.com/@metaid/metaid/-/metaid-1.5.8.tgz#54841181f45da7655de69d8a39e862f485f73df1"
+  integrity sha512-sn4egVVzYcICchOGxyZQIUls3/2i/sfiCASXRkS2itoze4wIkqyLBjxAb16D2NRsT2EJxGa/i+xdjeNw2cVFyg==
   dependencies:
     "@bitcoin-js/tiny-secp256k1-asmjs" "^2.2.3"
     "@metaid/metaid" "^1.2.7"

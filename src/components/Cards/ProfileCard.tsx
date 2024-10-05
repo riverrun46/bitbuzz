@@ -149,7 +149,6 @@ const ProfileCard = ({ address, isDropdown = false }: Iprops) => {
 
           const res = await Follow.create({
             data: {
-              // @ts-ignore
               path: `@${followDetailData.followPinId}`,
               contentType: 'text/plain;utf-8',
               operation: 'revoke',
